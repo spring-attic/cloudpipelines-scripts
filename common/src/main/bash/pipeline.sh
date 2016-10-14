@@ -126,12 +126,17 @@ function deployEureka() {
     local appName="${3}"
     local env="${4}"
     echo "Deploying Eureka. Options - redeploy [${redeploy}], jar name [${jarName}], app name [${appName}], env [${env}]"
-    if [[ ! -e target/${jarName}.jar || ( -e target/${jarName}.jar && ${redeploy} == "true" ) ]]; then
+    local fileExists="true"
+    local fileName="`pwd`/target/${jarName}.jar"
+    if [[ ! -f "${fileName}" ]]; then
+        fileExists="false"
+    fi
+    if [[ ${fileExists} == "false" || ( ${fileExists} == "true" && ${redeploy} == "true" ) ]]; then
         deployAppWithName "${appName}" "${jarName}" "${env}"
         restartApp "${appName}"
         createServiceWithName "${appName}"
     else
-        echo "The target/${jarName}.jar is missing or redeploy flag was turned off"
+        echo "Current folder is [`pwd`]; The [${fileName}] exists [${fileExists}]; redeploy flag was set [${redeploy}]. Skipping deployment"
     fi
 }
 
@@ -142,8 +147,13 @@ function deployStubRunnerBoot() {
     local eurekaService="${4:-github-eureka}"
     local rabbitmqService="${5:-github-rabbitmq}"
     local stubRunnerName="${6:-stubrunner}"
-    echo "Deploying Eureka. Options - redeploy [${redeploy}], jar name [${jarName}], app name [${stubRunnerName}], eureka [${eurekaService}], rabbitmq [${rabbitmqService}]"
-    if [[ ! -e target/${jarName}.jar || ( -e target/${jarName}.jar && ${redeploy} == "true" ) ]]; then
+    local fileExists="true"
+    local fileName="`pwd`/target/${jarName}.jar"
+    if [[ ! -f "${fileName}" ]]; then
+        fileExists="false"
+    fi
+    echo "Deploying Stub Runner. Options - redeploy [${redeploy}], jar name [${jarName}], app name [${stubRunnerName}], eureka [${eurekaService}], rabbitmq [${rabbitmqService}]"
+    if [[ ${fileExists} == "false" || ( ${fileExists} == "true" && ${redeploy} == "true" ) ]]; then
         deployAppWithName "${stubRunnerName}" "${jarName}" "${env}"
         local mavenProp="$( extractMavenProperty "stubrunner.ids" )"
         setEnvVar "${stubRunnerName}" "stubrunner.ids" "${mavenProp}"
@@ -152,7 +162,7 @@ function deployStubRunnerBoot() {
         restartApp "${stubRunnerName}"
         createServiceWithName "${stubRunnerName}"
     else
-        echo "The target/${jarName}.jar is missing or redeploy flag was turned off"
+        echo "Current folder is [`pwd`]; The [${fileName}] exists [${fileExists}]; redeploy flag was set [${redeploy}]. Skipping deployment"
     fi
 }
 
@@ -192,12 +202,12 @@ function downloadJar() {
     local groupId="${3}"
     local artifactId="${4}"
     local version="${5}"
-    local destination="target/${artifactId}-${version}.jar"
+    local destination="`pwd`/target/${artifactId}-${version}.jar"
     local changedGroupId="$( echo "${groupId}" | tr . / )"
     local pathToJar="${repoWithJars}/${changedGroupId}/${artifactId}/${version}/${artifactId}-${version}.jar"
     if [[ ! -e ${destination} || ( -e ${destination} && ${redownloadInfra} == "true" ) ]]; then
         mkdir -p target
-        echo "Downloading [${pathToJar}] to [${destination}]"
+        echo "Current folder is [`pwd`]; Downloading [${pathToJar}] to [${destination}]"
         curl "${pathToJar}" -o "${destination}"
     else
         echo "File [${destination}] exists and redownload flag was set to false. Will not download it again"
@@ -280,4 +290,42 @@ function retrieveArtifactId() {
     local result=$( ruby -r rexml/document -e 'puts REXML::Document.new(File.new(ARGV.shift)).elements["/project/artifactId"].text' pom.xml || ./mvnw ${MAVEN_ARGS} org.apache.maven.plugins:maven-help-plugin:2.2:evaluate -Dexpression=project.artifactId |grep -Ev '(^\[|Download\w+:)' )
     result=$( echo "${result}" | tail -1 )
     echo "${result}"
+}
+
+# Jenkins passes these as a separate step, in Concourse we'll do it manually
+function prepareForSmokeTests() {
+    local redownloadInfra="${1}"
+    local username="${2}"
+    local password="${3}"
+    local org="${4}"
+    local space="${5}"
+    local api="${6}"
+    echo "Retrieving group and artifact id - it can take a while..."
+    retrieveGroupId
+    retrieveArtifactId
+    projectGroupId=$( retrieveGroupId )
+    projectArtifactId=$( retrieveArtifactId )
+    mkdir -p target
+    logInToCf "${redownloadInfra}" "${username}" "${password}" "${org}" "${space}" "${api}"
+    propagatePropertiesForTests ${projectArtifactId}
+    readTestPropertiesFromFile
+}
+
+# Jenkins passes these as a separate step, in Concourse we'll do it manually
+function prepareForE2eTests() {
+    local redownloadInfra="${1}"
+    local username="${2}"
+    local password="${3}"
+    local org="${4}"
+    local space="${5}"
+    local api="${6}"
+    echo "Retrieving group and artifact id - it can take a while..."
+    retrieveGroupId
+    retrieveArtifactId
+    projectGroupId=$( retrieveGroupId )
+    projectArtifactId=$( retrieveArtifactId )
+    mkdir -p target
+    logInToCf "${redownloadInfra}" "${username}" "${password}" "${org}" "${space}" "${api}"
+    propagatePropertiesForTests ${projectArtifactId}
+    readTestPropertiesFromFile
 }
