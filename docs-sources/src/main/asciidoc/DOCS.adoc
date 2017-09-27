@@ -20,12 +20,20 @@ include::INTRO.adoc[]
 
 include::OPINIONATED.adoc[]
 
+// remove::start[CONCOURSE]
 include::CONCOURSE.adoc[]
+// remove::end[CONCOURSE]
 
+// remove::start[JENKINS]
 include::JENKINS.adoc[]
+// remove::end[JENKINS]
 
+// remove::start[CF]
 include::CF_DEMO.adoc[]
+// remove::end[CF]
 
+// remove::start[K8S]
 include::K8S_DEMO.adoc[]
+// remove::end[K8S]
 
 include::TECH.adoc[]
