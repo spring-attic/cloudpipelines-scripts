@@ -470,7 +470,8 @@ code repository and check it out at `/src/main/bash/README.adoc`.
 
 The high overview looks like this (created via https://textart.io/sequence[textart.io])
 
-```
+[source,options="nowrap"]
+----
 +---------+                      +-----------+                      +-----------+ +-------+ +---------------+
 | script  |                      | language  |                      | framework | | paas  | | customization |
 +---------+                      +-----------+                      +-----------+ +-------+ +---------------+
@@ -504,7 +505,7 @@ The high overview looks like this (created via https://textart.io/sequence[texta
      |                  |              |                                  |           |             |
      |<------------------              |                                  |           |             |
      |                                 |                                  |           |             |
-```
+----
 
 Before we run the script we need to answer the questions related to your repo
 
@@ -515,7 +516,8 @@ Before we run the script we need to answer the questions related to your repo
 
 The following sequence diagram describes how the sourcing of bash scripts takes place (created via https://textart.io/sequence[textart.io])
 
-```
+[source,options="nowrap"]
+----
 +---------+                                         +-----------+                                            +-------------+                   +-----------+            +-----------+                                   +-------+                            +---------+
 | script  |                                         | pipeline  |                                            | projectType |                   | language  |            | framework |                                   | paas  |                            | custom  |
 +---------+                                         +-----------+                                            +-------------+                   +-----------+            +-----------+                                   +-------+                            +---------+
@@ -573,8 +575,7 @@ The following sequence diagram describes how the sourcing of bash scripts takes 
      |                    |                               |                                                         |                                |                        |                                             |                                     |
      |<--------------------                               |                                                         |                                |                        |                                             |                                     |
      |                                                    |                                                         |                                |                        |                                             |                                     |
-```
-
+----
 
 * A script e.g. `build_and_upload.sh` is called
 * It sources the `pipeline.sh` that contains all the essential function "interfaces" and
@@ -606,7 +607,8 @@ library, that is able to:
 
 The following diagram depicts this situation:
 
-```
+[source,options="nowrap"]
+----
 +---------+                                                  +-------+                                                                           +-------------+ +---------+
 | Jenkins |                                                  | Seed  |                                                                           | SCPipelines | | Github  |
 +---------+                                                  +-------+                                                                           +-------------+ +---------+
@@ -642,7 +644,7 @@ The following diagram depicts this situation:
      |                                                           |                                        |                                             |             |
      |                                                           |<----------------------------------------                                             |             |
      |                                                           |                                                                                      |             |
-```
+----
 
 Thanks to the Project Crawler you can run the seed job and automatically all the new repositories
 will be picked and pipelines will be created for them. Project Crawler supports repositories
@@ -658,7 +660,8 @@ the CI jobs (i.e. build, test) and prepare the JSON definitions of Spinnaker pip
 
 The diagram below shows how Jenkins, the seed job for Spinnaker and Spinnaker as such cooperate.
 
-```
+[source,options="nowrap"]
+----
 +---------+                                                  +-------+                                                                           +-------------+                          +---------+ +-----------+
 | Jenkins |                                                  | Seed  |                                                                           | SCPipelines |                          | Github  | | Spinnaker |
 +---------+                                                  +-------+                                                                           +-------------+                          +---------+ +-----------+
@@ -754,4 +757,4 @@ The diagram below shows how Jenkins, the seed job for Spinnaker and Spinnaker as
      |                                                           |                                                                                      |                                      |            |                            |
      |                                                           |                                                                                      |                                      |            |<----------------------------
      |                                                           |                                                                                      |                                      |            |
-```
+----
