@@ -29,8 +29,6 @@ teams in a company we believe that minor deployment pipeline tweaking should tak
 that's why we allow the usage of `cloud-pipelines.yml` descriptor, that allows to
 provide some customization.
 
-From the pipeline visualization perspective ...
-
 ==== How to use it?
 
 This repository can be treated as a template for your pipeline. We provide some opinionated
@@ -41,10 +39,10 @@ init a Git project there and modify it as you wish.
 [source,bash]
 ----
 $ # pass the branch (e.g. master) or a particular tag (e.g. v1.0.0.RELEASE)
-$ SC_PIPELINES_RELEASE=...
-$ curl -LOk https://github.com/cloudpipelines/scripts/archive/${SC_PIPELINES_RELEASE}.zip
-$ unzip ${SC_PIPELINES_RELEASE}.zip
-$ cd scripts-${SC_PIPELINES_RELEASE}
+$ CLOUD_PIPELINES_RELEASE=...
+$ curl -LOk https://github.com/cloudpipelines/scripts/archive/${CLOUD_PIPELINES_RELEASE}.zip
+$ unzip ${CLOUD_PIPELINES_RELEASE}.zip
+$ cd scripts-${CLOUD_PIPELINES_RELEASE}
 $ git init
 $ # modify the pipelines to suit your needs
 $ git add .
