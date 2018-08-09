@@ -1,5 +1,3 @@
-:stylesheet: mystyles.css
-
 = Cloud Pipelines scripts
 
 _Documentation Authors: Marcin Grzejszczak, Cora Iberkleid_
