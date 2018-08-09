@@ -1,0 +1,3 @@
+# Whether the cursor has moved or not.
+#
+# Returns 0 if the cursor has moved since _zsh_highlight was last called.

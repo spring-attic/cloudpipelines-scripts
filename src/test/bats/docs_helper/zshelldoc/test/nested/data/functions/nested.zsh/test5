@@ -1,0 +1,8 @@
+echo "Hello"
+test6
+function test5sub() {
+    echo Hello2
+}
+test5sub2() {
+    echo Hello2
+}

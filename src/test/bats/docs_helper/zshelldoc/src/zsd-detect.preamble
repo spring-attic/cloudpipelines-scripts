@@ -1,0 +1,61 @@
+#!/usr/bin/env zsh
+# This file is double-licensed under GPLv3 and MIT (see LICENSE file)
+
+local -A colors
+autoload colors
+colors 2>/dev/null
+
+setopt extendedglob typesetsilent
+
+usage() {
+    print "ZSD INTERNAL SCRIPT"
+    print "$fg[green]Usage:$reset_color zsd-detect [-h/--help] [-v/--verbose] [-q/--quiet] [-n/--noansi] [--cignore <pattern>] $fg_bold[magenta]{file}$reset_color"
+    print "The $fg_bold[magenta]file$reset_color will be processed to gather function comments and call trees."
+    print "Data extracted by \`zsd-transform' is needed. Supported are Bash and Zsh scripts."
+    print
+    print "$fg[green]Options:$reset_color"
+    print -- "$fg[magenta]-h/--help$reset_color      Usage information"
+    print -- "$fg[magenta]-v/--verbose$reset_color   More verbose operation-status output"
+    print -- "$fg[magenta]-q/--quiet$reset_color     No status messages"
+    print -- "$fg[magenta]-n/--noansi$reset_color    No colors in terminal output"
+    print -- "$fg[magenta]--cignore$reset_color      Specify which comment lines should be ignored"
+    print
+    print -- "Example --cignore options:"
+    print -- "--cignore '\\#*FUNCTION:*{{{*'                 - ignore comments like: $fg[green]# FUNCTION: usage {{{$reset_color"
+    print -- "--cignore '(\\#*FUNCTION:*{{{*|\\#*FUN:*{{{*)'   - also ignore comments like: $fg[green]# FUN: usage {{{$reset_color"
+}
+
+# Obtains node name (function with owning script), checks what functions does
+# it call, recursively entering to those functions and repeating the process.
+# After each call, it first creates directory of the passed node name, and
+# enters it. At exit, it moves to previous parent directory.
+process_node() {
+    local node="$1"
+    if [[ "$node" = "${(q)name}/zsd_script_body" ]]; then
+        command mkdir -p -- "Script_Body_"
+        cd "Script_Body_"
+    else
+        if [[ "${node#${(q)name}}" = "${node}" ]]; then
+            local dir="${node/\//_-_}"
+        else
+            local dir="${node##*/}"
+        fi
+        command mkdir -p -- "$dir"
+        cd -- "$dir"
+        PROCESSED+=( "$node" )
+    fi
+
+    local subfuns="${call_tree[$node]}"
+    local -a asubfuns
+    asubfuns=( "${(z@)subfuns}" )
+
+    local f
+    for f in "${asubfuns[@]}"; do
+        [[ -z "$f" ]] && continue
+        [[ -n "${PROCESSED[(r)$f]}" ]] && continue
+        process_node "$f"
+    done
+
+    cd ..
+    PROCESSED[-1]=()
+}

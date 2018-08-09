@@ -1,0 +1,168 @@
+# -*- Mode: sh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
+# vim:ft=zsh:sw=2:sts=2:et
+# This file is double-licensed under GPLv3 and MIT (see LICENSE file)
+
+### Options ###
+
+local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_CIGNORE OPT_FPATH OPT_SYNOPSIS \
+      OPT_BLOCKA OPT_BLOCKB OPT_SCOMM OPT_BASH
+local -A opthash
+zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi -cignore: \
+           f: -fpath: -synopsis: -blocka: -blockb: -scomm -bash || \
+              { print "Improper options given, see help (-h/--help)"; return 1; }
+
+(( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
+(( ${+opthash[-v]} + ${+opthash[--verbose]} ))  && OPT_VERBOSE="-v"
+(( ${+opthash[-q]} + ${+opthash[--quiet]} ))    && OPT_QUIET="-q"
+(( ${+opthash[-n]} + ${+opthash[--noansi]} ))   && OPT_NOANSI="-n"
+(( ${+opthash[--cignore]} ))                    && OPT_CIGNORE="${opthash[--cignore]}"
+(( ${+opthash[-f]} ))                           && OPT_FPATH="${opthash[-f]}"
+(( ${+opthash[--fpath]} ))                      && OPT_FPATH="${opthash[--fpath]}"
+(( ${+opthash[--synopsis]} ))                   && OPT_SYNOPSIS="${opthash[--synopsis]}"
+(( ${+opthash[--blocka]} ))                     && OPT_BLOCKA="${opthash[--blocka]}"
+(( ${+opthash[--blockb]} ))                     && OPT_BLOCKB="${opthash[--blockb]}"
+(( ${+opthash[--scomm]} ))                      && OPT_SCOMM="--scomm"
+(( ${+opthash[--bash]} ))                       && OPT_BASH="--bash"
+
+[[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
+
+[[ -z "$OPT_QUIET" ]] && echo "Zsh control binary is: \`$zsh_control_bin'"
+
+### Code ###
+
+# Script with path to it, if it works
+local ZERO="${(%):-%N}"
+
+if [[ "$ZERO" != */* ]]; then
+  if [[ -x /usr/local/bin/zsd ]]; then
+    ZERO="/usr/local/bin/zsd"
+  elif [[ -x /usr/bin/zsd ]]; then
+    ZERO="/usr/bin/zsd"
+  elif [[ -x /opt/bin/zsd ]]; then
+    ZERO="/opt/bin/zsd"
+  fi
+fi
+
+local TRANSFORM="${ZERO:h}/zsd-transform" DETECT="${ZERO:h}/zsd-detect" TOADOC="${ZERO:h}/zsd-to-adoc"
+
+if [[ -n "$OPT_HELP" ]]; then
+  usage
+  return 0
+fi
+
+if [[ "$#" -le 0 || "$*" = [[:space:]]## ]]; then
+  print "Argument needed, see help (-h/--help)"
+  return 1
+fi
+
+### FPATH ###
+
+if [[ -n "$OPT_FPATH" ]]; then
+  export FPATH="$OPT_FPATH:$FPATH"
+fi
+
+### First pass ###
+
+[[ -n "$OPT_VERBOSE" ]] && {
+  print
+  print "$fg[cyan]= zsd starts first-pass processing (function and script extraction)$reset_color"
+  local -a storage
+  storage=( zsdoc/data/functions/**/*(N) )
+  print "$fg[cyan]Number of functions already generated: ${#storage}"
+  storage=( zsdoc/data/functions/*(N) )
+  print "$fg[cyan]Number of scripts already processed: ${#storage}"
+}
+
+### TRANSFORM ###
+
+local fname
+integer ret=0 count=0
+
+for fname; do
+  (( count ++ ))
+
+  [[ -z "$fname" ]] && {
+    [[ -z "$OPT_QUIET" || -n "$OPT_VERBOSE" ]] && print "$fg[magenta]Skipping empty file name$reset_color"
+    continue
+  }
+
+  if [[ ! -f "$fname" ]]; then
+    [[ -z "$OPT_QUIET" || -n "$OPT_VERBOSE" ]] && print "$fg[magenta]File \`$fname' doesn't exist, skipping it (see help, with -h/--help option)$reset_color"
+    ret=1
+    continue
+  fi
+
+  if [[ ! -r "$fname" ]]; then
+    [[ -z "$OPT_QUIET" || -n "$OPT_VERBOSE" ]] && print "$fg[magenta]File \`$fname' is unreadable, skipping it (see help, with -h/--help option)$reset_color"
+    ret=1
+    continue
+  fi
+
+  /usr/bin/env "$zsh_control_bin" "$TRANSFORM" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI "$fname"
+done
+
+### Second pass ###
+
+[[ -n "$OPT_VERBOSE" ]] && {
+  print
+  print "$fg[cyan]= zsd starts second-pass processing (extraction of call-trees and comments)$reset_color"
+  local -a storage
+  storage=( zsdoc/data/functions/**/*(N) )
+  print "$fg[cyan]Total number of functions generated: ${#storage}"
+  storage=( zsdoc/data/functions/*(N) )
+  print "$fg[cyan]Total number of scripts processed: ${#storage}"
+}
+
+### Detect ###
+
+for fname; do
+  [[ -z "$fname" ]] && continue
+
+  if [[ ! -f "$fname" ]]; then
+    ret=1
+    continue
+  fi
+
+  if [[ ! -r "$fname" ]]; then
+    ret=1
+    continue
+  fi
+
+  local cignore="" ciarg=""
+  [[ -n "$OPT_CIGNORE" ]] && { cignore="--cignore" ciarg="$OPT_CIGNORE"; }
+
+  /usr/bin/env "$zsh_control_bin" "$DETECT" $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI $cignore $ciarg "$fname"
+done
+
+### ASCIIDOC ###
+
+[[ -n "$OPT_VERBOSE" ]] && {
+  print
+  print "$fg[cyan]= zsd starts third-pass processing (generation of asciidoc documents)$reset_color"
+}
+
+for fname; do
+  [[ -z "$fname" ]] && continue
+
+  if [[ ! -f "$fname" ]]; then
+    ret=1
+    continue
+  fi
+
+  if [[ ! -r "$fname" ]]; then
+    ret=1
+    continue
+  fi
+
+  local synopsis="" syarg=""
+  [[ -n "$OPT_SYNOPSIS" ]] && { synopsis="--synopsis" syarg="$OPT_SYNOPSIS"; }
+  local blocka="" baarg="" blockb="" bbarg=""
+  [[ -n "$OPT_BLOCKA" ]] && { blocka="--blocka"; baarg="$OPT_BLOCKA"; }
+  [[ -n "$OPT_BLOCKB" ]] && { blockb="--blockb"; bbarg="$OPT_BLOCKB"; }
+
+  /usr/bin/env "$zsh_control_bin" "$TOADOC" $OPT_BASH $OPT_VERBOSE $OPT_QUIET $OPT_NOANSI $synopsis $syarg \
+               $blocka $baarg $blockb $bbarg $OPT_SCOMM "$fname"
+done
+
+
+return $ret

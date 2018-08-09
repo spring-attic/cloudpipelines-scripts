@@ -1,0 +1,182 @@
+pipeline-gradle.sh(1)
+=====================
+:compat-mode!:
+
+NAME
+----
+pipeline-gradle.sh - a shell script
+
+SYNOPSIS
+--------
+
+Contains all Gradle related build functions
+
+
+FUNCTIONS
+---------
+
+ build
+ executeApiCompatibilityCheck
+ outputFolder
+ printTestResults
+ retrieveAppName
+ retrieveGroupId
+ retrieveStubRunnerIds
+ runE2eTests
+ runSmokeTests
+ testResultsAntPattern
+
+DETAILS
+-------
+
+Script Body
+~~~~~~~~~~~
+
+Has 24 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
+
+Uses feature(s): _export_
+
+_Exports (environment):_ BUILD_OPTIONS [big]*//* GRADLEW_BIN [big]*//* build [big]*//* executeApiCompatibilityCheck [big]*//* outputFolder [big]*//* retrieveAppName [big]*//* retrieveGroupId [big]*//* runE2eTests [big]*//* runSmokeTests [big]*//* testResultsAntPattern
+
+build
+~~~~~
+
+____
+ # Gradle implementation of build. Sets version, passes build options and distribution management properties.
+ # Uses [PIPELINE_VERSION], [PASSED_PIPELINE_VERSION] and [M2_SETTINGS...], [REPO_WITH_BINARIES...] related env vars
+____
+
+Has 7 line(s). Calls functions:
+
+ build
+ `-- printTestResults
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ GRADLEW_BIN [big]*//* pipeline-maven.sh -> BUILD_OPTIONS
+
+executeApiCompatibilityCheck
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+____
+ # Gradle implementation of executing API compatibility check
+____
+
+Has 6 line(s). Calls functions:
+
+ executeApiCompatibilityCheck
+ `-- printTestResults
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ GRADLEW_BIN [big]*//* pipeline-maven.sh -> BUILD_OPTIONS
+
+outputFolder
+~~~~~~~~~~~~
+
+____
+ # Gradle implementation of output folder
+____
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+printTestResults
+~~~~~~~~~~~~~~~~
+
+____
+ # Prints test results. Used by Concourse.
+____
+
+Has 1 line(s). Doesn't call other functions.
+
+Called by:
+
+ build
+ executeApiCompatibilityCheck
+ runE2eTests
+ runSmokeTests
+
+retrieveAppName
+~~~~~~~~~~~~~~~
+
+____
+ # Gradle implementation of app name retrieval
+____
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ GRADLEW_BIN
+
+retrieveGroupId
+~~~~~~~~~~~~~~~
+
+____
+ # Gradle implementation of group id retrieval
+____
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ GRADLEW_BIN
+
+retrieveStubRunnerIds
+~~~~~~~~~~~~~~~~~~~~~
+
+____
+ # Extracts the stub runner ids from the Gradle properties
+____
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ GRADLEW_BIN
+
+runE2eTests
+~~~~~~~~~~~
+
+____
+ # Given [APPLICATION_URL] will run the tests via [e2e] task
+____
+
+Has 9 line(s). Calls functions:
+
+ runE2eTests
+ `-- printTestResults
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ GRADLEW_BIN [big]*//* pipeline-maven.sh -> BUILD_OPTIONS
+
+runSmokeTests
+~~~~~~~~~~~~~
+
+____
+ # Given [APPLICATION_URL] and [STUBRUNNER_URL] will run the tests via [smoke] task
+____
+
+Has 10 line(s). Calls functions:
+
+ runSmokeTests
+ `-- printTestResults
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ GRADLEW_BIN [big]*//* pipeline-maven.sh -> BUILD_OPTIONS
+
+testResultsAntPattern
+~~~~~~~~~~~~~~~~~~~~~
+
+____
+ # Gradle implementation of test results ant pattern
+____
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+

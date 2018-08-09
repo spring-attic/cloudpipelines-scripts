@@ -1,0 +1,6 @@
+nested.zsh/dummy:  nested.zsh/test6
+nested.zsh/test2:  nested.zsh/test1
+nested.zsh/test3:  nested.zsh/test2
+nested.zsh/test4:  nested.zsh/test3
+nested.zsh/test5:  nested.zsh/test4
+nested.zsh/test6:  nested.zsh/test1  nested.zsh/test5

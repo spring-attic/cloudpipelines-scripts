@@ -1,0 +1,20 @@
+local entry="$1" default="$2"
+integer first="$3" second="$4"
+local region="${zle_highlight[(r)${entry}:*]}"
+
+if [[ -z "$region" ]]; then
+  region=$default
+else
+  region="${region#${entry}:}"
+  if [[ -z "$region" ]] || [[ "$region" == none ]]; then
+    return
+  fi
+fi
+
+integer start end
+if (( first < second )); then
+  start=$first end=$second
+else
+  start=$second end=$first
+fi
+region_highlight+=("$start $end $region")

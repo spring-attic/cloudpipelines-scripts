@@ -1,0 +1,757 @@
+== Introduction
+
+In the following section we will describe in more depth the rationale
+behind the presented opinionated pipeline. We will go through each deployment
+step and describe it in details.
+
+IMPORTANT: You don't need to use all pieces of Cloud Pipelines. You
+can (and should) gradually migrate your applications to use those pieces of
+Cloud Pipelines that you think best suit your needs.
+
+=== 5 second introduction
+
+Cloud Pipelines Scripts provides scripts, configuration and convention for automated
+deployment pipeline creation.
+
+We support JVM languages, PHP, NodeJS out of the box. Since Cloud Pipelines uses bash scripts
+you can use it with whatever automation server you have.
+
+=== 5 minute introduction
+
+Cloud Pipelines comes with bash scripts (available under `common/src/main/bash`)
+that represent the logic of all steps in our opinionated deployment pipeline.
+Since we believe in convention over configuration, for the supported framework and
+languages, we assume that the projects follow certain convention of task naming,
+profile setting etc. That way if you create a new application, it's enough for
+your app to follow those conventions and the deployment pipeline will work out of
+the box. Since there's no way that one pipeline can serve the purposes of all
+teams in a company we believe that minor deployment pipeline tweaking should take place,
+that's why we allow the usage of `cloud-pipelines.yml` descriptor, that allows to
+provide some customization.
+
+From the pipeline visualization perspective ...
+
+==== How to use it?
+
+This repository can be treated as a template for your pipeline. We provide some opinionated
+implementation that you can alter to suit your needs. The best approach to use it
+to build your production projects would be to download the Cloud Pipelines repository as ZIP, then
+init a Git project there and modify it as you wish.
+
+[source,bash]
+----
+$ # pass the branch (e.g. master) or a particular tag (e.g. v1.0.0.RELEASE)
+$ SC_PIPELINES_RELEASE=...
+$ curl -LOk https://github.com/cloudpipelines/scripts/archive/${SC_PIPELINES_RELEASE}.zip
+$ unzip ${SC_PIPELINES_RELEASE}.zip
+$ cd scripts-${SC_PIPELINES_RELEASE}
+$ git init
+$ # modify the pipelines to suit your needs
+$ git add .
+$ git commit -m "Initial commit"
+$ git remote add origin ${YOUR_REPOSITORY_URL}
+$ git push origin master
+----
+
+You can also clone the repository in case you would like to keep aligned
+with the changes in the upstream repository. In order not to have many merge
+conflicts it's encouraged to use the `custom` folder hooks to override functions.
+
+==== How does it work?
+
+image::{intro-root-docs}/how.png[title="How Cloud Pipelines works"]
+
+Cloud Pipelines contains logic both to generate a pipeline and the runtime
+to execute pipeline steps as presented in the picture.
+
+Once a pipeline is created (e.g. via Jenkins Job DSL or from Concourse templated
+pipeline), when the jobs are ran, they clone / download Cloud Pipelines
+code in order to run each step. Those steps are executing functions, that are
+defined in the `scripts` project of Cloud Pipelines.
+
+Cloud Pipelines performs steps to guess what kind of a project your
+repository is (e.g. JVM, PHP), what framework it uses (Maven, Gradle), and it
+can deploy your application to a cloud (e.g. CF, K8S). You can read about how
+it works by reading <<how-do-the-scripts-work>> section.
+
+All of that happens out of the box if your application follows conventions.
+You can read about them in <<project-opinions>> section.
+
+==== Supported languages and deployment
+
+In the following table we present which language is supported by which deployment
+mechanism.
+
+.Deployment & languages compatibility matrix
+|===
+|Language | CF | K8S | Ansible
+
+| JVM with Gradle
+| ✅
+| ✅
+| ✅
+
+| JVM with Maven
+| ✅
+| ✅
+| ✅
+
+| PHP with Composer
+| ✅
+| ✅
+| ❌
+
+| NodeJS with NPM
+| ✅
+| ✅
+| ❌
+
+| Dotnet core
+| ✅
+| ✅
+| ❌
+
+|===
+
+TIP: For K8S, a deployment unit is a docker image so any language and framework
+can be used.
+
+==== Centralized pipeline creation
+
+You can use Cloud Pipelines to generate pipelines
+for all projects in your system. You can scan all your
+repositories (e.g. call the Stash / Github API and retrieve the list of repos)
+and then...
+
+* For Jenkins, call the seed job and pass the `REPOS`
+parameter that would contain the list of repositories
+* For Concourse, you'd have to call `fly` and set
+pipeline for every single repo
+
+TIP: This is the suggested way of using Cloud Pipelines
+
+==== Pipeline per repository
+
+You can use Cloud Pipelines in such a way that
+each project contains its own pipeline definition in
+its code. Cloud Pipelines clones the code with
+the pipeline definitions (the bash scripts) so the
+only piece of logic that could be there in your application's
+repository would be how the pipeline should look like.
+
+* For Jenkins, you'd have to either set up the `Jenkinsfile`
+or the jobs using Jenkins Job DSL plugin in your repo.
+Then in Jenkins whenever you set up a new pipeline for a repo
+then you reference the pipeline definition in that repo.
+* For Concourse, each project contains its own pipeline steps
+and it's up to the project to set up the pipeline.
+
+=== The flow
+
+Let's take a look at the flow of the opinionated pipeline
+
+image::{intro-root-docs}/flow_concourse.png[title="Flow in Concourse"]
+
+image::{intro-root-docs}/flow.png[title="Flow in Jenkins"]
+
+We'll first describe the overall concept behind the flow and then
+we'll split it into pieces and describe every piece independently.
+
+=== Environments
+
+So we're on the same page let's define some common vocabulary. We discern 4 typical
+environments in terms of running the pipeline.
+
+- *build* environment is a machine where the building of the application takes place.
+It's a CI / CD tool worker.
+- *test* is an environment where you can deploy an application to test it. It doesn’t
+resemble production, we can't be sure of it's state (which application is deployed there
+and in which version). It can be used by multiple teams at the same time.
+- *stage* is an environment that does resemble production. Most likely applications
+are deployed there in versions that correspond to those deployed to production.
+Typically databases there are filled up with (obfuscated) production data. Most
+often this environment is a single, shared one between many teams. In other
+words in order to run some performance, user acceptance tests you have to block
+and wait until the environment is free.
+- *prod* is a production environment where we want our tested applications to be deployed
+for our customers.
+
+=== Tests
+
+*Unit tests* - tests that are executed on the application during the build phase.
+No integrations with databases / HTTP server stubs etc. take place. Generally speaking your application should
+ have plenty of these to have fast feedback if your features are working fine.
+
+*Integration tests* - tests that are executed on the built application during the build phase.
+Integrations with in memory databases / HTTP server stubs take place. According to the test
+pyramid, in most cases you should have not too many of these kind of tests.
+
+*Smoke tests* - tests that are executed on a deployed application. The concept of these tests
+is to check the crucial parts of your application are working properly. If you have 100 features
+in your application but you gain most money from e.g. 5 features then you could write smoke tests
+ for those 5 features. As you can see we're talking about smoke tests of an application, not of
+ the whole system. In our understanding inside the opinionated pipeline, these tests are
+ executed against an application that is surrounded with stubs.
+
+*End to end tests* - tests that are executed on a system composing of multiple applications.
+The idea of these tests is to check if the tested feature works when the whole system is set up.
+Due to the fact that it takes a lot of time, effort, resources to maintain such an environment
+and that often those tests are unreliable (due to many different moving pieces like network
+database etc.) you should have a handful of those tests. Only for critical parts of your business.
+Since only production is the key verifier of whether your feature works, some companies
+don't even want to do those and move directly to deployment to production. When your
+system contains KPI monitoring and alerting you can quickly react when your deployed application
+is not behaving properly.
+
+*Performance testing* - tests executed on an application or set of applications
+to check if your system can handle big load of input. In case of our opinionated pipeline
+ these tests could be executed either on test (against stubbed environment) or
+  stage (against the whole system)
+
+==== Testing against stubs
+
+Before we go into details of the flow let's take a look at the following example.
+
+image::{intro-root-docs}/monolith.png[title="Two monolithic applications deployed for end to end testing"]
+
+When having only a handful of applications, performing end to end testing is beneficial.
+From the operations perspective it's maintainable for a finite number of deployed instances.
+From the developers perspective it's nice to verify the whole flow in the system
+for a feature.
+
+In case of microservices the scale starts to be a problem:
+
+image::{intro-root-docs}/many_microservices.png[title="Many microservices deployed in different versions"]
+
+The questions arise:
+
+- Should I queue deployments of microservices on one testing environment or should I have an environment per microservice?
+  * If I queue deployments people will have to wait for hours to have their tests ran - that can be a problem
+- To remove that issue I can have an environment per microservice
+  * Who will pay the bills (imagine 100 microservices - each having each own environment).
+  * Who will support each of those environments?
+  * Should we spawn a new environment each time we execute a new pipeline and then wrap it up or should we have
+  them up and running for the whole day?
+- In which versions should I deploy the dependent microservices - development or production versions?
+  * If I have development versions then I can test my application against a feature that is not yet on production.
+  That can lead to exceptions on production
+  * If I test against production versions then I'll never be able to test against a feature under development
+  anytime before deployment to production.
+
+One of the possibilities of tackling these problems is to... not do end to end tests.
+
+image::{intro-root-docs}/stubbed_dependencies.png[title="Execute tests on a deployed microservice on stubbed dependencies"]
+
+If we stub out all the dependencies of our application then most of the problems presented above
+disappear. There is no need to start and setup infrastructure required by the dependant
+microservices. That way the testing setup looks like this:
+
+image::{intro-root-docs}/stubbed_dependencies.png[title="We're testing microservices in isolation"]
+
+Such an approach to testing and deployment gives the following benefits
+(thanks to the usage of http://cloud.spring.io/spring-cloud-contract/spring-cloud-contract.html[Spring Cloud Contract]):
+
+- No need to deploy dependant services
+- The stubs used for the tests ran on a deployed microservice are the same as those used during integration tests
+- Those stubs have been tested against the application that produces them (check http://cloud.spring.io/spring-cloud-contract/spring-cloud-contract.html[Spring Cloud Contract] for more information)
+- We don't have many slow tests running on a deployed application - thus the pipeline gets executed much faster
+- We don't have to queue deployments - we're testing in isolation thus pipelines don't interfere with each other
+- We don't have to spawn virtual machines each time for deployment purposes
+
+It brings however the following challenges:
+
+- No end to end tests before production - you don't have the full certainty that a feature is working
+- First time the applications will talk in a real way will be on production
+
+Like every solution it has its benefits and drawbacks. The opinionated pipeline
+ allows you to configure whether you want to follow this flow or not.
+
+==== General view
+
+The general view behind this deployment pipeline is to:
+
+- test the application in isolation
+- test the backwards compatibility of the application in order to roll it back if necessary
+- allow testing of the packaged app in a deployed environment
+- allow user acceptance tests / performance tests in a deployed environment
+- allow deployment to production
+
+Obviously the pipeline could have been split to more steps but it seems that all of the aforementioned
+ actions comprise nicely in our opinionated proposal.
+
+=== Pipeline descriptor
+
+Each application can contain a file called `cloud-pipelines.yml` with the following structure:
+
+[source,yaml]
+----
+language_type: jvm
+pipeline:
+	# used for multi module projects
+	main_module: foo/bar
+	# used for multi projects
+	project_names:
+		- monoRepoA
+		- monoRepoB
+	# should deploy to stage automatically and run e2e tests
+	auto_stage: true
+	# should deploy to production automatically
+	auto_prod: true
+	# should the api compatibility check be there
+	api_compatibility_step: true
+	# should the test rollback step be there
+	rollback_step: true
+	# should the stage step be there
+	stage_step: true
+	# should the test step (including rollback) be there
+	test_step: true
+lowercaseEnvironmentName1:
+	# used by spinnaker
+	deployment_strategy: HIGHlANDER
+	# list of services to be deployed
+	services:
+		- type: service1Type
+		  name: service1Name
+		  coordinates: value
+		- type: service2Type
+		  name: service2Name
+		  key: value
+lowercaseEnvironmentName2:
+	# used by spinnaker
+	deployment_strategy: HIGHlANDER
+	# list of services to be deployed
+	services:
+		- type: service3Type
+		  name: service3Name
+		  coordinates: value
+		- type: service4Type
+		  name: service4Name
+		  key: value
+----
+
+If you have a multi-module project, you should point to the folder, where your
+module that produces the fat jar lays. In the aforementioned example that module
+would be present under the `foo/bar` folder. If you have a single module project,
+then you don't have to create this section.
+
+For a given environment we declare a list of infrastructure services that we
+want to have deployed. Services have
+
+    - `type` (example: `eureka`, `mysql`, `rabbitmq`, `stubrunner`) - this value gets
+    then applied to the `deployService` Bash function
+        - *[KUBERNETES]* for `mysql` you can pass the database name via the `database`
+        property
+    - `name` - name of the service to get deployed
+    - `coordinates` - coordinate that allows you to fetch the binary of the service.
+      Examples: It can be a maven coordinate `groupid:artifactid:version`,
+       docker image `organization/nameOfImage`, etc.
+    - arbitrary key value pairs - you can customize the services as you wish
+
+==== Pipeline descriptor for Cloud Foundry
+
+When deploying to Cloud Foundry you can provide services
+of the following types:
+
+- `type: broker`
+* `broker` - name of the CF broker
+* `plan` - name of the plan
+* `params` - additional parameters that will be converted to JSON
+* `useExisting` - should use existing one or
+create a new one (defaults to `false`)
+- `type: app`
+* `coordinates` - maven coordinates of the stub runner jar
+* `manifestPath` - path to the manifest for the stub runner jar
+- `type: cups`
+* `params` - additional parameters that will be converted to JSON
+- `type: cupsSyslog`
+* `url` - URL to the syslog drain
+- `type: cupsRoute`
+* `url` - URL to the route service
+- `type: stubrunner`
+* `coordinates` - maven coordinates of the stub runner jar
+* `manifestPath` - path to the manifest for the stub runner jar
+
+[source,yaml]
+----
+# This file describes which services are required by this application
+# in order for the smoke tests on the TEST environment and end to end tests
+# on the STAGE environment to pass
+
+# lowercase name of the environment
+test:
+  # list of required services
+  services:
+    - name: config-server
+      type: broker
+      broker: p-config-server
+      plan: standard
+      params:
+        git:
+          uri: https://github.com/ciberkleid/app-config
+      useExisting: true
+    - name: cloud-bus
+      type: broker
+      broker: cloudamqp
+      plan: lemur
+      useExisting: true
+    - name: service-registry
+      type: broker
+      broker: p-service-registry
+      plan: standard
+      useExisting: true
+    - name: circuit-breaker-dashboard
+      type: broker
+      broker: p-circuit-breaker-dashboard
+      plan: standard
+      useExisting: true
+    - name: stubrunner
+      type: stubrunner
+      coordinates: io.pivotal:cloudfoundry-stub-runner-boot:0.0.1.M1
+      manifestPath: sc-pipelines/manifest-stubrunner.yml
+
+stage:
+  services:
+    - name: config-server
+      type: broker
+      broker: p-config-server
+      plan: standard
+      params:
+        git:
+          uri: https://github.com/ciberkleid/app-config
+    - name: cloud-bus
+      type: broker
+      broker: cloudamqp
+      plan: lemur
+    - name: service-registry
+      type: broker
+      broker: p-service-registry
+      plan: standard
+    - name: circuit-breaker-dashboard
+      type: broker
+      broker: p-circuit-breaker-dashboard
+      plan: standard
+----
+
+Another CF specific property is `artifact_type`. It can be either `binary` or `source`.
+Certain languages require a binary to get uploaded (e.g. JAVA) but with others
+you have to push the sources (e.g. PHP). The default value is `binary`.
+
+=== Project Setup
+
+Cloud Pipelines supports three main types of project setup
+- `Single Project`
+- `Multi Module`
+- `Multi Project` (aka mono repo)
+
+A `Single Project` is a project that contains a single module that gets
+built and package into a single, executable artifact.
+
+A `Multi Module` project is a project that contains a multiple modules.
+After building all modules, one gets packaged into a single, executable artifact.
+You have to point to that module in your pipeline descriptor.
+
+A `Multi Project` is a project that contains multiple projects. Each of those
+projects can be in turn a `Single Project` or a `Multi Module` project. Spring
+Cloud Pipelines will assume that if there's a `PROJECT_NAME` environment
+variable that corresponds to a folder with the same name in the root of the
+repository, that means that this is the project it should build. E.g for
+`PROJECT_NAME=foo`, if there's a folder `foo`, then Cloud Pipelines
+will treat the `foo` directory as the root of the `foo` project.
+
+[[how-do-the-scripts-work]]
+== How do the scripts work?
+
+In this section you'll find description of how the scripts and jobs correspond to each other.
+If you need to see a detailed documentation of the Bash scripts, you can go to the
+code repository and check it out at `common/src/main/bash/README.adoc`.
+
+[[build-and-deployment]]
+=== Build and deployment
+
+The high overview looks like this (created via https://textart.io/sequence[textart.io])
+
+```
++---------+                      +-----------+                      +-----------+ +-------+ +---------------+
+| script  |                      | language  |                      | framework | | paas  | | customization |
++---------+                      +-----------+                      +-----------+ +-------+ +---------------+
+     |                                 |                                  |           |             |
+     | What is your language?          |                                  |           |             |
+     |-------------------------------->|                                  |           |             |
+     |                                 |                                  |           |             |
+     |       I'm written in X language |                                  |           |             |
+     |<--------------------------------|                                  |           |             |
+     |                                 |                                  |           |             |
+     |                                 | What framework do you use?       |           |             |
+     |                                 |--------------------------------->|           |             |
+     |                                 |                                  |           |             |
+     |                                 |                I use Y framework |           |             |
+     |<-------------------------------------------------------------------|           |             |
+     |                                 |                                  |           |             |
+     | I know that you use Z PAAS?     |                                  |           |             |
+     |------------------------------------------------------------------------------->|             |
+     |                                 |                                  |           |             |
+     |                                 |  Here are all Z-related deployment functions |             |
+     |<-------------------------------------------------------------------------------|             |
+     |                                 |                                  |           |             |
+     | Anything custom to override in bash?                               |           |             |
+     |--------------------------------------------------------------------------------------------->|
+     |                                 |                                  |           |             |
+     |                                 |                                  |        Not this time... |
+     |<---------------------------------------------------------------------------------------------|
+     |                                 |                                  |           |             |
+     | Ok, run the script              |                                  |           |             |
+     |-------------------              |                                  |           |             |
+     |                  |              |                                  |           |             |
+     |<------------------              |                                  |           |             |
+     |                                 |                                  |           |             |
+```
+
+Before we run the script we need to answer the questions related to your repo
+
+* what is your language (e.g. `jvm`,`php`)?
+* what framework do you use (e.g. `maven`, `gradle`)?
+* what PAAS do you use (e.g. `cf`, `k8s`)?
+
+
+The following sequence diagram describes how the sourcing of bash scripts takes place (created via https://textart.io/sequence[textart.io])
+
+```
++---------+                                         +-----------+                                            +-------------+                   +-----------+            +-----------+                                   +-------+                            +---------+
+| script  |                                         | pipeline  |                                            | projectType |                   | language  |            | framework |                                   | paas  |                            | custom  |
++---------+                                         +-----------+                                            +-------------+                   +-----------+            +-----------+                                   +-------+                            +---------+
+     |                                                    |                                                         |                                |                        |                                             |                                     |
+     | [source pipeline.sh]                               |                                                         |                                |                        |                                             |                                     |
+     |--------------------------------------------------->|                                                         |                                |                        |                                             |                                     |
+     |                                                    | ------------------------------\                         |                                |                        |                                             |                                     |
+     |                                                    |-| loading functions, env vars |                         |                                |                        |                                             |                                     |
+     |                                                    | |-----------------------------|                         |                                |                        |                                             |                                     |
+     |         -----------------------------------------\ |                                                         |                                |                        |                                             |                                     |
+     |         | hopefully all functions get overridden |-|                                                         |                                |                        |                                             |                                     |
+     |         | otherwise nothing will work            | |                                                         |                                |                        |                                             |                                     |
+     |         |----------------------------------------| |                                                         |                                |                        |                                             |                                     |
+     |                                                    | Source the [projectType/pipeline-projectType.sh]        |                                |                        |                                             |                                     |
+     |                                                    |-------------------------------------------------------->|                                |                        |                                             |                                     |
+     |                                                    |                        -------------------------------\ |                                |                        |                                             |                                     |
+     |                                                    |                        | What do we have here...?     |-|                                |                        |                                             |                                     |
+     |                                                    |                        | A [mvnw] file,               | |                                |                        |                                             |                                     |
+     |                                                    |                        | it has to be a [jvm] project | |                                |                        |                                             |                                     |
+     |                                                    |                        |------------------------------| | Source [pipeline-jvm.sh]       |                        |                                             |                                     |
+     |                                                    |                                                         |------------------------------->|                        |                                             |                                     |
+     |                                                    |                                                         |                                |                        |                                             |                                     |
+     |                                                    |                                                         |                                | Maven or Gradle?       |                                             |                                     |
+     |                                                    |                                                         |                                |----------------------->|                                             |                                     |
+     |                                                    |                                                         |                                |                        | ----------------------------------------\   |                                     |
+     |                                                    |                                                         |                                |                        |-| There's a [mvnw] file?                |   |                                     |
+     |                                                    |                                                         |                                |                        | | So the [PROJECT_TYPE] must be [maven] |   |                                     |
+     |                                                    |                                                         |                                |                        | |---------------------------------------|   |                                     |
+     |                                                    |                                                         |                                |   It's a Maven project |                                             |                                     |
+     |                                                    |<------------------------------------------------------------------------------------------------------------------|                                             |                                     |
+     |                                                    |                                                         |                                |                        |                                             |                                     |
+     |                                                    | The [PAAS_TYPE] is [cf] so I'll source [pipeline-cf.sh] |                                |                        |                                             |                                     |
+     |                                                    |---------------------------------------------------------------------------------------------------------------------------------------------------------------->|                                     |
+     |                                                    |                                                         |                                |                        |                                             | -------------------------------\    |
+     |                                                    |                                                         |                                |                        |                                             |-| Loading all                  |    |
+     |                                                    |                                                         |                                |                        |                                             | | deployment-related functions |    |
+     |                   -------------------------------\ |                                                         |                                |                        |                                             | |------------------------------|    |
+     |                   | Ok, we know that it's Maven  |-|                                                         |                                |                        |                                             |                                     |
+     |                   | and should be deployed to CF | |                                                         |                                |                        |                                             |                                     |
+     |                   |------------------------------| |                                                         |                                |                        |                                             |                                     |
+     |                                                    | Try to source [custom/build_and_upload.sh]              |                                |                        |                                             |                                     |
+     |                                                    |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>|
+     |                                                    |                                                         |                                |                        |                                             |                                     | ----------------------------\
+     |                                                    |                                                         |                                |                        |                                             |                                     |-| No such file so           |
+     |                                                    |                                                         |                                |                        |                                             |                                     | | nothing custom to be done |
+     | ---------------------------------------------\     |                                                         |                                |                        |                                             |                                     | |---------------------------|
+     |-| All build related functions                |     |                                                         |                                |                        |                                             |                                     |
+     | | overridden by language / framework scripts |     |                                                         |                                |                        |                                             |                                     |
+     | -------------------------------\-------------|     |                                                         |                                |                        |                                             |                                     |
+     |-| All deploy related functions |                   |                                                         |                                |                        |                                             |                                     |
+     | | overridden by paas scripts   |                   |                                                         |                                |                        |                                             |                                     |
+     | |------------------------------|                   |                                                         |                                |                        |                                             |                                     |
+     | run [build] function                               |                                                         |                                |                        |                                             |                                     |
+     |---------------------                               |                                                         |                                |                        |                                             |                                     |
+     |                    |                               |                                                         |                                |                        |                                             |                                     |
+     |<--------------------                               |                                                         |                                |                        |                                             |                                     |
+     |                                                    |                                                         |                                |                        |                                             |                                     |
+```
+
+
+* A script e.g. `build_and_upload.sh` is called
+* It sources the `pipeline.sh` that contains all the essential function "interfaces" and
+environment variables
+* `pipeline.sh` needs information about the project type - it
+will source `projectType/pipeline-projectType.sh`
+* `projectType/pipeline-projectType.sh` contains logic to decide on what the language is
+** verify if a repo contains files corresponding to given languages (e.g. `mvnw`, `composer.json`)
+** verify if there's a concrete framework that we support (e.g. `maven` or `gradle`)
+* once we know what the project type is we can deal with PAAS. Depending on the environment
+variable `PAAS_TYPE` we can source proper PAAS functions. E.g. `pipeline-cf.sh` for Cloud Foundry.
+* we've got the functions loaded, now we can see if we can do some further customization
+** we will search for a file called `${sc-pipelines-root}/common/src/main/bash/custom/build_and_upload.sh`
+to override any functions you want
+* now we can run the `build` function from `build_and_upload.sh`
+
+[[project-crawler]]
+=== Project Crawler
+
+In Jenkins, you can generate the deployment pipelines by passing an environment variable with a comma
+separated list of repositories. This however doesn't scale. We would like to automatically fetch
+a list of all repositories from a given organization / team.
+
+That's why we're using the https://github.com/spring-cloud/project-crawler[Project Crawler]
+library, that is able to:
+
+* fetch all projects for a given organization
+* fetch contents of a file for a given repository
+
+The following diagram depicts this situation:
+
+```
++---------+                                                  +-------+                                                                           +-------------+ +---------+
+| Jenkins |                                                  | Seed  |                                                                           | SCPipelines | | Github  |
++---------+                                                  +-------+                                                                           +-------------+ +---------+
+     |                                                           |                                                                                      |             |
+     | Copy the seed job from the repo                           |                                                                                      |             |
+     |------------------------------------------------------------------------------------------------------------------------------------------------->|             |
+     |                                                           |                                                                                      |             |
+     | Run seed job to generate Spinnaker pipelines and jobs     |                                                                                      |             |
+     |---------------------------------------------------------->|                                                                                      |             |
+     |                                                           |                                                                                      |             |
+     |                                                           | Crawl org [foo] and fetch all repositories                                           |             |
+     |                                                           |--------------------------------------------------------------------------------------------------->|
+     |                                                           |                                                                                      |             |
+     |                                                           |                                                                   In org [foo] there [a,b,c] repos |
+     |                                                           |<---------------------------------------------------------------------------------------------------|
+     |                                                           |                                                                                      |             |
+     |                                                           | For each repo fetch pipeline descriptor                                              |             |
+     |                                                           |--------------------------------------------------------------------------------------------------->|
+     |                                                           |                                                                                      |             |
+     |                                                           |                      There you go. [a] wants no [test] env, [b] no [stage] env, [c] wants all envs |
+     |                                                           |<---------------------------------------------------------------------------------------------------|
+     |                                                           |                                                                                      |             |
+     |                                                           | Build pipelines. For [a] without [test], for [b] without [stage]. All for [c]        |             |
+     |                                                           |------------------------------------------------------------------------------        |             |
+     |                                                           |                                                                             |        |             |
+     |                                                           |<-----------------------------------------------------------------------------        |             |
+     |                             ----------------------------\ |                                                                                      |             |
+     |                             | By having descriptors,    |-|                                                                                      |             |
+     |                             | we can tune the pipelines | |                                                                                      |             |
+     |                             | as the app wanted it to.  | |                                                                                      |             |
+     |                             |---------------------------| | Build jobs / pipelines for [a,b,c] repos                                             |             |
+     |                                                           |-----------------------------------------                                             |             |
+     |                                                           |                                        |                                             |             |
+     |                                                           |<----------------------------------------                                             |             |
+     |                                                           |                                                                                      |             |
+```
+
+Thanks to the Project Crawler you can run the seed job and automatically all the new repositories
+will be picked and pipelines will be created for them. Project Crawler supports repositories
+stored at Github, Gitlab, Bitbucket. You can also register your own implementation. Please check the
+https://github.com/spring-cloud/project-crawler[Project Crawler] repository for more information.
+
+[[how-do-the-scripts-work-with-spinanker]]
+=== How do the scripts work with Spinnaker?
+
+With Spinnaker, the deployment pipeline lays inside of Spinnaker. No longer do we treat
+Jenkins or Concourse as a tool that does deployments too. In Jenkins we will only create
+the CI jobs (i.e. build, test) and prepare the JSON definitions of Spinnaker pipelines.
+
+The diagram below shows how Jenkins, the seed job for Spinnaker and Spinnaker as such cooperate.
+
+```
++---------+                                                  +-------+                                                                           +-------------+                          +---------+ +-----------+
+| Jenkins |                                                  | Seed  |                                                                           | SCPipelines |                          | Github  | | Spinnaker |
++---------+                                                  +-------+                                                                           +-------------+                          +---------+ +-----------+
+     |                                                           |                                                                                      |                                      |            |
+     | Copy the seed job from the repo                           |                                                                                      |                                      |            |
+     |------------------------------------------------------------------------------------------------------------------------------------------------->|                                      |            |
+     |                                                           |                                                                                      |                                      |            |
+     | Run seed job to generate Spinnaker pipelines and jobs     |                                                                                      |                                      |            |
+     |---------------------------------------------------------->|                                                                                      |                                      |            |
+     |                                                           |                                                                                      |                                      |            |
+     |                                                           | Crawl org [foo] and fetch all repositories                                           |                                      |            |
+     |                                                           |---------------------------------------------------------------------------------------------------------------------------->|            |
+     |                                                           |                                                                                      |                                      |            |
+     |                                                           |                                                                                      |     In org [foo] there [a,b,c] repos |            |
+     |                                                           |<----------------------------------------------------------------------------------------------------------------------------|            |
+     |                                                           |                                                                                      |                                      |            |
+     |                                                           | For each repo fetch pipeline descriptor                                              |                                      |            |
+     |                                                           |---------------------------------------------------------------------------------------------------------------------------->|            |
+     |                                                           |                                                                                      |                                      |            |
+     |                                                           |                                                            There you go. [a] wants no [test], [b] no [stage], [c] wants all |            |
+     |                                                           |<----------------------------------------------------------------------------------------------------------------------------|            |
+     |                                                           |                                                                                      |                                      |            |
+     |                                                           | Build pipelines. For [a] without [test], for [b] without [stage]. All for [c]        |                                      |            |
+     |                                                           |------------------------------------------------------------------------------        |                                      |            |
+     |                                                           |                                                                             |        |                                      |            |
+     |                                                           |<-----------------------------------------------------------------------------        |                                      |            |
+     |                             ----------------------------\ |                                                                                      |                                      |            |
+     |                             | By having descriptors,    |-|                                                                                      |                                      |            |
+     |                             | we can tune the pipelines | |                                                                                      |                                      |            |
+     |                             | as the app wanted it to.  | |                                                                                      |                                      |            |
+     |                             |---------------------------| | Build CI jobs for [a,b,c] repos                                                      |                                      |            |
+     |                                                           |--------------------------------                                                      |                                      |            |
+     |                                                           |                               |                                                      |                                      |            |
+     |                                                           |<-------------------------------                                                      |                                      |            |
+     |                                                           |                                                                                      |                                      |            |
+     |                                                           | Build Spinnaker pipelines JSON definitions                                           |                                      |            |
+     |                                                           |-------------------------------------------                                           |                                      |            |
+     |                                                           |                                          |                                           |                                      |            |
+     |                                                           |<------------------------------------------                                           |                                      |            |
+     |                                                           |                                                                                      |                                      |            |
+     |                                             Seed job done |                                                                                      |                                      |            |
+     |<----------------------------------------------------------|                                                                                      |                                      |            |
+     |                                                           |                                                                                      |                                      |            |
+     | Upload JSON pipelines to Spinnaker                        |                                                                                      |                                      |            |
+     |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->|
+     |                                                           |                                                                                      |                                      |            |
+     |                                                           |                                                                                      |                                      |            | The pipelines for [a,b,c] successfully created
+     |                                                           |                                                                                      |                                      |            |-----------------------------------------------
+     |                                                           |                                                                                      |                                      |            |                                              |
+     |                                                           |                                                                                      |                                      |            |<----------------------------------------------
+     |                                                           |                                                                                      |                                      |            |
+     |                                                           |                                                                                Waiting for [spinnaker-a-build] build to start & complete |
+     |<-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     |                                                           |                                                                                      |                                      |            |
+     | New commit! Running a build [spinnaker-a-build]           |                                                                                      |                                      |            |
+     |------------------------------------------------           |                                                                                      |                                      |            |
+     |                                               |           |                                                                                      |                                      |            |
+     |<-----------------------------------------------           |                                                                                      |                                      |            |
+     |                                                           |                                                                                      |                                      |            |
+     | Run the [build_and_upload.sh] script                      |                                                                                      |                                      |            |
+     |------------------------------------------------------------------------------------------------------------------------------------------------->|                                      |            |
+     |                                                           |                                                                                      | --------------------------------\    |            |
+     |                                                           |                                                                                      |-| Proceed with all the sourcing |    |            |
+     |                                                           |                                                                                      | | depending on language etc.    |    |            |
+     |                                                           |                                                                                      | |-------------------------------|    |            |
+     |                                                           |                                                                     Build completed! |                                      |            |
+     |<-------------------------------------------------------------------------------------------------------------------------------------------------|                                      |            |
+     |                                                           |                                                                                      |                                      |            |
+     | [spinnaker-a-build] started and completed                 |                                                                                      |                                      |            |
+     |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->|
+     |                                                           |                                                                                      |                                      |            | ------------------------------------\
+     |                                                           |                                                                                      |                                      |            |-| Running the rest of the pipeline! |
+     |                                                           |                                                                                      |                                      |            | |-----------------------------------|
+     |                                                           |                                                                                      |                                      |            |
+     |                                                           |                                                                                      |                                      |            | Pipeline for [a] in progress. Deploy [a] to test env
+     |                                                           |                                                                                      |                                      |            |-----------------------------------------------------
+     |                                                           |                                                                                      |                                      |            |                                                    |
+     |                                                           |                                                                                      |                                      |            |<----------------------------------------------------
+     |                                                           |                                                                                      |                                      |            |
+     |                                                           |                                                                                   Calling [spinnaker-a-test-on-test] to run test on test |
+     |<-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     |                                                           |                                                                                      |                                      |            |
+     | [spinnaker-a-test-on-test] started and completed          |                                                                                      |                                      |            |
+     |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->|
+     |                                                           |                                                                                      |                                      |            |
+     |                                                           |                                                                                      |                                      |            | ... we continue like this throughout the pipeline ...
+     |                                                           |                                                                                      |                                      |            |------------------------------------------------------
+     |                                                           |                                                                                      |                                      |            |                                                     |
+     |                                                           |                                                                                      |                                      |            |<-----------------------------------------------------
+     |                                                           |                                                                                      |                                      |            |
+     |                                                           |                                                                                      |                                      |            | ... and the pipeline is done
+     |                                                           |                                                                                      |                                      |            |-----------------------------
+     |                                                           |                                                                                      |                                      |            |                            |
+     |                                                           |                                                                                      |                                      |            |<----------------------------
+     |                                                           |                                                                                      |                                      |            |
+```

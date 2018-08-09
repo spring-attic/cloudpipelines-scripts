@@ -1,0 +1,68 @@
+/*
+Contains tasks and setup to use for dist generation and releasing
+*/
+buildscript {
+	repositories { jcenter() }
+
+	dependencies {
+		classpath 'org.ajoberstar:grgit:2.2.1'
+	}
+}
+
+import org.ajoberstar.grgit.Grgit
+
+apply plugin: 'distribution'
+
+ext {
+	git = Grgit.open()
+	revision = git.head().id
+}
+
+distributions {
+	main {
+		contents {
+			from(project.rootDir) {
+				include "**/*.*"
+				exclude "**/test/**", "**/build/**", "**/*.tar.gz", "**/*.tgz",
+					"**/.idea/**", "**/target/**", "**/*.iml", "**/out/**", "**/.gradle/**",
+					"**/docs/**", "**/docs-sources/**", "**/dist/**"
+				String gitignore = new File(project.rootDir, ".gitignore").text
+				exclude gitignore.readLines().findAll { it && !it.startsWith("#") }.collect { "**/${it}"}
+			}
+			from(project.buildDir) {
+				include "VERSION"
+			}
+		}
+	}
+}
+
+task dumpBuildInfo() {
+	doLast {
+		String versionContents = """\
+buildDate: ${new Date().format('dd-MM-yyyy HH:mm:ss')}
+revision : ${revision}
+version  : ${project.version}
+"""
+		def fileToStore = new File(project.buildDir, "VERSION")
+		project.buildDir.mkdirs()
+		fileToStore.createNewFile()
+		fileToStore.text = versionContents
+	}
+}
+
+distTar {
+	version = ""
+	compression = "GZIP"
+	extension = "tar.gz"
+	dependsOn("dumpBuildInfo")
+	destinationDir = new File(project.rootDir, "dist")
+	enabled = !project.hasProperty("skipDist")
+}
+
+distZip {
+	version = ""
+	destinationDir = new File(project.rootDir, "dist")
+	enabled = !project.hasProperty("skipDist")
+}
+
+// TODO: Add releasing

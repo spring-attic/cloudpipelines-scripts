@@ -1,0 +1,177 @@
+/*
+Contains tasks and setup to use to test bash scripts and build documentation
+out of them.
+
+Requires
+- the bash scripts to be available under `src/main/bash`
+- the bats tests to be available under `src/test/bats`
+- the docs helper (zshelldoc) to be available under `src/test/docs_helper`
+- the `tools` folder to contain a `build-helper.sh` file that knows how to
+download-shellcheck|download-bats|install-zsd|generate-zsd|initialize-submodules
+*/
+
+apply plugin: 'java'
+
+import java.util.concurrent.TimeUnit
+
+sourceSets {
+	main {
+		resources {
+			srcDirs 'src/main/bash', 'tools'
+		}
+	}
+	test {
+		resources {
+			srcDirs 'src/test/bats'
+			srcDirs 'src/test/docs_helper'
+		}
+	}
+}
+
+ext {
+	isCommandAvailable = { String cmd ->
+		try {
+			cmd.execute()
+			return true
+		} catch (IOException e) {
+		}
+		return false
+	}
+
+	isShellcheckPresent = {
+		isCommandAvailable("shellcheck -V")
+	}
+
+	shellcheckFile = isShellcheckPresent() ? new File("shellcheck") :
+		new File(project.rootProject.buildDir, "shellcheck-${shellcheckVersion}/shellcheck")
+
+	shellcheckVersionWithoutPrefix = "${shellcheckVersion}".startsWith("v") ? "${shellcheckVersion}".substring(1) : "${shellcheckVersion}"
+
+	assertShellcheckVersion = {
+		String output = ""
+		new ByteArrayOutputStream().withStream { os ->
+			String cmd = shellcheckFile.path + " -V"
+			project.logger.lifecycle("Executing cmd [${cmd}]")
+			Process p = cmd.execute()
+			p.consumeProcessOutput(os, os)
+			p.waitFor(5L, TimeUnit.SECONDS)
+			output = os.toString()
+		}
+		project.logger.lifecycle("Checking if shellcheck version is [${shellcheckVersionWithoutPrefix}]")
+		boolean versionIsOk = output.contains("version: ${shellcheckVersionWithoutPrefix}")
+		if (!versionIsOk) {
+			logger.info("Shellcheck is in wrong version. The output of checking version is \n\n[${output}]")
+		}
+	}
+
+	isShellcheckDownloaded = {
+		shellcheckFile.exists()
+	}
+
+}
+
+task installZshellDocIfMissing() {
+	doLast {
+		boolean zsdInstalled = isCommandAvailable("zsd -h")
+		boolean zsdDownloaded = new File(project.rootProject.buildDir, "zsd/bin/zsd").exists()
+		exec {
+			if (zsdInstalled || zsdDownloaded) {
+				commandLine "echo", "zsd installed - continuing"
+			} else {
+				logger.lifecycle("zsd is missing. Will try to install it.")
+				commandLine "bash", new File(project.rootDir, "tools/build-helper.sh").path, "install-zsd"
+			}
+		}
+	}
+}
+
+task zsd {
+	dependsOn installZshellDocIfMissing
+	doLast {
+		exec {
+			commandLine "bash", new File(project.rootDir, "tools/build-helper.sh").path, "generate-zsd"
+		}
+	}
+}
+
+task installShellcheckIfMissing {
+	doLast {
+		boolean shellcheckInstalled = isShellcheckPresent() || isShellcheckDownloaded()
+		exec {
+			if (shellcheckInstalled) {
+				assertShellcheckVersion()
+				commandLine "echo", "Shellcheck installed in version [${shellcheckVersionWithoutPrefix}] - continuing"
+			} else {
+				logger.lifecycle("Shellcheck is missing. Will install it.")
+				commandLine "bash", new File(project.rootDir, "tools/build-helper.sh").path, "download-shellcheck"
+			}
+		}
+	}
+}
+
+task shellcheck {
+	doLast {
+		boolean shellcheckInstalled = isShellcheckPresent()
+		String pathToShellcheck = "shellcheck"
+		if (!shellcheckInstalled) {
+			pathToShellcheck = new File(project.rootProject.buildDir, "shellcheck-${shellcheckVersion}/shellcheck").path
+		}
+		sourceSets*.resources.srcDirs*.each { srcDir ->
+			fileTree(relativePath(srcDir))
+				.include('**/*.sh')
+				.exclude("**/build/**")
+				.exclude("**/zsdoc/**")
+				.each { File script ->
+				exec {
+					commandLine pathToShellcheck, script
+				}
+			}
+		}
+	}
+}
+
+task initalizeSubModules() {
+	doLast {
+		exec {
+			commandLine "bash", new File(project.rootDir, "tools/build-helper.sh").path, "initialize-submodules"
+		}
+	}
+}
+
+task installBatsIfMissing() {
+	doLast {
+		boolean batsInstalled = isCommandAvailable("bats -v")
+		exec {
+			if (batsInstalled) {
+				commandLine "echo", "Bats installed - continuing"
+			} else {
+				logger.lifecycle("Bats is missing. Will try to install it.")
+				commandLine "bash", new File(project.rootDir, "tools/build-helper.sh").path, "download-bats"
+			}
+		}
+	}
+}
+
+task bats {
+	doLast {
+		boolean batsInstalled = isCommandAvailable("bats -v")
+		String pathToBats = "bats"
+		String outputTapFile = project.buildDir.path + "/bats.tap"
+		if (!batsInstalled) {
+			pathToBats = new File(project.rootProject.buildDir, "bats/bin/bats").path
+		}
+		exec {
+			standardOutput = new org.apache.tools.ant.util.TeeOutputStream(
+				new FileOutputStream(outputTapFile), System.out)
+			commandLine pathToBats, '-t', 'src/test/bats'
+		}
+	}
+}
+
+shellcheck.dependsOn("installShellcheckIfMissing")
+test.dependsOn("shellcheck")
+
+installBatsIfMissing.dependsOn("initalizeSubModules")
+bats.dependsOn("installBatsIfMissing")
+test.dependsOn("bats")
+test.dependsOn("zsd")

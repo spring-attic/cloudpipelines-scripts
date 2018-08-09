@@ -1,0 +1,7 @@
+# Apply highlighting based on entries in the zle_highlight array.
+# This function takes four arguments:
+# 1. The exact entry (no patterns) in the zle_highlight array:
+#    region, paste, isearch, or suffix
+# 2. The default highlighting that should be applied if the entry is unset
+# 3. and 4. Two integer values describing the beginning and end of the
+#    range. The order does not matter.

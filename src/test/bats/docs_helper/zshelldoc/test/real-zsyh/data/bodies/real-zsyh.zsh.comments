@@ -1,0 +1,117 @@
+# -------------------------------------------------------------------------------------------------
+# Copyright (c) 2010-2016 zsh-syntax-highlighting contributors
+# All rights reserved.
+#
+# The only licensing for this file follows.
+#
+# Redistribution and use in source and binary forms, with or without modification, are permitted
+# provided that the following conditions are met:
+#
+#  * Redistributions of source code must retain the above copyright notice, this list of conditions
+#    and the following disclaimer.
+#  * Redistributions in binary form must reproduce the above copyright notice, this list of
+#    conditions and the following disclaimer in the documentation and/or other materials provided
+#    with the distribution.
+#  * Neither the name of the zsh-syntax-highlighting contributors nor the names of its contributors
+#    may be used to endorse or promote products derived from this software without specific prior
+#    written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+# FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+# IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+# OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# -------------------------------------------------------------------------------------------------
+# -*- mode: zsh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
+# vim: ft=zsh sw=2 ts=2 et
+# -------------------------------------------------------------------------------------------------
+
+# First of all, ensure predictable parsing.
+# In zsh <= 5.2, `alias -L` emits aliases that begin with a plus sign ('alias -- +foo=42')
+# them without a '--' guard, so they don't round trip.
+#
+# Hence, we exclude them from unaliasing:
+
+# Set $0 to the expected value, regardless of functionargzero.
+  # $0 is reliable
+    # When running from a source tree without 'make install', $ZSH_HIGHLIGHT_REVISION
+    # would be set to '$Format:%H$' literally.  That's an invalid value, and obtaining
+    # the valid value (via `git rev-parse HEAD`, as Makefile does) might be costly, so:
+
+# -------------------------------------------------------------------------------------------------
+# Core highlighting update system
+# -------------------------------------------------------------------------------------------------
+
+# Use workaround for bug in ZSH?
+# zsh-users/zsh@48cadf4 http://www.zsh.org/mla/workers//2017/msg00034.html
+
+# Array declaring active highlighters names.
+
+# Update ZLE buffer syntax highlighting.
+#
+# Invokes each highlighter that needs updating.
+# This function is supposed to be called whenever the ZLE state changes.
+
+# Apply highlighting based on entries in the zle_highlight array.
+# This function takes four arguments:
+# 1. The exact entry (no patterns) in the zle_highlight array:
+#    region, paste, isearch, or suffix
+# 2. The default highlighting that should be applied if the entry is unset
+# 3. and 4. Two integer values describing the beginning and end of the
+#    range. The order does not matter.
+
+
+# -------------------------------------------------------------------------------------------------
+# API/utility functions for highlighters
+# -------------------------------------------------------------------------------------------------
+
+# Array used by highlighters to declare user overridable styles.
+
+# Whether the command line buffer has been modified or not.
+#
+# Returns 0 if the buffer has changed since _zsh_highlight was last called.
+
+# Whether the cursor has moved or not.
+#
+# Returns 0 if the cursor has moved since _zsh_highlight was last called.
+
+# Add a highlight defined by ZSH_HIGHLIGHT_STYLES.
+#
+# Should be used by all highlighters aside from 'pattern' (cf. ZSH_HIGHLIGHT_PATTERN).
+# Overwritten in tests/test-highlighting.zsh when testing.
+
+# -------------------------------------------------------------------------------------------------
+# Setup functions
+# -------------------------------------------------------------------------------------------------
+
+# Helper for _zsh_highlight_bind_widgets
+# $1 is name of widget to call
+
+# Rebind all ZLE widgets to make them invoke _zsh_highlights.
+
+# Load highlighters from directory.
+#
+# Arguments:
+#   1) Path to the highlighters directory.
+
+
+# -------------------------------------------------------------------------------------------------
+# Setup
+# -------------------------------------------------------------------------------------------------
+
+# Try binding widgets.
+
+# Resolve highlighters directory location.
+
+# Reset scratch variables when commandline is done.
+
+# Load zsh/parameter module if available
+
+# Initialize the array of active highlighters if needed.
+
+# Restore the aliases we unned
+
+# Set $?.

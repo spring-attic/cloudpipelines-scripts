@@ -1,0 +1,35 @@
+prod_complete.sh(1)
+===================
+:compat-mode!:
+
+NAME
+----
+prod_complete.sh - a shell script
+
+SYNOPSIS
+--------
+
+Executes a switch over of the traffic, fully to the new instance.
+Sources pipeline.sh
+
+
+FUNCTIONS
+---------
+
+
+DETAILS
+-------
+
+Script Body
+~~~~~~~~~~~
+
+Has 13 line(s). Calls functions:
+
+ Script-Body
+ |-- pipeline-cf.sh/completeSwitchOver
+ `-- pipeline.sh/completeSwitchOver
+
+Uses feature(s): _export_, _source_
+
+_Exports (environment):_ ENVIRONMENT
+

@@ -1,0 +1,3 @@
+# Whether the command line buffer has been modified or not.
+#
+# Returns 0 if the buffer has changed since _zsh_highlight was last called.

@@ -1,0 +1,25 @@
+setopt localoptions noksharrays
+[[ -d "$1" ]] || {
+  print -r -- >&2 "zsh-syntax-highlighting: highlighters directory ${(qq)1} not found."
+  return 1
+}
+local highlighter highlighter_dir
+for highlighter_dir ($1/*/); do
+  highlighter="${highlighter_dir:t}"
+  [[ -f "$highlighter_dir${highlighter}-highlighter.zsh" ]] &&
+    . "$highlighter_dir${highlighter}-highlighter.zsh"
+  if type "_zsh_highlight_highlighter_${highlighter}_paint" &> /dev/null &&
+     type "_zsh_highlight_highlighter_${highlighter}_predicate" &> /dev/null;
+  then
+  elif type "_zsh_highlight_${highlighter}_highlighter" &> /dev/null &&
+       type "_zsh_highlight_${highlighter}_highlighter_predicate" &> /dev/null;
+  then
+      if false; then
+          print -r -- >&2 "zsh-syntax-highlighting: warning: ${(qq)highlighter} highlighter uses deprecated entry point names; please ask its maintainer to update it: https://github.com/zsh-users/zsh-syntax-highlighting/issues/329"
+      fi
+      eval "_zsh_highlight_highlighter_${(q)highlighter}_paint() { _zsh_highlight_${(q)highlighter}_highlighter \"\$@\" }"
+      eval "_zsh_highlight_highlighter_${(q)highlighter}_predicate() { _zsh_highlight_${(q)highlighter}_highlighter_predicate \"\$@\" }"
+  else
+      print -r -- >&2 "zsh-syntax-highlighting: ${(qq)highlighter} highlighter should define both required functions '_zsh_highlight_highlighter_${highlighter}_paint' and '_zsh_highlight_highlighter_${highlighter}_predicate' in ${(qq):-"$highlighter_dir${highlighter}-highlighter.zsh"}."
+  fi
+done

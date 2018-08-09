@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+# This file is double-licensed under GPLv3 and MIT (see LICENSE file)
+
+local -A colors
+autoload colors
+colors 2>/dev/null
+
+setopt extendedglob typesetsilent
+
+usage() {
+    print "ZSD INTERNAL SCRIPT"
+    print "$fg[green]Usage:$reset_color zsd-transform [-h/--help] [-v/--verbose] [-q/--quiet] [-n/--noansi] $fg_bold[magenta]{file}$reset_color"
+    print "The $fg_bold[magenta]file$reset_color will be converted into extracted data: functions, script body."
+    print "Supported are Bash and Zsh script files."
+    print
+    print "$fg[green]Options:$reset_color"
+    print -- "$fg[magenta]-h/--help$reset_color      Usage information"
+    print -- "$fg[magenta]-v/--verbose$reset_color   More verbose operation-status output"
+    print -- "$fg[magenta]-q/--quiet$reset_color     No status messages"
+    print -- "$fg[magenta]-n/--noansi$reset_color    No colors in terminal output"
+}

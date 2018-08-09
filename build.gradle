@@ -1,0 +1,50 @@
+buildscript {
+	repositories { jcenter() }
+
+	dependencies {
+		classpath "com.github.jruby-gradle:jruby-gradle-plugin:${jrubyVersion}"
+		classpath "org.asciidoctor:asciidoctor-gradle-plugin:${asciidoctorGradleVersion}"
+	}
+}
+
+apply plugin: "java"
+apply plugin: 'maven-publish'
+apply from: 'gradle/bash.gradle'
+apply from: 'gradle/docs.gradle'
+apply from: 'gradle/dist.gradle'
+
+repositories {
+	jcenter()
+}
+
+version = project.findProperty("newVersion") ?: project.findProperty("defaultVersion")
+
+// Scripts docs generation
+
+repositories {
+	jcenter()
+	maven { url "http://rubygems-proxy.torquebox.org/releases/" }
+}
+
+apply plugin: "com.github.jruby-gradle.base"
+import com.github.jrubygradle.JRubyExec
+
+dependencies {
+	jrubyExec "rubygems:asciidoctor:1.5.7.1"
+}
+
+jruby {
+	defaultRepositories false
+}
+
+task generateScriptsReadme(type: JRubyExec) {
+	script "${projectDir}/tools/coalesce-readme.rb"
+	scriptArgs "-i ${projectDir}/src/main/bash/BASH_SCRIPTS.adoc", "-o ${projectDir}/src/main/bash/README.adoc"
+}
+
+generateDocs.dependsOn(generateScriptsReadme)
+// Scripts docs generation
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '4.9'
+}
