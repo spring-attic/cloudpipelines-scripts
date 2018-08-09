@@ -25,7 +25,6 @@ Script Body
 Has 19 line(s). Calls functions:
 
  Script-Body
- |-- pipeline-cf.sh/rollbackToPreviousVersion
  |-- pipeline.sh/removeProdTag
  `-- pipeline.sh/rollbackToPreviousVersion
 

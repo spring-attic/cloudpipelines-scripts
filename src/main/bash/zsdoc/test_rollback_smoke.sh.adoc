@@ -26,7 +26,6 @@ Script Body
 Has 21 line(s). Calls functions:
 
  Script-Body
- |-- pipeline-cf.sh/prepareForSmokeTests
  |-- pipeline.sh/prepareForSmokeTests
  `-- pipeline.sh/runSmokeTests
 
