@@ -3103,7 +3103,6 @@ Script Body
 Has 13 line(s). Calls functions:
 
  Script-Body
- |-- pipeline-cf.sh/testDeploy
  `-- pipeline.sh/testDeploy
 
 Uses feature(s): _export_, _source_
@@ -3138,7 +3137,6 @@ Script Body
 Has 14 line(s). Calls functions:
 
  Script-Body
- |-- pipeline-cf.sh/prepareForSmokeTests
  |-- pipeline.sh/prepareForSmokeTests
  `-- pipeline.sh/runSmokeTests
 
@@ -3175,7 +3173,6 @@ Script Body
 Has 19 line(s). Calls functions:
 
  Script-Body
- |-- pipeline-cf.sh/testRollbackDeploy
  `-- pipeline.sh/testRollbackDeploy
 
 Uses feature(s): _export_, _source_
@@ -3211,7 +3208,6 @@ Script Body
 Has 21 line(s). Calls functions:
 
  Script-Body
- |-- pipeline-cf.sh/prepareForSmokeTests
  |-- pipeline.sh/prepareForSmokeTests
  `-- pipeline.sh/runSmokeTests
 
@@ -3247,7 +3243,6 @@ Script Body
 Has 13 line(s). Calls functions:
 
  Script-Body
- |-- pipeline-cf.sh/stageDeploy
  `-- pipeline.sh/stageDeploy
 
 Uses feature(s): _export_, _source_
@@ -3282,7 +3277,6 @@ Script Body
 Has 14 line(s). Calls functions:
 
  Script-Body
- |-- pipeline-cf.sh/prepareForE2eTests
  |-- pipeline.sh/prepareForE2eTests
  `-- pipeline.sh/runE2eTests
 
@@ -3318,7 +3312,6 @@ Script Body
 Has 13 line(s). Calls functions:
 
  Script-Body
- |-- pipeline-cf.sh/prodDeploy
  `-- pipeline.sh/prodDeploy
 
 Uses feature(s): _export_, _source_
@@ -3354,7 +3347,6 @@ Script Body
 Has 13 line(s). Calls functions:
 
  Script-Body
- |-- pipeline-cf.sh/completeSwitchOver
  `-- pipeline.sh/completeSwitchOver
 
 Uses feature(s): _export_, _source_
@@ -3389,7 +3381,6 @@ Script Body
 Has 19 line(s). Calls functions:
 
  Script-Body
- |-- pipeline-cf.sh/rollbackToPreviousVersion
  |-- pipeline.sh/removeProdTag
  `-- pipeline.sh/rollbackToPreviousVersion
 

@@ -25,7 +25,6 @@ Script Body
 Has 14 line(s). Calls functions:
 
  Script-Body
- |-- pipeline-cf.sh/prepareForE2eTests
  |-- pipeline.sh/prepareForE2eTests
  `-- pipeline.sh/runE2eTests
 
