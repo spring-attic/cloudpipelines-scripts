@@ -61,7 +61,7 @@ asciidoctor {
               safe                : 'unsafe',
               parse               : 'false',
               'allow-uri-read'    : '',
-              'intro-root-docs'   : "${docsBaseUrl}/docs/img/intro"
+              'intro-root-docs'   : "${docsBaseUrl}/docs/images/intro"
 }
 
 task generateDocs() {
