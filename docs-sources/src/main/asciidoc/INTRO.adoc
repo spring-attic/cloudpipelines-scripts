@@ -18,7 +18,7 @@ you can use it with whatever automation server you have.
 
 === 5 minute introduction
 
-Cloud Pipelines comes with bash scripts (available under `common/src/main/bash`)
+Cloud Pipelines comes with bash scripts (available under `/src/main/bash`)
 that represent the logic of all steps in our opinionated deployment pipeline.
 Since we believe in convention over configuration, for the supported framework and
 languages, we assume that the projects follow certain convention of task naming,
@@ -463,7 +463,7 @@ will treat the `foo` directory as the root of the `foo` project.
 
 In this section you'll find description of how the scripts and jobs correspond to each other.
 If you need to see a detailed documentation of the Bash scripts, you can go to the
-code repository and check it out at `common/src/main/bash/README.adoc`.
+code repository and check it out at `/src/main/bash/README.adoc`.
 
 [[build-and-deployment]]
 === Build and deployment
@@ -587,7 +587,7 @@ will source `projectType/pipeline-projectType.sh`
 * once we know what the project type is we can deal with PAAS. Depending on the environment
 variable `PAAS_TYPE` we can source proper PAAS functions. E.g. `pipeline-cf.sh` for Cloud Foundry.
 * we've got the functions loaded, now we can see if we can do some further customization
-** we will search for a file called `${sc-pipelines-root}/common/src/main/bash/custom/build_and_upload.sh`
+** we will search for a file called `${sc-pipelines-root}//src/main/bash/custom/build_and_upload.sh`
 to override any functions you want
 * now we can run the `build` function from `build_and_upload.sh`
 

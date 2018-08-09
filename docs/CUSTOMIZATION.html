@@ -455,8 +455,8 @@ to extending the functionality is to use a separate script with customizations.<
 after we source all the deployment and build specific scripts (e.g. <code>pipeline-cf.sh</code>
 and <code>projectType/pipeline-jvm.sh</code> with <code>projectType/pipeline-gradle.sh</code>), we set
 a hook that allows to customize the behaviour. If the script that we&#8217;re executing
-is <code>common/src/main/bash/build_and_upload.sh</code> then we will search for a script in
-Cloud Pipelines repository under <code>common/src/main/bash/custom/build_and_upload.sh</code>
+is <code>/src/main/bash/build_and_upload.sh</code> then we will search for a script in
+Cloud Pipelines repository under <code>/src/main/bash/custom/build_and_upload.sh</code>
 and we will source that script just before executing any functions.</p>
 </div>
 <div class="paragraph">

@@ -506,7 +506,7 @@ you can use it with whatever automation server you have.</p>
 <div class="sect2">
 <h3 id="5-minute-introduction">1.2. 5 minute introduction</h3>
 <div class="paragraph">
-<p>Cloud Pipelines comes with bash scripts (available under <code>common/src/main/bash</code>)
+<p>Cloud Pipelines comes with bash scripts (available under <code>/src/main/bash</code>)
 that represent the logic of all steps in our opinionated deployment pipeline.
 Since we believe in convention over configuration, for the supported framework and
 languages, we assume that the projects follow certain convention of task naming,
@@ -1239,7 +1239,7 @@ will treat the <code>foo</code> directory as the root of the <code>foo</code> pr
 <div class="paragraph">
 <p>In this section you&#8217;ll find description of how the scripts and jobs correspond to each other.
 If you need to see a detailed documentation of the Bash scripts, you can go to the
-code repository and check it out at <code>common/src/main/bash/README.adoc</code>.</p>
+code repository and check it out at <code>/src/main/bash/README.adoc</code>.</p>
 </div>
 <div class="sect2">
 <h3 id="build-and-deployment">2.1. Build and deployment</h3>
@@ -1398,7 +1398,7 @@ variable <code>PAAS_TYPE</code> we can source proper PAAS functions. E.g. <code>
 <div class="ulist">
 <ul>
 <li>
-<p>we will search for a file called <code>${sc-pipelines-root}/common/src/main/bash/custom/build_and_upload.sh</code>
+<p>we will search for a file called <code>${sc-pipelines-root}//src/main/bash/custom/build_and_upload.sh</code>
 to override any functions you want</p>
 </li>
 </ul>
