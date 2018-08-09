@@ -22,7 +22,7 @@ apply plugin: 'org.asciidoctor.convert'
 
 ext {
   git = Grgit.open()
-  ghOrg = "${ghOrg}"
+  ghOrg = "cloudpipelines"
   repo = project.name
 	branch = git.branch.current().getName()
   docsBaseUrl = [
