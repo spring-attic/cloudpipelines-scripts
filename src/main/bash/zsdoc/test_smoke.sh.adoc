@@ -1,0 +1,35 @@
+test_smoke.sh(1)
+================
+:compat-mode!:
+
+NAME
+----
+test_smoke.sh - a shell script
+
+SYNOPSIS
+--------
+
+Runs smoke tests on the test environment. Sources pipeline.sh
+
+
+FUNCTIONS
+---------
+
+
+DETAILS
+-------
+
+Script Body
+~~~~~~~~~~~
+
+Has 14 line(s). Calls functions:
+
+ Script-Body
+ |-- pipeline-cf.sh/prepareForSmokeTests
+ |-- pipeline.sh/prepareForSmokeTests
+ `-- pipeline.sh/runSmokeTests
+
+Uses feature(s): _export_, _source_
+
+_Exports (environment):_ ENVIRONMENT
+

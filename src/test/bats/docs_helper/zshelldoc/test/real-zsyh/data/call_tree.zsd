@@ -1,0 +1,3 @@
+real-zsyh.zsh/_zsh_highlight: real-zsyh.zsh/_zsh_highlight_apply_zle_highlight
+real-zsyh.zsh/_zsh_highlight_call_widget: real-zsyh.zsh/_zsh_highlight
+real-zsyh.zsh/zsd_script_body: real-zsyh.zsh/is-at-least  real-zsyh.zsh/_zsh_highlight_bind_widgets  real-zsyh.zsh/_zsh_highlight_load_highlighters  real-zsyh.zsh/add-zsh-hook

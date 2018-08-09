@@ -1,0 +1,205 @@
+real-zsyh.zsh(1)
+================
+:compat-mode!:
+
+NAME
+----
+real-zsyh.zsh - a shell script
+
+SYNOPSIS
+--------
+Documentation automatically generated with `zshelldoc'
+
+FUNCTIONS
+---------
+
+ _zsh_highlight
+ _zsh_highlight_add_highlight
+ _zsh_highlight_apply_zle_highlight
+ _zsh_highlight_bind_widgets
+ _zsh_highlight_buffer_modified
+ _zsh_highlight_call_widget
+ _zsh_highlight_cursor_moved
+ _zsh_highlight_load_highlighters
+AUTOLOAD add-zsh-hook
+AUTOLOAD is-at-least
+PREEXEC-HOOK _zsh_highlight_preexec_hook
+
+DETAILS
+-------
+
+Script Body
+~~~~~~~~~~~
+
+Has 36 line(s). Calls functions:
+
+ Script-Body
+ |-- _zsh_highlight_bind_widgets
+ |-- _zsh_highlight_load_highlighters
+ |-- add-zsh-hook
+ `-- is-at-least
+
+Uses feature(s): _autoload_, _eval_, _unalias_, _zmodload_
+
+_zsh_highlight
+~~~~~~~~~~~~~~
+
+____
+ # Update ZLE buffer syntax highlighting.
+ #
+ # Invokes each highlighter that needs updating.
+ # This function is supposed to be called whenever the ZLE state changes.
+____
+
+Has 65 line(s). Calls functions:
+
+ _zsh_highlight
+ `-- _zsh_highlight_apply_zle_highlight
+
+Uses feature(s): _eval_, _type_
+
+Called by:
+
+ _zsh_highlight_call_widget
+
+_zsh_highlight_add_highlight
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+____
+ # Add a highlight defined by ZSH_HIGHLIGHT_STYLES.
+ #
+ # Should be used by all highlighters aside from 'pattern' (cf. ZSH_HIGHLIGHT_PATTERN).
+ # Overwritten in tests/test-highlighting.zsh when testing.
+____
+
+Has 11 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_zsh_highlight_apply_zle_highlight
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+____
+ # Apply highlighting based on entries in the zle_highlight array.
+ # This function takes four arguments:
+ # 1. The exact entry (no patterns) in the zle_highlight array:
+ #    region, paste, isearch, or suffix
+ # 2. The default highlighting that should be applied if the entry is unset
+ # 3. and 4. Two integer values describing the beginning and end of the
+ #    range. The order does not matter.
+____
+
+Has 20 line(s). Doesn't call other functions.
+
+Called by:
+
+ _zsh_highlight
+
+_zsh_highlight_bind_widgets
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+____
+ # Rebind all ZLE widgets to make them invoke _zsh_highlights.
+____
+
+Has 34 line(s). Doesn't call other functions.
+
+Uses feature(s): _eval_, _zle_, _zmodload_
+
+Called by:
+
+ Script-Body
+
+_zsh_highlight_buffer_modified
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+____
+ # Whether the command line buffer has been modified or not.
+ #
+ # Returns 0 if the buffer has changed since _zsh_highlight was last called.
+____
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_zsh_highlight_call_widget
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+____
+ # Helper for _zsh_highlight_bind_widgets
+ # $1 is name of widget to call
+____
+
+Has 2 line(s). Calls functions:
+
+ _zsh_highlight_call_widget
+ `-- _zsh_highlight
+     `-- _zsh_highlight_apply_zle_highlight
+
+Uses feature(s): _zle_
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_zsh_highlight_cursor_moved
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+____
+ # Whether the cursor has moved or not.
+ #
+ # Returns 0 if the cursor has moved since _zsh_highlight was last called.
+____
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_zsh_highlight_load_highlighters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+____
+ # Load highlighters from directory.
+ #
+ # Arguments:
+ #   1) Path to the highlighters directory.
+____
+
+Has 25 line(s). Doesn't call other functions.
+
+Uses feature(s): _eval_, _type_
+
+Called by:
+
+ Script-Body
+
+_zsh_highlight_preexec_hook
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+____
+ # Reset scratch variables when commandline is done.
+____
+
+Has 2 line(s). *Is a preexec hook*. Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+add-zsh-hook
+~~~~~~~~~~~~
+
+Has 93 line(s). Doesn't call other functions.
+
+Uses feature(s): _autoload_, _getopts_
+
+Called by:
+
+ Script-Body
+
+is-at-least
+~~~~~~~~~~~
+
+Has 56 line(s). Doesn't call other functions.
+
+Called by:
+
+ Script-Body
+

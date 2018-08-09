@@ -1,0 +1,96 @@
+== Building the project
+
+=== Project setup
+
+In the `src/main/bash` folder you can find all the Bash scripts containing the pipeline logic. These
+scripts are reused by the CI tools.
+
+In the `dist` folder you can find the packaged sources of the project. Since the package
+contains no tests or documentation it's extremely small and can be used in the pipelines.
+
+In the `docs` folder you have the whole generated documentation of the project.
+
+In the `docs-source` folder you have the sources required to generate the documentation.
+
+=== Prerequisites
+
+As prerequisites you need to have http://www.shellcheck.net/[shellcheck],
+https://github.com/sstephenson/bats[bats], https://stedolan.github.io/jq/[jq]
+ and https://rubyinstaller.org/downloads/[ruby] installed. If you're on a Linux
+ machine then `bats` and `shellcheck` will be installed for you.
+
+To install the required software on Linux just type the following commands
+
+[source,bash]
+----
+$ sudo apt-get install -y ruby jq
+----
+
+If you're on a Mac then just execute these commands to install the missing software
+
+[source,bash]
+----
+$ brew install jq
+$ brew install ruby
+$ brew install bats
+$ brew install shellcheck
+----
+
+=== Bats submodules
+
+To make `bats` work properly we needed to attach Git submodules. To have them
+initialized either clone with appropriate command
+
+[source,bash]
+----
+$ git clone --recursive https://github.com/cloudpipelines/scripts.git
+----
+
+or if you have already cloned the project and are just pulling changes
+
+[source,bash]
+----
+$ git submodule init
+$ git submodule update
+----
+
+If you forget about this step, then Gradle will execute these steps for you.
+
+=== Build and test
+
+Once you have installed all the prerequisites you can execute
+
+[source,bash]
+----
+$ ./gradlew clean build
+----
+
+to build and test the project.
+
+=== Generate docs
+
+To generate docs just run
+
+[source,bash]
+----
+$ ./gradlew generateDocs
+----
+
+=== Distributions
+
+Cloud Pipelines has a lot of tests, including Git repositories. Those
+and the documentation weigh a lot. That's why under the `dist` folder we
+publish `zip` and `tar.gz` distributions of sources without tests and documentation.
+Whenever we release a distribution we attach a `VERSION` file to it that contains
+build and SCM information (e.g. build time, revision). To skip the distribution generation
+just pass the `skipDist` property
+
+[source,bash]
+----
+$ ./gradlew build -PskipDist
+----
+
+
+=== Making a release
+
+// TODO

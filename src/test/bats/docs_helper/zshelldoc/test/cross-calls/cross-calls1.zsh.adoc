@@ -1,0 +1,48 @@
+cross-calls1.zsh(1)
+===================
+:compat-mode!:
+
+NAME
+----
+cross-calls1.zsh - a shell script
+
+SYNOPSIS
+--------
+Documentation automatically generated with `zshelldoc'
+
+FUNCTIONS
+---------
+
+ myfun1
+ myfun2
+
+DETAILS
+-------
+
+Script Body
+~~~~~~~~~~~
+
+Has 4 line(s). Calls functions:
+
+ Script-Body
+ |-- cross-calls2.zsh/myfun3
+ `-- myfun1
+
+myfun1
+~~~~~~
+
+Has 1 line(s). Doesn't call other functions.
+
+Called by:
+
+ Script-Body
+
+myfun2
+~~~~~~
+
+Has 1 line(s). Doesn't call other functions.
+
+Called by:
+
+ cross-calls2.zsh/Script-Body
+

@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+# This file is double-licensed under GPLv3 and MIT (see LICENSE file)
+
+local -A colors
+autoload colors
+colors 2>/dev/null
+
+setopt extendedglob typesetsilent

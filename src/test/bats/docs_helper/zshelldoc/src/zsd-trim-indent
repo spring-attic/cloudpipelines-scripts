@@ -1,0 +1,35 @@
+# vim:ft=zsh
+# This file is double-licensed under GPLv3 and MIT (see LICENSE file)
+
+local blob="$1"
+local -a lines new_lines match mbegin mend
+lines=( "${(@f)blob}" )
+
+# Measure every line
+local line spaces
+integer indent=-1
+for line in "${lines[@]}"; do
+    if [[ "$line" = (#b)([[:space:]]#)* && "$line" != [[:space:]]# ]]; then
+        spaces="${match[1]}"
+        if [[ "${#spaces}" -lt "$indent" || "$indent" = "-1" ]]; then
+            indent="${#spaces}"
+        fi
+    elif [[ "$line" = [[:space:]]# ]]; then
+        :
+    else
+        print -u 2 "Bug in Zsh, pattern didn't match"
+    fi
+done
+
+integer top_spaces=1
+for line in "${lines[@]}"; do
+    if [[ "$line" != [[:space:]]# ]]; then
+        top_spaces=0
+    fi
+    if (( top_spaces == 0 )); then
+        line[1,indent]=""
+        new_lines+=( "$line" )
+    fi
+done
+
+REPLY="${(F)new_lines}"

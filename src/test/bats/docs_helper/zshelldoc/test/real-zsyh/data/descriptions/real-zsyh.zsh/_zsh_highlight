@@ -1,0 +1,4 @@
+# Update ZLE buffer syntax highlighting.
+#
+# Invokes each highlighter that needs updating.
+# This function is supposed to be called whenever the ZLE state changes.

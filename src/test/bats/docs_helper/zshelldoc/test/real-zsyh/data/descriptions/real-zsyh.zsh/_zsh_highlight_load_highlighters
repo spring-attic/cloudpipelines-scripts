@@ -1,0 +1,4 @@
+# Load highlighters from directory.
+#
+# Arguments:
+#   1) Path to the highlighters directory.

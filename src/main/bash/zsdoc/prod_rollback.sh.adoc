@@ -1,0 +1,35 @@
+prod_rollback.sh(1)
+===================
+:compat-mode!:
+
+NAME
+----
+prod_rollback.sh - a shell script
+
+SYNOPSIS
+--------
+
+Rolls back app from production. Sources pipeline.sh
+
+
+FUNCTIONS
+---------
+
+
+DETAILS
+-------
+
+Script Body
+~~~~~~~~~~~
+
+Has 19 line(s). Calls functions:
+
+ Script-Body
+ |-- pipeline-cf.sh/rollbackToPreviousVersion
+ |-- pipeline.sh/removeProdTag
+ `-- pipeline.sh/rollbackToPreviousVersion
+
+Uses feature(s): _export_, _source_
+
+_Exports (environment):_ ENVIRONMENT
+

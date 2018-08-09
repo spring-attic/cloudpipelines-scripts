@@ -1,0 +1,34 @@
+setopt localoptions noksharrays
+typeset -F SECONDS
+local prefix=orig-s$SECONDS-r$RANDOM
+zmodload zsh/zleparameter 2>/dev/null || {
+  print -r -- >&2 'zsh-syntax-highlighting: failed loading zsh/zleparameter.'
+  return 1
+}
+local -U widgets_to_bind
+widgets_to_bind=(${${(k)widgets}:#(.*|run-help|which-command|beep|set-local-history|yank)})
+widgets_to_bind+=(zle-line-finish)
+widgets_to_bind+=(zle-isearch-update)
+
+local cur_widget
+for cur_widget in $widgets_to_bind; do
+  case $widgets[$cur_widget] in
+    user:_zsh_highlight_widget_*);;
+    user:*) zle -N $prefix-$cur_widget ${widgets[$cur_widget]#*:}
+            eval "_zsh_highlight_widget_${(q)prefix}-${(q)cur_widget}() { _zsh_highlight_call_widget ${(q)prefix}-${(q)cur_widget} -- \"\$@\" }"
+            zle -N $cur_widget _zsh_highlight_widget_$prefix-$cur_widget;;
+    completion:*) zle -C $prefix-$cur_widget ${${(s.:.)widgets[$cur_widget]}[2,3]} 
+                  eval "_zsh_highlight_widget_${(q)prefix}-${(q)cur_widget}() { _zsh_highlight_call_widget ${(q)prefix}-${(q)cur_widget} -- \"\$@\" }"
+                  zle -N $cur_widget _zsh_highlight_widget_$prefix-$cur_widget;;
+    builtin) eval "_zsh_highlight_widget_${(q)prefix}-${(q)cur_widget}() { _zsh_highlight_call_widget .${(q)cur_widget} -- \"\$@\" }"
+             zle -N $cur_widget _zsh_highlight_widget_$prefix-$cur_widget;;
+    *) 
+       if [[ $cur_widget == zle-* ]] && [[ -z $widgets[$cur_widget] ]]; then
+         _zsh_highlight_widget_${cur_widget}() { :; _zsh_highlight }
+         zle -N $cur_widget _zsh_highlight_widget_$cur_widget
+       else
+         print -r -- >&2 "zsh-syntax-highlighting: unhandled ZLE widget ${(qq)cur_widget}"
+         print -r -- >&2 "zsh-syntax-highlighting: (This is sometimes caused by doing \`bindkey <keys> ${(q-)cur_widget}\` without creating the ${(qq)cur_widget} widget with \`zle -N\` or \`zle -C\`.)"
+       fi
+  esac
+done

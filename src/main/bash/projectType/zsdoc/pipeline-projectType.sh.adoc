@@ -1,0 +1,55 @@
+pipeline-projectType.sh(1)
+==========================
+:compat-mode!:
+
+NAME
+----
+pipeline-projectType.sh - a shell script
+
+SYNOPSIS
+--------
+
+Script that knows how to define the type of the project.
+Scans for presence of files or the language type configuration.
+
+
+FUNCTIONS
+---------
+
+ getLanguageType
+ guessLanguageType
+
+DETAILS
+-------
+
+Script Body
+~~~~~~~~~~~
+
+Has 24 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
+
+Uses feature(s): _source_
+
+getLanguageType
+~~~~~~~~~~~~~~~
+
+____
+ # Gets the language type from the parsed descriptor. Returns empty if it's not present
+ # or if [language_type] node is not present in the descriptor.
+ # Uses [PARSER_YAML] env var
+____
+
+Has 10 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+guessLanguageType
+~~~~~~~~~~~~~~~~~
+
+____
+ # Tries to guess the language type basing on the contents of the repository
+____
+
+Has 11 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+

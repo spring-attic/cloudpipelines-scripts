@@ -1,0 +1,34 @@
+prod_deploy.sh(1)
+=================
+:compat-mode!:
+
+NAME
+----
+prod_deploy.sh - a shell script
+
+SYNOPSIS
+--------
+
+Deploys app to production. Sources pipeline.sh
+
+
+FUNCTIONS
+---------
+
+
+DETAILS
+-------
+
+Script Body
+~~~~~~~~~~~
+
+Has 13 line(s). Calls functions:
+
+ Script-Body
+ |-- pipeline-cf.sh/prodDeploy
+ `-- pipeline.sh/prodDeploy
+
+Uses feature(s): _export_, _source_
+
+_Exports (environment):_ ENVIRONMENT
+

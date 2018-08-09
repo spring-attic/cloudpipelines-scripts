@@ -1,0 +1,33 @@
+build_and_upload.sh(1)
+======================
+:compat-mode!:
+
+NAME
+----
+build_and_upload.sh - a shell script
+
+SYNOPSIS
+--------
+
+Executes a build of the project. Sources pipeline.sh
+
+
+FUNCTIONS
+---------
+
+
+DETAILS
+-------
+
+Script Body
+~~~~~~~~~~~
+
+Has 13 line(s). Calls functions:
+
+ Script-Body
+ `-- pipeline.sh/build
+
+Uses feature(s): _export_, _source_
+
+_Exports (environment):_ ENVIRONMENT
+

@@ -1,0 +1,302 @@
+# vim:ft=zsh:et:sw=4
+# This file is double-licensed under GPLv3 and MIT (see LICENSE file)
+
+### Options ###
+
+local OPT_HELP OPT_VERBOSE OPT_QUIET OPT_NOANSI OPT_SYNOPSIS OPT_BLOCKA OPT_BLOCKB OPT_SCOMM OPT_BASH
+local -A opthash
+zparseopts -E -D -A opthash h -help v -verbose q -quiet n -noansi \
+           -synopsis: -blocka: -blockb: -scomm -bash || \
+                { echo "Improper options given, see help (-h/--help)"; return 1; }
+
+(( ${+opthash[-h]} + ${+opthash[--help]} ))     && OPT_HELP="-h"
+(( ${+opthash[-v]} + ${+opthash[--verbose]} ))  && OPT_VERBOSE="-v"
+(( ${+opthash[-q]} + ${+opthash[--quiet]} ))    && OPT_QUIET="-q"
+(( ${+opthash[-n]} + ${+opthash[--noansi]} ))   && OPT_NOANSI="-n"
+(( ${+opthash[--synopsis]} ))                   && OPT_SYNOPSIS="${opthash[--synopsis]}"
+(( ${+opthash[--blocka]} ))                     && OPT_BLOCKA="${opthash[--blocka]}"
+(( ${+opthash[--blockb]} ))                     && OPT_BLOCKB="${opthash[--blockb]}"
+(( ${+opthash[--scomm]} ))                      && OPT_SCOMM="--scomm"
+(( ${+opthash[--bash]} ))                       && OPT_BASH="--bash"
+
+[[ -n "$OPT_NOANSI" ]] && { colors=(); fg=(); bg=(); fg_bold=(); bg_bold=(); reset_color=""; }
+
+if [[ -n "$OPT_HELP" ]]; then
+    usage
+    return 0
+fi
+
+if [[ "$#" -le 0 || "$*" = [[:space:]]## ]]; then
+    print "zsd-to-adoc: Argument needed, see help (-h/--help)"
+    return 1
+fi
+
+if [[ ! -f "$1" ]]; then
+    [[ -z "$OPT_QUIET" || -n "$OPT_VERBOSE" ]] && print "$fg[magenta]zsd-to-adoc: File \`$1' doesn't exist, skipping it (see help, with -h/--help option)$reset_color"
+    return 1
+fi
+
+if [[ ! -r "$1" ]]; then
+    [[ -z "$OPT_QUIET" || -n "$OPT_VERBOSE" ]] && print "$fg[magenta]zsd-to-adoc: File \`$1' is unreadable, skipping it (see help, with -h/--help option)$reset_color"
+    return 1
+fi
+
+[[ -z "$OPT_QUIET" ]] && print "$fg[cyan]== zsd-to-adoc starting for file \`$fg_bold[yellow]$1$fg_no_bold[cyan]' (3rd pass)$reset_color"
+
+### Code ###
+
+line_count()
+{
+    local -a list
+    list=( "${(@f)1}" )
+    local count=${#list}
+    [[ "$1" = *$'\n' ]] && (( -- count ))
+    print -r -- "$count"
+}
+
+local name="${1:t}" empty tmp script_body body_comments body nl=$'\n'
+local ofname="${name}.adoc" fun
+integer len
+local -a arr
+
+command rm -f -- "zsdoc/$ofname"
+
+{
+    # Load body of the script
+    script_body=$(<zsdoc/data/bodies/"$name")
+
+    # HEADER
+    if [[ "${name[1]}" = "." ]]; then
+        print " $name(1)"
+        len="${#name}+4"
+        print "${(r:len::=:)empty}"
+    else
+        print "$name(1)"
+        len="${#name}+3"
+        print "${(r:len::=:)empty}"
+    fi
+    print ":compat-mode!:"
+    print
+
+    # NAME
+    print "NAME"
+    if [[ "${name[1]}" = "." ]]; then
+        print -- "${(r:5::-:)empty}"
+        print -- " $name - a shell script"
+    else
+        print -- "${(r:4::-:)empty}"
+        print -- "$name - a shell script"
+    fi
+    print
+
+    # SYNOPSIS
+    print "SYNOPSIS"
+    print -- "${(r:8::-:)empty}"
+    if [[ -n "$OPT_SYNOPSIS" ]]; then
+        print -- "$OPT_SYNOPSIS"
+    else
+        # Load body of the script
+        body_comments=$(<zsdoc/data/bodies/"$name".comments)
+
+        body="${(S)body_comments/(#bi)*synopsis*${OPT_BLOCKA:-\{\{\{}(*)${OPT_BLOCKB:-\}\}\}}*/${match[1]}}";
+        if [[ "$body_comments" != "$body" ]]; then
+            print -r -- "${match[1]//((#s)|$nl)[[:blank:]]#\#[[:blank:]]#/$nl}"
+        else
+            print "Documentation automatically generated with \`zshelldoc'"
+        fi
+    fi
+    print
+
+    # FUNCTIONS
+    print "FUNCTIONS"
+    print -- "${(r:9::-:)empty}"
+    print
+
+    local -a funs hooks
+    funs=( zsdoc/data/functions/"$name"/*(N) )
+    funs=( "${funs[@]:t}" )
+    hooks=( zsdoc/data/hooks/"$name"/*(N) )
+    hooks=( "${hooks[@]:t}" )
+
+    # Not hooks, not autoloads
+    for fun in "${funs[@]}"; do
+        if [[ -n "${hooks[(r)$fun]}" ]]; then
+            continue
+        else
+            print -r -- " $fun"
+        fi
+    done
+
+    # Autoloads
+    funs=( zsdoc/data/autoload/"$name"/*(N) )
+    funs=( "${funs[@]:t}" )
+
+    for fun in "${funs[@]}"; do
+        print -r -- "AUTOLOAD $fun"
+    done
+
+    # Hooks
+    for fun in "${hooks[@]}"; do
+        print -r -- "${(U)$(<zsdoc/data/hooks/$name/$fun)}-HOOK $fun"
+    done
+
+    # DETAILS
+    print
+    print "DETAILS"
+    print -- "${(r:7::-:)empty}"
+    print
+
+    # SCRIPT BODY
+
+    [[ -f zsdoc/data/bodies/"$name" ]] && {
+        print -r -- "Script Body"
+        print -r -- "${(r:11::~:)empty}"
+        print
+        [[ -f zsdoc/data/trees/"$name"/Script_Body_.tree ]] && {
+            print -r -- "Has `line_count $script_body` line(s). Calls functions:"
+            print
+            arr=( "${(@f)"$(<zsdoc/data/trees/"$name"/Script_Body_.tree)"}" )
+            [[ "${#arr}" -ge 3 ]] && arr=( "${(@)arr[1,-3]}" )
+            arr=( "${arr[@]/Script_Body_/Script-Body}" )
+            arr=( "${arr[@]/(#s)/ }" )
+            print -r -- "${(F)arr}"
+        } || {
+            if [[ -n "$OPT_BASH" ]]; then
+                print -r -- "Has `line_count $script_body` line(s). No functions are called (may set up e.g. command_not_found_handle or call a function indirectly in other way)."
+            else
+                print -r -- "Has `line_count $script_body` line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.)."
+            fi
+        }
+        print
+
+        local -a features
+        features=( zsdoc/data/features/$name/Script_Body_/*(N) )
+        features=( "${(@)features#zsdoc/data/features/$name/Script_Body_/}" )
+
+        if [[ "${#features}" -gt 0 ]]; then
+            print "Uses feature(s): _${(oj:_, _:)features}_"
+            print
+        fi
+
+        local -a exports
+        exports=( zsdoc/data/exports/$name/Script_Body_/*(N) )
+        exports=( "${(@)exports#zsdoc/data/exports/$name/Script_Body_/}" )
+
+        if [[ "${#exports}" -gt 0 ]]; then
+            print "_Exports (environment):_ ${(oj: [big]*//* :)exports}"
+            print
+        fi
+    }
+
+    # FUNCTIONS
+
+    funs=( zsdoc/data/functions/"$name"/*(N) zsdoc/data/autoload/"$name"/*(N) )
+    funs=( "${funs[@]:t}" )
+
+    for fun in "${funs[@]}"; do
+        print -r -- "$fun"
+        len="${#fun}"
+        print -r -- "${(r:len::~:)empty}"
+        print
+
+        ## Comment
+
+        [[ -f zsdoc/data/descriptions/"$name"/"$fun" ]] && {
+            zsd-trim-indent "$(<zsdoc/data/descriptions/$name/$fun)"
+            [[ -n "$OPT_SCOMM" ]] && REPLY="${REPLY//((#s)|$nl)[[:blank:]]#\#[[:blank:]]#/$nl}"
+            arr=( "${(@f)REPLY}" )
+            [[ "${arr[-1]}" = [[:space:]]#\#[[:space:]]# ]] && arr[-1]=()
+            arr=( "${arr[@]/(#s)/ }" )
+            print ____
+            print -rl -- "${arr[@]}"
+            print ____
+            print
+        }
+
+        ## Number of lines information and call tree
+
+        { body=$(<zsdoc/data/functions/"$name"/"$fun"); } 2>/dev/null
+        [[ -z "$body" ]] && body=$(<zsdoc/data/autoload/"$name"/"$fun")
+
+        [[ -f zsdoc/data/trees/"$name"/"$fun".tree ]] && {
+            arr=( "${(@f)"$(<zsdoc/data/trees/"$name"/"$fun".tree)"}" )
+            [[ "${#arr}" -ge 3 ]] && arr=( "${(@)arr[1,-3]}" )
+            arr=( "${arr[@]/Script_Body_/Script-Body}" )
+            arr=( "${arr[@]/(#s)/ }" )
+            if [[ -n "${hooks[(r)$fun]}" ]]; then
+                print -r -- "Has `line_count $body` line(s). *Is a $(<zsdoc/data/hooks/$name/$fun) hook*. Calls functions:"
+            else
+                print -r -- "Has `line_count $body` line(s). Calls functions:"
+            fi
+            print
+            print -r -- "${(F)arr}"
+        } || {
+            if [[ -n "${hooks[(r)$fun]}" ]]; then
+                print "Has `line_count $body` line(s). *Is a $(<zsdoc/data/hooks/$name/$fun) hook*. Doesn't call other functions."
+            else
+                print "Has `line_count $body` line(s). Doesn't call other functions."
+            fi
+        }
+        print
+
+        ## Features
+
+        local -a features
+        features=( zsdoc/data/features/$name/$fun/*(N) )
+        features=( "${(@)features#zsdoc/data/features/$name/$fun/}" )
+
+        if [[ "${#features}" -gt 0 ]]; then
+            print "Uses feature(s): _${(oj:_, _:)features}_"
+            print
+        fi
+
+        ## Reverse call tree
+
+        arr=( zsdoc/data/trees/$name/*/$fun(N) zsdoc/data/trees/*/*/*_-_$fun(N) )
+        if [[ "${#arr}" -eq "0" ]]; then
+            if [[ -n "$OPT_BASH" ]]; then
+                print -r -- "Not called by script or any function (may be e.g. command_not_found_handle or called indirectly in other way)."
+            else
+                print -r -- "Not called by script or any function (may be e.g. a hook, a Zle widget, etc.)."
+            fi
+            print
+        else
+            print "Called by:"
+            print
+            arr=( "${arr[@]#zsdoc/data/trees/$name/}" )
+            arr=( "${arr[@]#zsdoc/data/trees/}" )
+            arr=( "${arr[@]%/*}" )
+            arr=( "${arr[@]//_-_//}" )
+            arr=( "${arr[@]/Script_Body_/Script-Body}" )
+            arr=( "${(u)arr[@]}" )
+            print -rl -- "${arr[@]/(#s)/ }"
+            print
+        fi
+
+        ## Exports
+
+        local -a exports
+        exports=( zsdoc/data/exports/$name/$fun/*(N) )
+        exports=( "${exports[@]#zsdoc/data/exports/$name/$fun/}" )
+
+        if [[ "${#exports}" -gt 0 ]]; then
+            print "_List of exports (to environment):_ ${(oj: [big]*//* :)exports}"
+            print
+        fi
+
+        ## Use of environment variables
+
+        local -a env_uses
+        env_uses=( zsdoc/data/env-use/$name/$fun/*/*/*(N) )
+        env_uses=( "${env_uses[@]#zsdoc/data/env-use/$name/$fun/}" )
+        env_uses=( "${env_uses[@]//(#b)([^\/]##)\/[^\/]##\/(*)/${match[1]} -> ${match[2]}}" )
+        env_uses=( "${env_uses[@]/$name -> /}" )
+
+        if [[ "${#env_uses}" -gt 0 ]]; then
+            print "_Environment variables used:_ ${(oj: [big]*//* :)env_uses}"
+            print
+        fi
+    done
+} >>| "zsdoc/$ofname"
+
+return 0

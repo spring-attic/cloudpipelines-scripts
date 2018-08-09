@@ -1,0 +1,2 @@
+cross-calls1.zsh/myfun2:  cross-calls2.zsh/zsd_script_body
+cross-calls2.zsh/myfun1:  cross-calls2.zsh/zsd_script_body

@@ -1,0 +1,12 @@
+= Cloud Pipelines Scripts
+
+This project tries to solve the following problems:
+
+- Creation of a common deployment pipeline
+- Propagation of good testing & deployment practices
+- Speed up the time required to deploy a feature to production
+
+A common way of running, configuring and deploying applications lowers support costs
+and time needed by new developers to blend in when they change projects.
+
+You can check out the `docs` folder for the documentation.

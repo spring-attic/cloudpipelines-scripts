@@ -1,0 +1,94 @@
+pipeline-jvm.sh(1)
+==================
+:compat-mode!:
+
+NAME
+----
+pipeline-jvm.sh - a shell script
+
+SYNOPSIS
+--------
+
+Script that knows how to define the concrete type of the JVM project.
+Scans for presence of files.
+
+
+FUNCTIONS
+---------
+
+ downloadAppBinary
+ isGradleProject
+ isMavenProject
+ projectType
+
+DETAILS
+-------
+
+Script Body
+~~~~~~~~~~~
+
+Has 21 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
+
+Uses feature(s): _export_, _source_
+
+_Exports (environment):_ BINARY_EXTENSION [big]*//* MAVEN_OPTS [big]*//* PROJECT_TYPE [big]*//* projectType
+
+downloadAppBinary
+~~~~~~~~~~~~~~~~~
+
+____
+ # Fetches a JAR from a binary storage
+ #
+ # $1 - URL to repo with binaries
+ # $2 - group id of the packaged sources
+ # $3 - artifact id of the packaged sources
+ # $4 - version of the packaged sources
+____
+
+Has 21 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ BINARY_EXTENSION
+
+isGradleProject
+~~~~~~~~~~~~~~~
+
+____
+ # Returns true if Gradle Wrapper is used
+____
+
+Has 1 line(s). Doesn't call other functions.
+
+Called by:
+
+ projectType
+
+isMavenProject
+~~~~~~~~~~~~~~
+
+____
+ # Returns true if Maven Wrapper is used
+____
+
+Has 1 line(s). Doesn't call other functions.
+
+Called by:
+
+ projectType
+
+projectType
+~~~~~~~~~~~
+
+____
+ # JVM implementation of projectType
+____
+
+Has 7 line(s). Calls functions:
+
+ projectType
+ |-- isGradleProject
+ `-- isMavenProject
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+

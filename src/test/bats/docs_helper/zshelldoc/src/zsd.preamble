@@ -1,0 +1,62 @@
+#!/bin/sh
+# -*- Mode: sh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
+# vim:ft=zsh:sw=2:sts=2:et
+# This file is double-licensed under GPLv3 and MIT (see LICENSE file)
+
+#
+# /bin/sh stage, load configuration to obtain $zsh_control_bin
+#
+
+if [[ -f /usr/local/share/zshelldoc/zsd.config ]]; then
+  . /usr/local/share/zshelldoc/zsd.config
+elif [[ -f /usr/share/zshelldoc/zsd.config ]]; then
+  . /usr/share/zshelldoc/zsd.config
+elif [[ -f /opt/share/zshelldoc/zsd.config ]]; then
+  . /opt/share/zshelldoc/zsd.config
+fi
+
+[ -z "$zsh_control_bin" ] && zsh_control_bin="zsh"
+
+if [ -z "$ZSH_VERSION" ]; then
+  args="\"$0\""
+  for arg; do
+    args="$args \"$arg\""
+  done
+  exec /usr/bin/env "$zsh_control_bin" -f -c "source $args"
+fi
+
+local -A colors fg bg fg_bold bg_bold
+autoload colors
+colors
+
+setopt extendedglob typesetsilent
+
+### Functions ###
+
+usage() {
+  print "$fg[green]Usage:$reset_color zsd [-h/--help] [-v/--verbose] [-q/--quiet] [-n/--noansi] [--cignore <pattern>] $fg_bold[magenta]{file1} [file2] ...$reset_color"
+  print "The files will be processed and their documentation will be generated"
+  print "in subdirectory \`zsdoc' (with meta-data in subdirectory \`data')."
+  print "Supported are Bash and Zsh scripts."
+  print
+  print "$fg[green]Options:$reset_color"
+  print -- "$fg[magenta]-h/--help$reset_color      Usage information"
+  print -- "$fg[magenta]-v/--verbose$reset_color   More verbose operation-status output"
+  print -- "$fg[magenta]-q/--quiet$reset_color     No status messages"
+  print -- "$fg[magenta]-n/--noansi$reset_color    No colors in terminal output"
+  print -- "$fg[magenta]--cignore$reset_color      Specify which comment lines should be ignored"
+  print -- "$fg[magenta]-f/--fpath$reset_color     Paths separated by : pointing to directories with functions"
+  print -r -- "$fg[magenta]--synopsis$reset_color     Text to be used in SYNOPSIS section. Line break \"... +\n\", paragraph \"...\n\n\""
+  print -r -- "$fg[magenta]--blocka$reset_color       String used as block-begin, default: {{{"
+  print -r -- "$fg[magenta]--blockb$reset_color       String used as block-end, default: }}}"
+  print -r -- "$fg[magenta]--scomm$reset_color        Strip comment char \"#\" from function comments"
+  print -r -- "$fg[magenta]--bash$reset_color         Output slightly tailored to Bash specifics (instead of Zsh specifics)"
+  print
+  print -- "Example --cignore options:"
+  print -- "--cignore '\\#*FUNCTION:*{{{*'                 - ignore comments like: $fg[green]# FUNCTION: usage {{{$reset_color"
+  print -- "--cignore '(\\#*FUNCTION:*{{{*|\\#*FUN:*{{{*)'   - also ignore comments like: $fg[green]# FUN: usage {{{$reset_color"
+  print
+  print -- "File is parsed for synopsis block, which can be e.g.:"
+  print -- "# synopsis {{{my synopsis, can be multi-line}}}"
+  print -- "Change the default brace delimeters with --blocka, --blockb. Block body should be AsciiDoc."
+}

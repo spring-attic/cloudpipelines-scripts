@@ -1,0 +1,35 @@
+test_rollback_deploy.sh(1)
+==========================
+:compat-mode!:
+
+NAME
+----
+test_rollback_deploy.sh - a shell script
+
+SYNOPSIS
+--------
+
+If applicable, deploys current prod version to test environment.
+Sources pipeline.sh
+
+
+FUNCTIONS
+---------
+
+
+DETAILS
+-------
+
+Script Body
+~~~~~~~~~~~
+
+Has 19 line(s). Calls functions:
+
+ Script-Body
+ |-- pipeline-cf.sh/testRollbackDeploy
+ `-- pipeline.sh/testRollbackDeploy
+
+Uses feature(s): _export_, _source_
+
+_Exports (environment):_ ENVIRONMENT
+
