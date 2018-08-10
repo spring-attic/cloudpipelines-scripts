@@ -24,7 +24,7 @@ case $1 in
             SHELLCHECK_VERSION="v0.4.6"
             SHELLCHECK_ARCHIVE="shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz"
             SHELLCHECK_ARCHIVE_SHA512SUM="d9ac3e4fb2383b2d6862415e8052459ce24fd5402806b9ce739990d5c1cccebe4121288df29de32dcef5daa115874ddf7f9730de256bf134ee11cd9704aaa64c"
-            if [[ -x "${ROOT_DIR}/../common/build/shellcheck-${SHELLCHECK_VERSION}/shellcheck" ]]; then
+            if [[ -x "${ROOT_DIR}/../build/shellcheck-${SHELLCHECK_VERSION}/shellcheck" ]]; then
                 echo "shellcheck already downloaded - skipping..."
                 exit 0
             fi
@@ -61,7 +61,7 @@ case $1 in
             exit 0
         fi
         "${ROOT_DIR}/build-helper.sh" initialize-submodules
-        pushd "${ROOT_DIR}/../common/src/test/bats/docs_helper/zshelldoc/"
+        pushd "${ROOT_DIR}/../src/test/docs_helper/zshelldoc/"
             make install PREFIX="${ROOT_DIR}/../build/zsd"
         popd
         ;;
@@ -72,7 +72,7 @@ case $1 in
             echo  "[WARNING] ZSH is missing! Will return 0 but won't generate any docs"
             exit 0
         fi
-        pushd "${ROOT_DIR}/../common/src/main/bash"
+        pushd "${ROOT_DIR}/../src/main/bash"
         # shellcheck disable=SC2035
         "${ROOT_DIR}/../build/zsd/bin/zsd" --cignore '\#*FUNCTION:*{{{*|\#*synopsis*{{{*' *.sh
             pushd projectType
@@ -82,11 +82,12 @@ case $1 in
         popd
         ;;
     initialize-submodules)
-        files="$( ls "${ROOT_DIR}/../common/src/test/docs_helper/zshelldoc/" || echo "" )"
+        files="$( ls "${ROOT_DIR}/../src/test/docs_helper/zshelldoc/" || echo "" )"
         if [ ! -z "${files}" ]; then
             echo "Submodules already initialized";
             git submodule foreach git pull origin master || echo "Failed to pull - continuing the script"
         else
+            echo "Initilizing submodules"
             git submodule init
             git submodule update
             git submodule foreach git pull origin master || echo "Failed to pull - continuing the script"

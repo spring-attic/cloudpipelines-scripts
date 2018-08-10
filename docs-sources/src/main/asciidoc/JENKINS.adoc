@@ -1,9 +1,0 @@
-include::JENKINS_COMMON.adoc[]
-
-// remove::start[CF]
-include::CF_JENKINS.adoc[]
-// remove::end[CF]
-
-// remove::start[K8S]
-include::K8S_JENKINS.adoc[]
-// remove::end[K8S]

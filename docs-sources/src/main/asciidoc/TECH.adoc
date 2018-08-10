@@ -13,25 +13,8 @@ This section covers how to build the project. It covers:
 [[building-project-setup]]
 === Project Setup
 
-The following diagram shows the folder structure of Spring Cloud Pipelines:
-
-====
-[source,bash]
-----
-.
-├── common
-├── concourse
-├── dist
-├── docs
-├── docs-sources
-└── jenkins
-----
-====
-
-In the `common` folder, you can find all the Bash scripts that contain the pipeline logic. These
+In the `src/main/bash` folder, you can find all the Bash scripts that contain the pipeline logic. These
 scripts are reused by both the Concourse and Jenkins pipelines.
-
-In the `concourse` folder, you can find all the necessary scripts and setup information to run the Concourse demo.
 
 In the `dist` folder, you can find the packaged sources of the project. Since the package
 contains no tests or documentation, it is extremely small and can be used in the pipelines.
@@ -39,8 +22,6 @@ contains no tests or documentation, it is extremely small and can be used in the
 In the `docs` folder, you can find the whole generated documentation of the project.
 
 In the `docs-source` folder, you can find the sources required to generate the documentation.
-
-In the `jenkins` folder, you can find all the necessary scripts and setup information to run the Jenkins demo.
 
 [[building-prerequisites]]
 === Prerequisites
@@ -122,7 +103,7 @@ $ ./gradlew generateDocs
 [[building-distributions]]
 === Distributions
 
-Spring Cloud Pipelines has a lot of tests, including Git repositories. Those
+Cloud Pipelines has a lot of tests, including Git repositories. Those
 and the documentation "`weigh`" a lot. That is why, under the `dist` folder, we
 publish `zip` and `tar.gz` distributions of the sources without tests and documentation.
 Whenever we release a distribution, we attach a `VERSION` file to it that contains
@@ -155,24 +136,9 @@ $ ./gradlew release -PnewVersion=1.0.0.RELEASE
 
 This section covers how to release the project by publishing a Docker image.
 
-=== Publishing A Docker Image
-
-When doing a release, you also need to push a Docker image to Dockerhub.
-From the project root, run the following commands, replacing `<version>` with the
-version of the release:
-
-====
-[source,bash]
-----
-$ docker login
-$ docker build -t springcloud/spring-cloud-pipeline-jenkins:<version> ./jenkins
-$ docker push springcloud/spring-cloud-pipeline-jenkins:<version>
-----
-====
-
 == CI Server Worker Prerequisites
 
-Spring Cloud Pipelines uses Bash scripts extensively. The following list shows the software
+Cloud Pipelines uses Bash scripts extensively. The following list shows the software
 that needs to be installed on a CI server worker for the build to pass:
 
 ====
@@ -191,10 +157,3 @@ that needs to be installed on a CI server worker for the build to pass:
     jq
 ----
 ====
-
-TIP: In the demo setup all of these libraries are already installed.
-
-IMPORTANT: In the Jenkins case, you also need `bats` and `shellcheck`. They are not
-included in the preceding list, because the versions installed by Linux distributions might be old.
-That is why this project's Gradle tasks download the latest versions of both libraries
-for you.

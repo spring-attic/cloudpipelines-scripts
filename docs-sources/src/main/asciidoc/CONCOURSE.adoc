@@ -1,7 +1,0 @@
-// remove::start[CF]
-include::CF_CONCOURSE.adoc[]
-// remove::end[CF]
-
-// remove::start[K8S]
-include::K8S_CONCOURSE.adoc[]
-// remove::end[K8S]

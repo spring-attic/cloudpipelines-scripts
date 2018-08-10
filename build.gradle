@@ -2,158 +2,36 @@ buildscript {
 	repositories { jcenter() }
 
 	dependencies {
-		classpath 'com.github.jruby-gradle:jruby-gradle-plugin:1.5.0'
-		classpath 'org.ajoberstar:grgit:2.2.1'
+		classpath "com.github.jruby-gradle:jruby-gradle-plugin:${jrubyVersion}"
+		classpath "org.asciidoctor:asciidoctor-gradle-plugin:${asciidoctorGradleVersion}"
 	}
 }
 
-apply plugin: "com.github.jruby-gradle.base"
 apply plugin: "java"
-apply plugin: 'distribution'
 apply plugin: 'maven-publish'
-apply from: 'gradle/cli.gradle'
+apply from: 'gradle/bash.gradle'
+apply from: 'gradle/docs.gradle'
+apply from: 'gradle/dist.gradle'
 
-import com.github.jrubygradle.JRubyExec
-
-import java.util.concurrent.TimeUnit
-
-dependencies {
-	jrubyExec "rubygems:asciidoctor:1.5.4"
+repositories {
+	jcenter()
 }
+
+version = project.findProperty("newVersion") ?: project.findProperty("defaultVersion")
+
+// Scripts docs generation
 
 repositories {
 	jcenter()
 	maven { url "http://rubygems-proxy.torquebox.org/releases/" }
 }
 
-version = project.findProperty("newVersion") ?: project.findProperty("defaultVersion")
+apply plugin: "com.github.jruby-gradle.base"
+import com.github.jrubygradle.JRubyExec
 
-ext {
-	isCommandAvailable = { String cmd ->
-		try {
-			cmd.execute()
-			return true
-		} catch (IOException e) {
-		}
-		return false
-	}
-
-	isShellcheckPresent = {
-		isCommandAvailable("shellcheck -V")
-	}
-
-	shellcheckFile = isShellcheckPresent() ? new File("shellcheck") :
-		new File(project.rootProject.buildDir, "shellcheck-${shellcheckVersion}/shellcheck")
-
-	shellcheckVersionWithoutPrefix = "${shellcheckVersion}".startsWith("v") ? "${shellcheckVersion}".substring(1) : "${shellcheckVersion}"
-
-	assertShellcheckVersion = {
-		String output = ""
-		new ByteArrayOutputStream().withStream { os ->
-			String cmd = shellcheckFile.path + " -V"
-			project.logger.lifecycle("Executing cmd [${cmd}]")
-			Process p = cmd.execute()
-			p.consumeProcessOutput(os, os)
-			p.waitFor(5L, TimeUnit.SECONDS)
-			output = os.toString()
-		}
-		project.logger.lifecycle("Checking if shellcheck version is [${shellcheckVersionWithoutPrefix}]")
-		boolean versionIsOk = output.contains("version: ${shellcheckVersionWithoutPrefix}")
-		if (!versionIsOk) {
-			logger.info("Shellcheck is in wrong version. The output of checking version is \n\n[${output}]")
-		}
-	}
-
-	isShellcheckDownloaded = {
-		shellcheckFile.exists()
-	}
-
-	git = org.ajoberstar.grgit.Grgit.open()
-	revision = git.head().id
+dependencies {
+	jrubyExec "rubygems:asciidoctor:1.5.7.1"
 }
-
-subprojects {
-	apply plugin: 'java'
-
-	task installShellcheckIfMissing {
-		doLast {
-			boolean shellcheckInstalled = isShellcheckPresent() || isShellcheckDownloaded()
-			exec {
-				if (shellcheckInstalled) {
-					assertShellcheckVersion()
-					commandLine "echo", "Shellcheck installed in version [${shellcheckVersionWithoutPrefix}] - continuing"
-				} else {
-					logger.lifecycle("Shellcheck is missing. Will install it.")
-					commandLine "bash", new File(project.rootDir, "tools/build-helper.sh").path, "download-shellcheck"
-				}
-			}
-		}
-	}
-
-	task shellcheck {
-		doLast {
-			boolean shellcheckInstalled = isShellcheckPresent()
-			String pathToShellcheck = "shellcheck"
-			if (!shellcheckInstalled) {
-				pathToShellcheck = new File(project.rootProject.buildDir, "shellcheck-${shellcheckVersion}/shellcheck").path
-			}
-			sourceSets*.resources.srcDirs*.each { srcDir ->
-				fileTree(relativePath(srcDir))
-					.include('**/*.sh')
-					.exclude("**/build/**")
-					.exclude("**/zsdoc/**")
-					.each { File script ->
-					exec {
-						commandLine pathToShellcheck, script
-					}
-				}
-			}
-		}
-	}
-
-	task initalizeSubModules() {
-		doLast {
-			exec {
-				commandLine "bash", new File(project.rootDir, "tools/build-helper.sh").path, "initialize-submodules"
-			}
-		}
-	}
-
-	task installBatsIfMissing() {
-		doLast {
-			boolean batsInstalled = isCommandAvailable("bats -v")
-			exec {
-				if (batsInstalled) {
-					commandLine "echo", "Bats installed - continuing"
-				} else {
-					logger.lifecycle("Bats is missing. Will try to install it.")
-					commandLine "bash", new File(project.rootDir, "tools/build-helper.sh").path, "download-bats"
-				}
-			}
-		}
-	}
-
-	task bats {
-		doLast {
-			boolean batsInstalled = isCommandAvailable("bats -v")
-			String pathToBats = "bats"
-			String outputTapFile = project.buildDir.path + "/bats.tap"
-			if (!batsInstalled) {
-				pathToBats = new File(project.rootProject.buildDir, "bats/bin/bats").path
-			}
-			exec {
-				standardOutput = new org.apache.tools.ant.util.TeeOutputStream(
-					new FileOutputStream(outputTapFile), System.out)
-				commandLine pathToBats, '-t', 'src/test/bats'
-			}
-		}
-	}
-
-	shellcheck.dependsOn("installShellcheckIfMissing")
-	test.dependsOn("shellcheck")
-}
-
-// DOCUMENTATION -- start
 
 jruby {
 	defaultRepositories false
@@ -161,138 +39,12 @@ jruby {
 
 task generateScriptsReadme(type: JRubyExec) {
 	script "${projectDir}/tools/coalesce-readme.rb"
-	scriptArgs "-i ${projectDir}/common/src/main/bash/BASH_SCRIPTS.adoc", "-o ${projectDir}/common/src/main/bash/README.adoc"
+	scriptArgs "-i ${projectDir}/src/main/bash/BASH_SCRIPTS.adoc", "-o ${projectDir}/src/main/bash/README.adoc"
 }
 
-// remove::start[JENKINS]
-task generateJenkinsReadme(type: JRubyExec) {
-	script "${projectDir}/tools/coalesce-readme.rb"
-	scriptArgs "-i ${projectDir}/docs-sources/src/main/asciidoc/JENKINS.adoc", "-o ${projectDir}/jenkins/README.adoc"
-}
-// remove::end[JENKINS]
-
-// remove::start[CONCOURSE]
-task generateConcourseReadme(type: JRubyExec) {
-	script "${projectDir}/tools/coalesce-readme.rb"
-	scriptArgs "-i ${projectDir}/docs-sources/src/main/asciidoc/CONCOURSE.adoc", "-o ${projectDir}/concourse/README.adoc"
-}
-//remove::end[CONCOURSE]
-
-List<String> projects = []
-//remove::start[JENKINS]
-projects << "generateJenkinsReadme"
-//remove::end[JENKINS]
-//remove::start[CONCOURSE]
-projects << "generateConcourseReadme"
-//remove::end[CONCOURSE]
-
-task setMavenVersion(dependsOn: [projects]) {
-	doLast {
-		exec {
-			workingDir project(":docs-sources").projectDir.path
-			commandLine "./mvnw", "org.codehaus.mojo:versions-maven-plugin:2.3:set", "-DnewVersion=${project.version}"
-		}
-	}
-}
-
-task generateIndex(dependsOn: [setMavenVersion]) {
-	doLast {
-		exec {
-			workingDir project(":docs-sources").projectDir.path
-			commandLine "./mvnw", "clean", "install", "-Pdocs"
-		}
-	}
-}
-
-task cleanDocs(type: Delete) {
-	delete project(":docs").projectDir.path
-}
-
-task copyJekyll(type: Copy) {
-	dependsOn(["cleanDocs"])
-	from new File(project(":docs-sources").projectDir, "src/main/jekyll").path
-	into project(":docs").projectDir.path
-}
-
-task copyGeneratedSources(type: Copy) {
-	dependsOn(["cleanDocs", "generateIndex"])
-	from(new File(project(":docs-sources").projectDir, "target/generated-docs").path) {
-		exclude "spring-cloud-pipelines.xml"
-	}
-	into project(":docs").projectDir.path
-}
-
-task generateDocs(dependsOn: ["copyJekyll", "copyGeneratedSources", "generateScriptsReadme"]) {
-	description = "Creates documentation for the project"
-}
-
-distributions {
-	main {
-		contents {
-			from(project.rootDir) {
-				include "**/*.*"
-				exclude "**/test/**", "**/build/**", "**/*.tar.gz", "**/*.tgz",
-					"**/.idea/**", "**/target/**", "**/*.iml", "**/out/**", "**/.gradle/**",
-					"**/docs/**", "**/docs-sources/**", "**/dist/**"
-				String gitignore = new File(project.rootDir, ".gitignore").text
-				exclude gitignore.readLines().findAll { it && !it.startsWith("#") }.collect { "**/${it}"}
-			}
-			from(project.buildDir) {
-				include "VERSION"
-			}
-		}
-	}
-}
-
-task dumpBuildInfo() {
-	doLast {
-		String versionContents = """\
-buildDate: ${new Date().format('dd-MM-yyyy HH:mm:ss')}
-revision : ${revision}
-version  : ${project.version}
-"""
-		def fileToStore = new File(project.buildDir, "VERSION")
-		project.buildDir.mkdirs()
-		fileToStore.createNewFile()
-		fileToStore.text = versionContents
-	}
-}
-
-distTar {
-	version = ""
-	compression = "GZIP"
-	extension = "tar.gz"
-	dependsOn("dumpBuildInfo")
-	destinationDir = new File(project.rootDir, "dist")
-	enabled = !project.hasProperty("skipDist")
-}
-
-distZip {
-	version = ""
-	destinationDir = new File(project.rootDir, "dist")
-	enabled = !project.hasProperty("skipDist")
-}
-
-task release(dependsOn: ["build", "assembleDist", "generateDocs"]) {
-	description = "Pushes the generated docs to sc-static (for non-snapshots) and rolls back docs pom.xml version to the default one. Commits and pushes dists."
-	doLast {
-		try {
-			exec {
-				workingDir project.rootDir
-				commandLine "./src/main/bash/release.sh", "${project.version}"
-			}
-		} finally {
-			exec {
-				workingDir project.rootDir
-				commandLine "./src/main/bash/cleanup.sh", "${project.findProperty("defaultVersion")}", "${project.version}"
-			}
-		}
-	}
-}
-
-// DOCUMENTATION -- end
+generateDocs.dependsOn(generateScriptsReadme)
+// Scripts docs generation
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '4.8'
+	gradleVersion = '4.9'
 }
-

@@ -4,20 +4,20 @@ This section describes the rationale
 behind the opinionated pipeline. We go through each deployment
 step and describe it in detail.
 
-IMPORTANT: You do not need to use all the pieces of Spring Cloud Pipelines. You
+IMPORTANT: You do not need to use all the pieces of Cloud Pipelines. You
 can (and should) gradually migrate your applications to use those pieces of
-Spring Cloud Pipelines that you think best suit your needs.
+Cloud Pipelines that you think best suit your needs.
 
 === Five-second Introduction
 
-Spring Cloud Pipelines provides scripts, configuration, and convention for automated
-deployment pipeline creation for Jenkins and Concourse with Cloud Foundry or Kubernetes.
-We support JVM languages, PHP, and NodeJS. Since SC-Pipelines uses bash scripts,
+Cloud Pipelines provides scripts, configuration, and convention for automated
+deployment pipeline creation with Cloud Foundry or Kubernetes.
+We support various languages and frameworks. Since this project uses bash scripts,
 you can use it with whatever automation server you have.
 
 === Five-minute Introduction
 
-Spring Cloud Pipelines comes with bash scripts (available under `common/src/main/bash`)
+Cloud Pipelines comes with bash scripts (available under `src//main/bash`)
 that represent the logic of all steps in our opinionated deployment pipeline.
 Since we believe in convention over configuration, for the supported framework and
 languages, we assume that the projects follow certain conventions of task naming,
@@ -32,14 +32,14 @@ From the pipeline visualization perspective, we have prepared templates for Conc
 and Jenkins (through the Jenkins Job DSL and Jenkinsfile). That means you can reuse them
 immediately to visualize a deployment pipeline. If you use some other tool for
 continuous delivery, you can set the visualization yourself and reference the
-bash scripts for each step. In other words, Spring Cloud Pipelines can be reused
+bash scripts for each step. In other words, Cloud Pipelines can be reused
 with any continuous delivery tool.
 
 ==== How to Use It
 
 This repository can be treated as a template for your pipeline. We provide some opinionated
 implementation that you can alter to suit your needs. To use it, we recommend downloading
-the Spring Cloud Pipelines repository as a zip file, unzipping it in a directory,
+the Cloud Pipelines repository as a zip file, unzipping it in a directory,
 initializing a Git project in that directory, and then modifying the project to suit your
 needs. The following bash script shows how to do so:
 
@@ -66,17 +66,17 @@ folder hooks to override functions.
 
 ==== How It Works
 
-As the following image shows, Spring Cloud Pipelines contains logic to generate a
+As the following image shows, Cloud Pipelines contains logic to generate a
 pipeline and the runtime to execute pipeline steps.
 
-image::{intro-root-docs}/how.png[title="How Spring Cloud Pipelines works"]
+image::{intro-root-docs}/how.png[title="How Cloud Pipelines works"]
 
 Once a pipeline is created (for example, by using the Jenkins Job DSL or from a Concourse
-templated pipeline), when the jobs are ran, they clone or download Spring Cloud Pipelines
+templated pipeline), when the jobs are ran, they clone or download Cloud Pipelines
 code to run each step. Those steps run functions that are
-defined in the `commons` module of Spring Cloud Pipelines.
+defined in the `commons` module of Cloud Pipelines.
 
-Spring Cloud Pipelines performs steps to guess what kind of a project your
+Cloud Pipelines performs steps to guess what kind of a project your
 repository is (for example, JVM or PHP) and what framework it uses (Maven or Gradle), and it
 can deploy your application to a cloud (Cloud Foundry or Kubernetes). You can read about how
 it works by reading the <<how-do-the-scripts-work>> section.
@@ -84,20 +84,49 @@ it works by reading the <<how-do-the-scripts-work>> section.
 All of that happens automatically if your application follows the conventions.
 You can read about them in the <<project-opinions>> section.
 
-==== Supported Languages
+[[deployment-languages-compatibility-matrix]]
+==== Deployment & languages compatibility matrix
 
-Currently, we support the following languages:
+In the following table we present which language is supported by which deployment
+mechanism.
 
-* JVM
-** Maven wrapper-based project
-** Gradle wrapper-based project
-* PHP
-** Composer-based project
-* NPM
+.Deployment & languages compatibility matrix
+|===
+|Language | CF | K8S | Ansible
+
+| JVM with Gradle
+| ✅
+| ✅
+| ✅
+
+| JVM with Maven
+| ✅
+| ✅
+| ✅
+
+| PHP with Composer
+| ✅
+| ✅
+| ❌
+
+| NodeJS with NPM
+| ✅
+| ✅
+| ❌
+
+| Dotnet core
+| ✅
+| ✅
+| ❌
+
+|===
+
+TIP: For K8S, a deployment unit is a docker image so any language and framework
+can be used.
 
 ==== Centralized Pipeline Creation
 
-You can use Spring Cloud Pipelines to generate pipelines
+You can use Cloud Pipelines to generate pipelines
 for all the projects in your system. You can scan all your
 repositories (for example, you can call the Stash or Github API to retrieve the list of repositories)
 and then:
@@ -107,13 +136,13 @@ parameter, which contains the list of repositories.
 * For Concourse, call `fly` and set the
 pipeline for every repository.
 
-TIP: We recommend using Spring Cloud Pipelines this way.
+TIP: We recommend using Cloud Pipelines this way.
 
 ==== A Pipeline for Each Repository
 
-You can use Spring Cloud Pipelines in such a way that
+You can use Cloud Pipelines in such a way that
 each project contains its own pipeline definition in
-its code. Spring Cloud Pipelines clones the code with
+its code. Cloud Pipelines clones the code with
 the pipeline definitions (the bash scripts), so the
 only piece of logic that needs to be in your application's
 repository is the pipeline definition.
@@ -136,7 +165,7 @@ image::{intro-root-docs}/flow.png[title="Flow in Jenkins"]
 We first describe the overall concept behind the flow and then
 split it into pieces and describe each piece independently.
 
-===Vocabulary
+=== Vocabulary
 
 This section defines some common vocabulary. We describe four typical
 environments in terms of running the pipeline.
@@ -432,7 +461,7 @@ require you to push the sources. The default value is `binary`.
 
 === Project Setup
 
-Spring Cloud Pipelines supports three main types of project setup:
+Cloud Pipelines supports three main types of project setup:
 
 * `Single Project`
 * `Multi Module`
@@ -450,7 +479,7 @@ projects can in turn be a `Single Project` or a `Multi Module` project. Spring
 Cloud Pipelines assume that, if a `PROJECT_NAME` environment
 variable corresponds to a folder with the same name in the root of the
 repository, this is the project it should build. For example, for
-`PROJECT_NAME=something`, if there's a folder named `something`, then Spring Cloud Pipelines
+`PROJECT_NAME=something`, if there's a folder named `something`, then Cloud Pipelines
 treats the `something` directory as the root of the `something` project.
 
 [[how-do-the-scripts-work]]
@@ -458,14 +487,15 @@ treats the `something` directory as the root of the `something` project.
 
 This section describes how the scripts and jobs correspond to each other.
 If you need to see detailed documentation of the bash scripts, go to the
-code repository and read `common/src/main/bash/README.adoc`.
+code repository and read `src//main/bash/README.adoc`.
 
 [[build-and-deployment]]
 === Build and Deployment
 
 The following text image (created via https://textart.io/sequence[textart.io]) shows a high-level overview:
 
-```
+[source,options="nowrap"]
+----
 +---------+                      +-----------+                      +-----------+ +-------+ +---------------+
 | script  |                      | language  |                      | framework | | paas  | | customization |
 +---------+                      +-----------+                      +-----------+ +-------+ +---------------+
@@ -499,7 +529,7 @@ The following text image (created via https://textart.io/sequence[textart.io]) s
      |                  |              |                                  |           |             |
      |<------------------              |                                  |           |             |
      |                                 |                                  |           |             |
-```
+----
 
 Before we run the script, we need to answer a few questions related to your repository:
 
@@ -510,7 +540,8 @@ Before we run the script, we need to answer a few questions related to your repo
 
 The following sequence diagram (created via https://textart.io/sequence[textart.io]) describes how the sourcing of bash scripts takes place:
 
-```
+[source,options="nowrap"]
+----
 +---------+                                         +-----------+                                            +-------------+                   +-----------+            +-----------+                                   +-------+                            +---------+
 | script  |                                         | pipeline  |                                            | projectType |                   | language  |            | framework |                                   | paas  |                            | custom  |
 +---------+                                         +-----------+                                            +-------------+                   +-----------+            +-----------+                                   +-------+                            +---------+
@@ -568,7 +599,7 @@ The following sequence diagram (created via https://textart.io/sequence[textart.
      |                    |                               |                                                         |                                |                        |                                             |                                     |
      |<--------------------                               |                                                         |                                |                        |                                             |                                     |
      |                                                    |                                                         |                                |                        |                                             |                                     |
-```
+----
 
 The process works as follows:
 
@@ -583,7 +614,7 @@ sources `projectType/pipeline-projectType.sh`.
 . Once we know what the project type is, we can deal with PAAS. Depending on the value of the `PAAS_TYPE` environment
 variable, we can source proper PAAS functions (for example, `pipeline-cf.sh` for Cloud Foundry).
 . Determine whether we can do some further customization.
-.. Search for a file called `${sc-pipelines-root}/common/src/main/bash/custom/build_and_upload.sh`
+.. Search for a file called `${sc-pipelines-root}/src//main/bash/custom/build_and_upload.sh`
 to override any functions you want.
 . Run the `build` function from `build_and_upload.sh`
 
@@ -602,7 +633,8 @@ library, which can:
 
 The following diagram depicts this situation:
 
-```
+[source,options="nowrap"]
+----
 +---------+                                                  +-------+                                                                           +-------------+ +---------+
 | Jenkins |                                                  | Seed  |                                                                           | SCPipelines | | Github  |
 +---------+                                                  +-------+                                                                           +-------------+ +---------+
@@ -638,7 +670,7 @@ The following diagram depicts this situation:
      |                                                           |                                        |                                             |             |
      |                                                           |<----------------------------------------                                             |             |
      |                                                           |                                                                                      |             |
-```
+----
 
 Thanks to the Project Crawler, you can run the seed job, and ,automatically, all the new repositories
 are picked and pipelines are created for them. Project Crawler supports repositories
@@ -654,7 +686,8 @@ the CI jobs (that is, build and test) and prepare the JSON definitions of Spinna
 
 The following diagram shows how Jenkins, the seed job for Spinnaker, and Spinnaker cooperate:
 
-```
+[source,options="nowrap"]
+----
 +---------+                                                  +-------+                                                                           +-------------+                          +---------+ +-----------+
 | Jenkins |                                                  | Seed  |                                                                           | SCPipelines |                          | Github  | | Spinnaker |
 +---------+                                                  +-------+                                                                           +-------------+                          +---------+ +-----------+
@@ -750,44 +783,4 @@ The following diagram shows how Jenkins, the seed job for Spinnaker, and Spinnak
      |                                                           |                                                                                      |                                      |            |                            |
      |                                                           |                                                                                      |                                      |            |<----------------------------
      |                                                           |                                                                                      |                                      |            |
-```
-
-[[deployment-languages-compatibility-matrix]]
-=== Deployment & languages compatibility matrix
-
-In the following table we present which language is supported by which deployment
-mechanism.
-
-.Deployment & languages compatibility matrix
-|===
-|Language | CF | K8S | Ansible
-
-| JVM with Gradle
-| ✅
-| ✅
-| ✅
-
-| JVM with Maven
-| ✅
-| ✅
-| ✅
-
-| PHP with Composer
-| ✅
-| ✅
-| ❌
-
-| NodeJS with NPM
-| ✅
-| ✅
-| ❌
-
-| Dotnet core
-| ✅
-| ✅
-| ❌
-
-|===
-
-TIP: For K8S, a deployment unit is a docker image so any language and framework
-can be used.
+----

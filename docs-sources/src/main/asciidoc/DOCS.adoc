@@ -1,9 +1,4 @@
-= Spring Cloud Pipelines
-
-Spring, Spring Boot, and Spring Cloud are tools that let developers speed up the
-time of creating new business features. It is common knowledge, however, that the
-feature is only valuable if it is in production. That is why companies
-spend a lot of time and resources on building their own deployment pipelines.
+= Cloud Pipelines
 
 This project tries to solve the following problems:
 
@@ -20,30 +15,4 @@ include::OPINIONATED.adoc[]
 
 include::CUSTOMIZATION.adoc[]
 
-// remove::start[CF]
-include::CF_MIGRATION.adoc[]
-// remove::end[CF]
-
-// remove::start[CONCOURSE]
-include::CONCOURSE.adoc[]
-// remove::end[CONCOURSE]
-
-// remove::start[JENKINS]
-include::JENKINS.adoc[]
-// remove::end[JENKINS]
-
-// remove::start[K8S]
-include::K8S_SETUP.adoc[]
-// remove::end[K8S]
-
-// remove::start[CF]
-include::CF_DEMO.adoc[]
-// remove::end[CF]
-
-// remove::start[K8S]
-include::K8S_DEMO.adoc[]
-// remove::end[K8S]
-
 include::TECH.adoc[]
-
-include::MISC.adoc[]

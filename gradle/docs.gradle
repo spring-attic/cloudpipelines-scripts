@@ -1,0 +1,70 @@
+/*
+Contains tasks and setup to use for docs generation
+
+Requires in the buildscript
+
+- classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.8'
+- project `docs-sources` that contains under `src/main/asciidoc` the asciidoc
+*/
+buildscript {
+	repositories { jcenter() }
+
+	dependencies {
+		classpath "org.asciidoctor:asciidoctor-gradle-plugin:${asciidoctorGradleVersion}"
+		classpath 'org.ajoberstar:grgit:2.2.1'
+  }
+}
+
+import org.ajoberstar.grgit.Grgit
+
+apply plugin: 'java'
+apply plugin: 'org.asciidoctor.convert'
+
+ext {
+  git = Grgit.open()
+  ghOrg = "cloudpipelines"
+  repo = project.name
+	branch = git.branch.current().getName()
+  docsBaseUrl = [
+    'https://raw.githubusercontent.com',
+    ghOrg,
+    repo,
+    branch
+  ].join('/')
+}
+
+task cleanDocs(type: Delete) {
+	delete project(":docs").projectDir.path
+}
+
+task createFolder() {
+  doLast {
+    new File(project.rootDir, "docs").mkdirs()
+  }
+  mustRunAfter "cleanDocs"
+}
+
+asciidoctor {
+  dependsOn = ["createFolder"]
+  sourceDir = file('docs-sources/src/main/asciidoc')
+  outputDir = file('docs')
+  separateOutputDirs = false
+  options doctype: 'book'
+  attributes 'source-highlighter' : 'prettify',
+              toc                 : 'left',
+              toclevels           : '4',
+              'hide-uri-scheme'   : '',
+              'numbered'          : '',
+              'icons'             : 'font',
+              idprefix            : '',
+              idseparator         : '-',
+              safe                : 'unsafe',
+              parse               : 'false',
+              'allow-uri-read'    : '',
+              'intro-root-docs'   : "${docsBaseUrl}/docs/images/intro"
+}
+
+task generateDocs() {
+	description = "Creates documentation for the project"
+  dependsOn = ["cleanDocs", "asciidoctor"]
+}
