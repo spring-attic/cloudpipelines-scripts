@@ -1697,24 +1697,15 @@ the CI jobs (that is, build and test) and prepare the JSON definitions of Spinna
 <h2 id="opinionated-implementation">3. Opinionated Implementation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This section describes a full flow of the demo applications.</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-Your applications need not have the same dependencies (such as <code>Eureka</code>) as this demo.
-</td>
-</tr>
-</table>
+<p>This section describes a full flow of deploying an app via the deployment pipeline.</p>
 </div>
 <div class="paragraph">
-<p>For demo purposes, we provide Docker Compose setup with Artifactory, Concourse, and Jenkins tools.
-Regardless of the CD application, for the pipeline to pass, you need one of the following:</p>
+<p>We will use:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>A Paas instance. For example:</p>
 <div class="ulist">
 <ul>
 <li>
@@ -1723,31 +1714,13 @@ Regardless of the CD application, for the pipeline to pass, you need one of the 
 <li>
 <p>A Kubernetes cluster (for example, <a href="https://github.com/kubernetes/minikube">Minikube</a>).</p>
 </li>
-<li>
-<p>The infrastructure applications deployed to the JAR hosting application (for the demo, we provide Artifactory).</p>
-</li>
-<li>
-<p><code>Eureka</code> for Service Discovery.</p>
-</li>
-<li>
-<p><code>Stub Runner Boot</code> for running Spring Cloud Contract stubs.</p>
-</li>
 </ul>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-In the demos, we show you how to first build the <code>github-webhook</code> project. That is because
-the <code>github-analytics</code> needs the stubs of <code>github-webhook</code> to pass the tests. We also use
-references to the <code>github-analytics</code> project, since it contains more interesting pieces as far as testing
-is concerned.
-</td>
-</tr>
-</table>
+</li>
+<li>
+<p>The infrastructure applications deployed to a binary storage (for the demo, we provide Artifactory).</p>
+</li>
+</ul>
 </div>
 <div class="sect2">
 <h3 id="build">3.1. Build</h3>
@@ -1761,45 +1734,43 @@ is concerned.
 <div class="title">Figure 8. Build and upload artifacts</div>
 </div>
 <div class="paragraph">
-<p>In this step, we  generate a version of the pipeline. Next, we
-run unit, integration, and contract tests. Finally, we:</p>
+<p>In this step, the first thing we do is we generate a version of the pipeline.</p>
+</div>
+<div class="paragraph">
+<p>If there has been a previous production deployment, we first run API compatibility check, as follows:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Publish a fat jar of the application.</p>
+<p>We search for the latest production deployment</p>
 </li>
 <li>
-<p>Publish a Spring Cloud Contract jar containing stubs of the application.</p>
+<p>The search is done via picking the latest <code>prod/${appName}/${version}</code> tag</p>
 </li>
 <li>
-<p>For Kubernetes, upload a Docker image of the application.</p>
+<p>We call the api compatibility task for the given language and framework</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>During this phase, we run a <code>Maven</code> build by using Maven Wrapper or a <code>Gradle</code> build by using Gradle Wrapper,
-with unit and integration tests. We also tag the repository with <code>dev/${version}</code>. That way, in each
+<p>Next, we run unit, integration, and contract tests. We analyze the application code, and we call the appropriate build functions,
+depending on the used language and framework. Finally, we:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Publish a binary / image / artifact of the application. In some cases there&#8217;s no need to
+upload anything since sources get published</p>
+</li>
+<li>
+<p>Publish a package containing stubs of the application.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We also tag the repository with <code>dev/${appName}/${version}</code>. That way, in each
 subsequent step of the pipeline, we can retrieve the tagged version. Also, we know
 exactly which version of the pipeline corresponds to which Git hash.</p>
-</div>
-<div class="paragraph">
-<p>Once the artifact is built, we run API compatibility check, as follows:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>We search for the latest production deployment.</p>
-</li>
-<li>
-<p>We retrieve the contracts that were used by that deployment.</p>
-</li>
-<li>
-<p>From the contracts, we generat API tests to see if the current implementation
-is fulfilling the HTTP and messaging contracts that the current production deployment
-has defined (we check backward compatibility of the API).</p>
-</li>
-</ul>
 </div>
 </div>
 <div class="sect2">
@@ -1819,85 +1790,44 @@ has defined (we check backward compatibility of the API).</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Start a RabbitMQ service in PaaS.</p>
+<p>Start the services defined in the pipeline descriptor</p>
 </li>
 <li>
-<p>Deploying <code>Eureka</code> infrastructure application to PaaS.</p>
+<p>Upload the binary / sources / image to the PaaS</p>
 </li>
 <li>
-<p>Download the fat jar from Nexus and upload it to PaaS. We want the application
-to run in isolation (be surrounded by stubs).</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Currently, due to port constraints in Cloud Foundry,
-we cannot run multiple stubbed HTTP services in the cloud. To fix this issue, we run
-the application with the <code>smoke</code> Spring profile, on which you can stub out all HTTP calls to return
-a mocked response.
-</td>
-</tr>
-</table>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>If the application uses a database, it gets upgraded at this point by Flyway, Liquibase,
-or any other migration tool once the application gets started.</p>
+<p>If the application uses a database, it should get upgraded by a migration tool upon application startup</p>
 </li>
 <li>
-<p>From the project&#8217;s Maven or Gradle build, we extract the <code>stubrunner.ids</code> property that contains
-all the <code>groupId:artifactId:version:classifier</code> notations of dependent projects for which
-the stubs should be downloaded.</p>
+<p>If requested, the deployment pipeline can surround the deployed application with stubs of the
+applications it communicates with</p>
 </li>
 <li>
-<p>We upload <code>Stub Runner Boot</code> and pass the extracted <code>stubrunner.ids</code> to it. That way,
-we have a running application in Cloud Foundry that downloads all the necessary stubs
-of our application.</p>
-</li>
-<li>
-<p>From the checked-out code, we run the tests available under the <code>smoke</code> profile. In the
-case of the <code>GitHub Analytics</code> application, we trigger a message from the <code>GitHub Webhook</code>
-application&#8217;s stub and send the message by RabbitMQ to GitHub Analytics. Then we check whether the
-message count has increased.</p>
+<p>From the checked-out code, we run the smoke tests</p>
 </li>
 <li>
 <p>Once the tests pass, we search for the last production release. Once the application
-is deployed to production, we tag it with <code>prod/${version}</code>. If there is no such tag
+is deployed to production, we tag it with <code>prod/${appName}/${version}</code>. If there is no such tag
 (there was no production release), no rollback tests are run. If there was
 a production release, the tests get executed.</p>
 </li>
 <li>
 <p>Assuming that there was a production release, we check out the code that corresponds to that
-release (we check out the tag), download the appropriate artifact (either a JAR for Cloud Foundry
-or a Docker image for Kubernetes), and we upload
-it to PaaS.</p>
+release (we check out the tag), download the appropriate artifact and upload it to the PaaS
+(or just push the sources).</p>
+</li>
+<li>
+<p>The old artifact runs against the <strong>NEW</strong> version of the database.</p>
+</li>
+<li>
+<p>We run the old <code>smoke</code> tests against the freshly deployed application, surrounded by stubs.
+If those tests pass, we have a high probability that the application is backwards compatible.</p>
+</li>
+<li>
+<p>The default behavior is that, after all of those steps, the user can manually click to deploy the
+application to a stage environment.</p>
 </li>
 </ul>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-The old artifact runs against the <strong>NEW</strong> version of the database.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>We run the old <code>smoke</code> tests against the freshly deployed application, surrounded by stubs.
-If those tests pass, we have a high probability that the application is backwards compatible.
-* The default behavior is that, after all of those steps, the user can manually click to deploy the
-application to a stage environment.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1917,26 +1847,15 @@ application to a stage environment.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Start a RabbitMQ service in PaaS.</p>
+<p>Start the services defined in the pipeline descriptor</p>
 </li>
 <li>
-<p>Deploy <code>Eureka</code> infrastructure application to PaaS.</p>
+<p>Upload the binary / sources / image to the PaaS</p>
 </li>
 <li>
-<p>Download the artifact (either a JAR for Cloud Foundry or a Docker image for Kubernetes)
-upload it to PaaS.</p>
+<p>From the checked-out code, we run the end to end tests</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>Next, we have a manual step in which, from the checked-out code, we run the tests available under the <code>e2e</code> profile. In the
-case of the <code>GitHub Analytics</code> application, we send an HTTP message to the GitHub Analytics endpoint. Then we check whether
-the received message count has increased.</p>
-</div>
-<div class="paragraph">
-<p>By default, this step is manual, because the stage environment is often shared between
-teams and some preparations on databases and infrastructure have to take place before the tests can be run.
-Ideally, these step should be fully automatic.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1950,9 +1869,6 @@ Ideally, these step should be fully automatic.</p>
 </div>
 <div class="title">Figure 11. Deployment to production</div>
 </div>
-<div class="paragraph">
-<p>The step to deploy to production is manual. However, ideally, it should be automatic.</p>
-</div>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -1963,8 +1879,6 @@ Ideally, these step should be fully automatic.</p>
 This step does deployment to production. On production, we assume
 that you have the infrastructure running. That is why, before you run this step, you
 must run a script that provisions the services on the production environment.
-For <code>Cloud Foundry</code>, call <code>tools/cf-helper.sh setup-prod-infra</code>.
-For Kubernetes, call <code>tools/k8s-helper.sh setup-prod-infra</code>.
 </td>
 </tr>
 </table>
@@ -1975,13 +1889,13 @@ For Kubernetes, call <code>tools/k8s-helper.sh setup-prod-infra</code>.
 <div class="ulist">
 <ul>
 <li>
-<p>Tag the Git repo with <code>prod/${version}</code>.</p>
+<p>Tag the Git repo with <code>prod/${appName}/${version}</code>.</p>
 </li>
 <li>
-<p>Download the application artifact (either a JAR for Cloud Foundry or a Docker image for Kubernetes).</p>
+<p>Upload the binary / sources / image to the PaaS</p>
 </li>
 <li>
-<p>We do Blue Green deployment:</p>
+<p>We do Blue Green deployment</p>
 <div class="ulist">
 <ul>
 <li>

@@ -1,22 +1,13 @@
 == Opinionated Implementation
 
-This section describes a full flow of the demo applications.
+This section describes a full flow of deploying an app via the deployment pipeline.
 
-IMPORTANT: Your applications need not have the same dependencies (such as `Eureka`) as this demo.
+We will use:
 
-For demo purposes, we provide Docker Compose setup with Artifactory, Concourse, and Jenkins tools.
-Regardless of the CD application, for the pipeline to pass, you need one of the following:
-
-* A Cloud Foundry instance (for example, https://run.pivotal.io/[Pivotal Web Services] or https://pivotal.io/pcf-dev[PCF Dev]).
-* A Kubernetes cluster (for example, https://github.com/kubernetes/minikube[Minikube]).
-* The infrastructure applications deployed to the JAR hosting application (for the demo, we provide Artifactory).
-* `Eureka` for Service Discovery.
-* `Stub Runner Boot` for running Spring Cloud Contract stubs.
-
-TIP: In the demos, we show you how to first build the `github-webhook` project. That is because
-the `github-analytics` needs the stubs of `github-webhook` to pass the tests. We also use
-references to the `github-analytics` project, since it contains more interesting pieces as far as testing
-is concerned.
+* A Paas instance. For example:
+** A Cloud Foundry instance (for example, https://run.pivotal.io/[Pivotal Web Services] or https://pivotal.io/pcf-dev[PCF Dev]).
+** A Kubernetes cluster (for example, https://github.com/kubernetes/minikube[Minikube]).
+* The infrastructure applications deployed to a binary storage (for the demo, we provide Artifactory).
 
 === Build
 
@@ -24,25 +15,24 @@ The following image shows the results of building the demo pipeline (which the r
 
 image::{intro-root-docs}/build.png[title="Build and upload artifacts"]
 
-In this step, we  generate a version of the pipeline. Next, we
-run unit, integration, and contract tests. Finally, we:
+In this step, the first thing we do is we generate a version of the pipeline.
 
-* Publish a fat jar of the application.
-* Publish a Spring Cloud Contract jar containing stubs of the application.
-* For Kubernetes, upload a Docker image of the application.
+If there has been a previous production deployment, we first run API compatibility check, as follows:
 
-During this phase, we run a `Maven` build by using Maven Wrapper or a `Gradle` build by using Gradle Wrapper,
-with unit and integration tests. We also tag the repository with `dev/${version}`. That way, in each
+* We search for the latest production deployment
+* The search is done via picking the latest `prod/${appName}/${version}` tag
+* We call the api compatibility task for the given language and framework
+
+Next, we run unit, integration, and contract tests. We analyze the application code, and we call the appropriate build functions,
+depending on the used language and framework. Finally, we:
+
+* Publish a binary / image / artifact of the application. In some cases there's no need to
+upload anything since sources get published
+* Publish a package containing stubs of the application.
+
+We also tag the repository with `dev/${appName}/${version}`. That way, in each
 subsequent step of the pipeline, we can retrieve the tagged version. Also, we know
 exactly which version of the pipeline corresponds to which Git hash.
-
-Once the artifact is built, we run API compatibility check, as follows:
-
-* We search for the latest production deployment.
-* We retrieve the contracts that were used by that deployment.
-* From the contracts, we generat API tests to see if the current implementation
-is fulfilling the HTTP and messaging contracts that the current production deployment
-has defined (we check backward compatibility of the API).
 
 === Test
 
@@ -52,40 +42,21 @@ image::{intro-root-docs}/test.png[title="Smoke test and rollback test on test en
 
 Here, we:
 
-* Start a RabbitMQ service in PaaS.
-* Deploying `Eureka` infrastructure application to PaaS.
-* Download the fat jar from Nexus and upload it to PaaS. We want the application
-to run in isolation (be surrounded by stubs).
-
-TIP: Currently, due to port constraints in Cloud Foundry,
-we cannot run multiple stubbed HTTP services in the cloud. To fix this issue, we run
-the application with the `smoke` Spring profile, on which you can stub out all HTTP calls to return
-a mocked response.
-
-* If the application uses a database, it gets upgraded at this point by Flyway, Liquibase,
-or any other migration tool once the application gets started.
-* From the project's Maven or Gradle build, we extract the `stubrunner.ids` property that contains
-all the `groupId:artifactId:version:classifier` notations of dependent projects for which
-the stubs should be downloaded.
-* We upload `Stub Runner Boot` and pass the extracted `stubrunner.ids` to it. That way,
-we have a running application in Cloud Foundry that downloads all the necessary stubs
-of our application.
-* From the checked-out code, we run the tests available under the `smoke` profile. In the
-case of the `GitHub Analytics` application, we trigger a message from the `GitHub Webhook`
-application's stub and send the message by RabbitMQ to GitHub Analytics. Then we check whether the
-message count has increased.
+* Start the services defined in the pipeline descriptor
+* Upload the binary / sources / image to the PaaS
+* If the application uses a database, it should get upgraded by a migration tool upon application startup
+* If requested, the deployment pipeline can surround the deployed application with stubs of the
+applications it communicates with
+* From the checked-out code, we run the smoke tests
 * Once the tests pass, we search for the last production release. Once the application
-is deployed to production, we tag it with `prod/${version}`. If there is no such tag
+is deployed to production, we tag it with `prod/${appName}/${version}`. If there is no such tag
 (there was no production release), no rollback tests are run. If there was
 a production release, the tests get executed.
 * Assuming that there was a production release, we check out the code that corresponds to that
-release (we check out the tag), download the appropriate artifact (either a JAR for Cloud Foundry
-or a Docker image for Kubernetes), and we upload
-it to PaaS.
-
-IMPORTANT: The old artifact runs against the *NEW* version of the database.
-
-We run the old `smoke` tests against the freshly deployed application, surrounded by stubs.
+release (we check out the tag), download the appropriate artifact and upload it to the PaaS
+(or just push the sources).
+* The old artifact runs against the *NEW* version of the database.
+* We run the old `smoke` tests against the freshly deployed application, surrounded by stubs.
 If those tests pass, we have a high probability that the application is backwards compatible.
 * The default behavior is that, after all of those steps, the user can manually click to deploy the
 application to a stage environment.
@@ -98,18 +69,9 @@ image::{intro-root-docs}/stage.png[title="End to end tests on stage environment"
 
 Here, we:
 
-* Start a RabbitMQ service in PaaS.
-* Deploy `Eureka` infrastructure application to PaaS.
-* Download the artifact (either a JAR for Cloud Foundry or a Docker image for Kubernetes)
-upload it to PaaS.
-
-Next, we have a manual step in which, from the checked-out code, we run the tests available under the `e2e` profile. In the
-case of the `GitHub Analytics` application, we send an HTTP message to the GitHub Analytics endpoint. Then we check whether
-the received message count has increased.
-
-By default, this step is manual, because the stage environment is often shared between
-teams and some preparations on databases and infrastructure have to take place before the tests can be run.
-Ideally, these step should be fully automatic.
+* Start the services defined in the pipeline descriptor
+* Upload the binary / sources / image to the PaaS
+* From the checked-out code, we run the end to end tests
 
 === Prod
 
@@ -117,19 +79,15 @@ The following image shows the result of deploying to a production environment:
 
 image::{intro-root-docs}/prod.png[title="Deployment to production"]
 
-The step to deploy to production is manual. However, ideally, it should be automatic.
-
 IMPORTANT: This step does deployment to production. On production, we assume
 that you have the infrastructure running. That is why, before you run this step, you
 must run a script that provisions the services on the production environment.
-For `Cloud Foundry`, call `tools/cf-helper.sh setup-prod-infra`.
-For Kubernetes, call `tools/k8s-helper.sh setup-prod-infra`.
 
 Here, we:
 
-* Tag the Git repo with `prod/${version}`.
-* Download the application artifact (either a JAR for Cloud Foundry or a Docker image for Kubernetes).
-* We do Blue Green deployment:
+* Tag the Git repo with `prod/${appName}/${version}`.
+* Upload the binary / sources / image to the PaaS
+* We do Blue Green deployment
 ** For Cloud Foundry:
 *** We rename the current instance of the application (for example, `myService` to `myService-venerable`).
 *** We deploy the new instance of the app under the `fooService` name
