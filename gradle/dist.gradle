@@ -27,7 +27,9 @@ distributions {
 					"**/.idea/**", "**/target/**", "**/*.iml", "**/out/**", "**/.gradle/**",
 					"**/docs/**", "**/docs-sources/**", "**/dist/**"
 				String gitignore = new File(project.rootDir, ".gitignore").text
-				exclude gitignore.readLines().findAll { it && !it.startsWith("#") }.collect { "**/${it}"}
+				exclude gitignore.readLines().findAll {
+					it && !it.startsWith("#")
+				}.collect { "**/${it}" }
 			}
 			from(project.buildDir) {
 				include "VERSION"

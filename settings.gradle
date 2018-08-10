@@ -1,2 +1,2 @@
-rootProject.name="scripts"
+rootProject.name = "scripts"
 include 'docs', 'docs-sources'
