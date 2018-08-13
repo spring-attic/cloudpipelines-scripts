@@ -596,7 +596,7 @@ needs. The following bash script shows how to do so:</p>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ # pass the branch (e.g. master) or a particular tag (e.g. v1.0.0.RELEASE)
 $ CLOUD_PIPELINES_RELEASE=...
-$ curl -LOk https://github.com/cloudpipelines/scripts/archive/${CLOUD_PIPELINES_RELEASE}.zip
+$ curl -LOk https://github.com/CloudPipelines/scripts/archive/${CLOUD_PIPELINES_RELEASE}.zip
 $ unzip ${CLOUD_PIPELINES_RELEASE}.zip
 $ cd spring-cloud-pipelines-${CLOUD_PIPELINES_RELEASE}
 $ git init
@@ -623,7 +623,7 @@ pipeline and the runtime to execute pipeline steps.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/how.png" alt="how">
+<img src="https://raw.githubusercontent.com/CloudPipelines/scripts/master/docs/images/intro/how.png" alt="how">
 </div>
 <div class="title">Figure 1. How Cloud Pipelines works</div>
 </div>
@@ -773,13 +773,13 @@ and it is up to the project to set up the pipeline.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/flow_concourse.png" alt="flow concourse">
+<img src="https://raw.githubusercontent.com/CloudPipelines/scripts/master/docs/images/intro/flow_concourse.png" alt="flow concourse">
 </div>
 <div class="title">Figure 2. Flow in Concourse</div>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/flow.png" alt="flow">
+<img src="https://raw.githubusercontent.com/CloudPipelines/scripts/master/docs/images/intro/flow.png" alt="flow">
 </div>
 <div class="title">Figure 3. Flow in Jenkins</div>
 </div>
@@ -879,7 +879,7 @@ staging (against the whole system).</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/monolith.png" alt="monolith">
+<img src="https://raw.githubusercontent.com/CloudPipelines/scripts/master/docs/images/intro/monolith.png" alt="monolith">
 </div>
 <div class="title">Figure 4. Two monolithic applications deployed for end to end testing</div>
 </div>
@@ -894,7 +894,7 @@ for a feature.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/many_microservices.png" alt="many microservices">
+<img src="https://raw.githubusercontent.com/CloudPipelines/scripts/master/docs/images/intro/many_microservices.png" alt="many microservices">
 </div>
 <div class="title">Figure 5. Many microservices deployed in different versions</div>
 </div>
@@ -955,7 +955,7 @@ anytime before deployment to production.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/stubbed_dependencies.png" alt="stubbed dependencies">
+<img src="https://raw.githubusercontent.com/CloudPipelines/scripts/master/docs/images/intro/stubbed_dependencies.png" alt="stubbed dependencies">
 </div>
 <div class="title">Figure 6. Execute tests on a deployed microservice on stubbed dependencies</div>
 </div>
@@ -966,7 +966,7 @@ microservices. That way, the testing setup looks like the following image:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/stubbed_dependencies.png" alt="stubbed dependencies">
+<img src="https://raw.githubusercontent.com/CloudPipelines/scripts/master/docs/images/intro/stubbed_dependencies.png" alt="stubbed dependencies">
 </div>
 <div class="title">Figure 7. We&#8217;re testing microservices in isolation</div>
 </div>
@@ -1729,7 +1729,7 @@ the CI jobs (that is, build and test) and prepare the JSON definitions of Spinna
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/build.png" alt="build">
+<img src="https://raw.githubusercontent.com/CloudPipelines/scripts/master/docs/images/intro/build.png" alt="build">
 </div>
 <div class="title">Figure 8. Build and upload artifacts</div>
 </div>
@@ -1780,7 +1780,7 @@ exactly which version of the pipeline corresponds to which Git hash.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/test.png" alt="test">
+<img src="https://raw.githubusercontent.com/CloudPipelines/scripts/master/docs/images/intro/test.png" alt="test">
 </div>
 <div class="title">Figure 9. Smoke test and rollback test on test environment</div>
 </div>
@@ -1837,7 +1837,7 @@ application to a stage environment.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/stage.png" alt="stage">
+<img src="https://raw.githubusercontent.com/CloudPipelines/scripts/master/docs/images/intro/stage.png" alt="stage">
 </div>
 <div class="title">Figure 10. End to end tests on stage environment</div>
 </div>
@@ -1865,7 +1865,7 @@ application to a stage environment.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/prod.png" alt="prod">
+<img src="https://raw.githubusercontent.com/CloudPipelines/scripts/master/docs/images/intro/prod.png" alt="prod">
 </div>
 <div class="title">Figure 11. Deployment to production</div>
 </div>
@@ -2556,7 +2556,7 @@ pull to update it. The following command clones the project:</p>
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ git clone --recursive https://github.com/cloudpipelines/scripts.git</code></pre>
+<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ git clone --recursive https://github.com/CloudPipelines/scripts.git</code></pre>
 </div>
 </div>
 </div>

@@ -60,7 +60,7 @@ pull to update it. The following command clones the project:
 ====
 [source,bash]
 ----
-$ git clone --recursive https://github.com/cloudpipelines/scripts.git
+$ git clone --recursive https://github.com/CloudPipelines/scripts.git
 ----
 ====
 

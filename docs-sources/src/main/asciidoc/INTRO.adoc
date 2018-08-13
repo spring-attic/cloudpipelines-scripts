@@ -48,7 +48,7 @@ needs. The following bash script shows how to do so:
 ----
 $ # pass the branch (e.g. master) or a particular tag (e.g. v1.0.0.RELEASE)
 $ CLOUD_PIPELINES_RELEASE=...
-$ curl -LOk https://github.com/cloudpipelines/scripts/archive/${CLOUD_PIPELINES_RELEASE}.zip
+$ curl -LOk https://github.com/CloudPipelines/scripts/archive/${CLOUD_PIPELINES_RELEASE}.zip
 $ unzip ${CLOUD_PIPELINES_RELEASE}.zip
 $ cd spring-cloud-pipelines-${CLOUD_PIPELINES_RELEASE}
 $ git init
