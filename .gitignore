@@ -37,3 +37,4 @@ credentials-cf.yml
 credentials-k8s.yml
 pom.xml.versionsBackup
 zsdoc/data
+.asciidoctor

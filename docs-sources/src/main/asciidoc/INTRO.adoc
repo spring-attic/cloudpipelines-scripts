@@ -351,43 +351,27 @@ code repository and read `src//main/bash/README.adoc`.
 [[build-and-deployment]]
 === Build and Deployment
 
-The following text image (created via https://textart.io/sequence[textart.io]) shows a high-level overview:
+The following text image shows a high-level overview:
 
-[source,options="nowrap"]
+[plantuml, build-and-deployment, png]
 ----
-+---------+                      +-----------+                      +-----------+ +-------+ +---------------+
-| script  |                      | language  |                      | framework | | paas  | | customization |
-+---------+                      +-----------+                      +-----------+ +-------+ +---------------+
-     |                                 |                                  |           |             |
-     | What is your language?          |                                  |           |             |
-     |-------------------------------->|                                  |           |             |
-     |                                 |                                  |           |             |
-     |       I'm written in X language |                                  |           |             |
-     |<--------------------------------|                                  |           |             |
-     |                                 |                                  |           |             |
-     |                                 | What framework do you use?       |           |             |
-     |                                 |--------------------------------->|           |             |
-     |                                 |                                  |           |             |
-     |                                 |                I use Y framework |           |             |
-     |<-------------------------------------------------------------------|           |             |
-     |                                 |                                  |           |             |
-     | I know that you use Z PAAS?     |                                  |           |             |
-     |------------------------------------------------------------------------------->|             |
-     |                                 |                                  |           |             |
-     |                                 |  Here are all Z-related deployment functions |             |
-     |<-------------------------------------------------------------------------------|             |
-     |                                 |                                  |           |             |
-     | Anything custom to override in bash?                               |           |             |
-     |--------------------------------------------------------------------------------------------->|
-     |                                 |                                  |           |             |
-     |                                 |                                  |        Not this time... |
-     |<---------------------------------------------------------------------------------------------|
-     |                                 |                                  |           |             |
-     | Ok, run the script              |                                  |           |             |
-     |-------------------              |                                  |           |             |
-     |                  |              |                                  |           |             |
-     |<------------------              |                                  |           |             |
-     |                                 |                                  |           |             |
+script->pipeline: [source pipeline.sh]
+note right of pipeline: loading functions, env vars
+note left of pipeline: hopefully all functions get overridden \notherwise nothing will work
+pipeline->projectType: Source the [projectType/pipeline-projectType.sh]
+note left of projectType: What do we have here...? \nA [mvnw] file, \nit has to be a [jvm] project
+projectType->language: Source [pipeline-jvm.sh]
+language->framework: Maven or Gradle?
+note right of framework: There's a [mvnw] file? \nSo the [PROJECT_TYPE] must be [maven]
+framework->pipeline: It's a Maven project
+pipeline->paas: The [PAAS_TYPE] is [cf] so I'll source [pipeline-cf.sh]
+note right of paas: Loading all \ndeployment-related functions
+note left of pipeline: Ok, we know that it's Maven \nand should be deployed to CF
+pipeline->custom: Try to source [custom/build_and_upload.sh]
+note right of custom: No such file so \nnothing custom to be done
+note right of script: All build related functions \n overridden by language / framework scripts
+note right of script: All deploy related functions \n overridden by paas scripts
+script->script: run [build] function
 ----
 
 Before we run the script, we need to answer a few questions related to your repository:
@@ -397,67 +381,19 @@ Before we run the script, we need to answer a few questions related to your repo
 * what PAAS do you use (for example, `cf` or `k8s`)?
 
 
-The following sequence diagram (created via https://textart.io/sequence[textart.io]) describes how the sourcing of bash scripts takes place:
+The following sequence diagram describes how the sourcing of bash scripts takes place:
 
-[source,options="nowrap"]
+[plantuml, sourcing, png]
 ----
-+---------+                                         +-----------+                                            +-------------+                   +-----------+            +-----------+                                   +-------+                            +---------+
-| script  |                                         | pipeline  |                                            | projectType |                   | language  |            | framework |                                   | paas  |                            | custom  |
-+---------+                                         +-----------+                                            +-------------+                   +-----------+            +-----------+                                   +-------+                            +---------+
-     |                                                    |                                                         |                                |                        |                                             |                                     |
-     | [source pipeline.sh]                               |                                                         |                                |                        |                                             |                                     |
-     |--------------------------------------------------->|                                                         |                                |                        |                                             |                                     |
-     |                                                    | ------------------------------\                         |                                |                        |                                             |                                     |
-     |                                                    |-| loading functions, env vars |                         |                                |                        |                                             |                                     |
-     |                                                    | |-----------------------------|                         |                                |                        |                                             |                                     |
-     |         -----------------------------------------\ |                                                         |                                |                        |                                             |                                     |
-     |         | hopefully all functions get overridden |-|                                                         |                                |                        |                                             |                                     |
-     |         | otherwise nothing will work            | |                                                         |                                |                        |                                             |                                     |
-     |         |----------------------------------------| |                                                         |                                |                        |                                             |                                     |
-     |                                                    | Source the [projectType/pipeline-projectType.sh]        |                                |                        |                                             |                                     |
-     |                                                    |-------------------------------------------------------->|                                |                        |                                             |                                     |
-     |                                                    |                        -------------------------------\ |                                |                        |                                             |                                     |
-     |                                                    |                        | What do we have here...?     |-|                                |                        |                                             |                                     |
-     |                                                    |                        | A [mvnw] file,               | |                                |                        |                                             |                                     |
-     |                                                    |                        | it has to be a [jvm] project | |                                |                        |                                             |                                     |
-     |                                                    |                        |------------------------------| | Source [pipeline-jvm.sh]       |                        |                                             |                                     |
-     |                                                    |                                                         |------------------------------->|                        |                                             |                                     |
-     |                                                    |                                                         |                                |                        |                                             |                                     |
-     |                                                    |                                                         |                                | Maven or Gradle?       |                                             |                                     |
-     |                                                    |                                                         |                                |----------------------->|                                             |                                     |
-     |                                                    |                                                         |                                |                        | ----------------------------------------\   |                                     |
-     |                                                    |                                                         |                                |                        |-| There's a [mvnw] file?                |   |                                     |
-     |                                                    |                                                         |                                |                        | | So the [PROJECT_TYPE] must be [maven] |   |                                     |
-     |                                                    |                                                         |                                |                        | |---------------------------------------|   |                                     |
-     |                                                    |                                                         |                                |   It's a Maven project |                                             |                                     |
-     |                                                    |<------------------------------------------------------------------------------------------------------------------|                                             |                                     |
-     |                                                    |                                                         |                                |                        |                                             |                                     |
-     |                                                    | The [PAAS_TYPE] is [cf] so I'll source [pipeline-cf.sh] |                                |                        |                                             |                                     |
-     |                                                    |---------------------------------------------------------------------------------------------------------------------------------------------------------------->|                                     |
-     |                                                    |                                                         |                                |                        |                                             | -------------------------------\    |
-     |                                                    |                                                         |                                |                        |                                             |-| Loading all                  |    |
-     |                                                    |                                                         |                                |                        |                                             | | deployment-related functions |    |
-     |                   -------------------------------\ |                                                         |                                |                        |                                             | |------------------------------|    |
-     |                   | Ok, we know that it's Maven  |-|                                                         |                                |                        |                                             |                                     |
-     |                   | and should be deployed to CF | |                                                         |                                |                        |                                             |                                     |
-     |                   |------------------------------| |                                                         |                                |                        |                                             |                                     |
-     |                                                    | Try to source [custom/build_and_upload.sh]              |                                |                        |                                             |                                     |
-     |                                                    |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>|
-     |                                                    |                                                         |                                |                        |                                             |                                     | ----------------------------\
-     |                                                    |                                                         |                                |                        |                                             |                                     |-| No such file so           |
-     |                                                    |                                                         |                                |                        |                                             |                                     | | nothing custom to be done |
-     | ---------------------------------------------\     |                                                         |                                |                        |                                             |                                     | |---------------------------|
-     |-| All build related functions                |     |                                                         |                                |                        |                                             |                                     |
-     | | overridden by language / framework scripts |     |                                                         |                                |                        |                                             |                                     |
-     | -------------------------------\-------------|     |                                                         |                                |                        |                                             |                                     |
-     |-| All deploy related functions |                   |                                                         |                                |                        |                                             |                                     |
-     | | overridden by paas scripts   |                   |                                                         |                                |                        |                                             |                                     |
-     | |------------------------------|                   |                                                         |                                |                        |                                             |                                     |
-     | run [build] function                               |                                                         |                                |                        |                                             |                                     |
-     |---------------------                               |                                                         |                                |                        |                                             |                                     |
-     |                    |                               |                                                         |                                |                        |                                             |                                     |
-     |<--------------------                               |                                                         |                                |                        |                                             |                                     |
-     |                                                    |                                                         |                                |                        |                                             |                                     |
+script->language: What is your language?
+language->script: I'm written in X language
+language->framework: What framework do you use?
+framework->script: I use Y framework
+script->paas: I know that you use Z PAAS?
+paas->script: Here are all Z-related deployment functions
+script->customization: Anything custom to override in bash?
+customization->script: Not this time...
+script->script: Ok, run the script
 ----
 
 The process works as follows:

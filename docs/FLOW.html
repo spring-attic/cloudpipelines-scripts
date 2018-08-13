@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.7.1">
-<title>Customizing the Project</title>
+<title>The Flow</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -435,81 +435,302 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#customizing-the-project">1. Customizing the Project</a>
 <ul class="sectlevel2">
-<li><a href="#customization-overriding-scripts">1.1. Overriding Scripts</a></li>
+<li><a href="#the-flow">1. The Flow</a></li>
+<li><a href="#vocabulary">2. Vocabulary</a>
+<ul class="sectlevel3">
+<li><a href="#environments">2.1. Environments</a></li>
+<li><a href="#tests">2.2. Tests</a></li>
+<li><a href="#testing-against-stubs">2.3. Testing against Stubs</a></li>
+<li><a href="#general-view">2.4. General View</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="customizing-the-project">1. Customizing the Project</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="the-flow">1. The Flow</h3>
 <div class="paragraph">
-<p>Cloud Pipelines offers a number of ways to customize a Pipelines project:</p>
+<p>The following images show the flow of the opinionated pipeline:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/flow_concourse.png" alt="flow concourse">
+</div>
+<div class="title">Figure 1. Flow in Concourse</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/flow.png" alt="flow">
+</div>
+<div class="title">Figure 2. Flow in Jenkins</div>
+</div>
+<div class="paragraph">
+<p>We first describe the overall concept behind the flow and then
+split it into pieces and describe each piece independently.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="vocabulary">2. Vocabulary</h3>
+<div class="paragraph">
+<p>This section defines some common vocabulary. We describe four typical
+environments in terms of running the pipeline.</p>
+</div>
+<div class="sect3">
+<h4 id="environments">2.1. Environments</h4>
+<div class="paragraph">
+<p>We typically encounter the following environments:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#customization-overriding-scripts">Overriding Scripts</a></p>
+<p><strong>build</strong> environment is a machine where the building of the application takes place.
+It is a continuous integration or continuous delivery tool worker.</p>
 </li>
 <li>
-<p><a href="#customization-overriding-pipelines">[customization-overriding-pipelines]</a></p>
+<p><strong>test</strong> is an environment where you can deploy an application to test it. It does not
+resemble production, because we cannot be sure of its state (which application is deployed
+there and in which version). It can be used by multiple teams at the same time.</p>
 </li>
 <li>
-<p><a href="#customization-picking-features">[customization-picking-features]</a></p>
+<p><strong>stage</strong> is an environment that does resemble production. Most likely, applications
+are deployed there in versions that correspond to those deployed to production.
+Typically, staging databases hold (often obfuscated) production data. Most
+often, this environment is a single environment shared between many teams. In other
+words, in order to run some performance and user acceptance tests, you have to block
+and wait until the environment is free.</p>
+</li>
+<li>
+<p><strong>prod</strong> is the production environment where we want our tested applications to be
+deployed for our customers.</p>
 </li>
 </ul>
 </div>
-<div class="sect2">
-<h3 id="customization-overriding-scripts">1.1. Overriding Scripts</h3>
-<div class="paragraph">
-<p>Since Cloud Pipelines evolves, you may want to pull the most recent changes to your
-Cloud Pipelines fork. To not have merge conflicts, the best approach
-to extending the functionality is to use a separate script with customizations.</p>
 </div>
+<div class="sect3">
+<h4 id="tests">2.2. Tests</h4>
 <div class="paragraph">
-<p>When we execute a script that represents a step (for example, a script named <code>build_and_upload.sh</code>),
-after we source all the deployment and build-specific scripts (such as <code>pipeline-cf.sh</code>
-and <code>projectType/pipeline-jvm.sh</code> with <code>projectType/pipeline-gradle.sh</code>), we set
-a hook that lets you customize the behavior. If the script that we run
-is <code>src//main/bash/build_and_upload.sh</code>, we search for a script in the
-Cloud Pipelines repository under <code>src//main/bash/custom/build_and_upload.sh</code>,
-and we source that script just before running any functions.</p>
+<p>We typically encounter the following kinds of tests:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Unit tests</strong>: Tests that run on the application during the build phase.
+No integrations with databases or HTTP server stubs or other resources take place.
+Generally speaking, your application should have plenty of these tests to provide fast
+feedback about whether your features work.</p>
+</li>
+<li>
+<p><strong>Integration tests</strong>: Tests that run on the built application during the build phase.
+Integrations with in-memory databases and HTTP server stubs take place. According to the
+<a href="https://martinfowler.com/bliki/TestPyramid.html">test pyramid</a>, in most cases, you should
+not have many of these kind of tests.</p>
+</li>
+<li>
+<p><strong>Smoke tests</strong>: Tests that run on a deployed application. The concept of these tests
+is to check that the crucial parts of your application are working properly. If you have 100 features
+in your application but you gain the most money from five features, you could write smoke tests
+for those five features. We are talking about smoke tests of an application, not of
+the whole system. In our understanding inside the opinionated pipeline, these tests are
+executed against an application that is surrounded with stubs.</p>
+</li>
+<li>
+<p><strong>End-to-end tests</strong>: Tests that run on a system composed of multiple applications.
+These tests ensure that the tested feature works when the whole system is set up.
+Due to the fact that it takes a lot of time, effort, and resources to maintain such an environment
+and that these tests are often unreliable (due to many different moving pieces, such as network,
+database, and others), you should have a handful of those tests. They should be only for critical parts of your business.
+Since only production is the key verifier of whether your feature works, some companies
+do not even want to have these tests and move directly to deployment to production. When your
+system contains KPI monitoring and alerting, you can quickly react when your deployed application
+does not behave properly.</p>
+</li>
+<li>
+<p><strong>Performance testing</strong>: Tests run on an application or set of applications
+to check if your system can handle a big load. In the case of our opinionated pipeline,
+these tests can run either on test (against a stubbed environment) or on
+staging (against the whole system).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="testing-against-stubs">2.3. Testing against Stubs</h4>
 <div class="paragraph">
-<p>The following example shows such a customization:</p>
+<p>Before we go into the details of the flow, consider the example described by the following image:</p>
 </div>
-<div class="exampleblock">
-<div class="title">Example 1. custom/build_and_upload.sh</div>
+<div class="imageblock">
 <div class="content">
-<div class="listingblock">
-<div class="content">
-<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
-
-function build() {
-    echo "I am executing a custom build function"
-}
-
-export -f build</code></pre>
+<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/monolith.png" alt="monolith">
 </div>
-</div>
-</div>
+<div class="title">Figure 3. Two monolithic applications deployed for end to end testing</div>
 </div>
 <div class="paragraph">
-<p>when the <code>build</code> function is called for our Gradle project, instead of
-calling the Gradle build process, we echo the following text: <code>I am executing a custom build function</code>.</p>
+<p>When you have only a handful of applications, end-to-end testing is beneficial.
+From the operations perspective, it is maintainable for a finite number of deployed instances.
+From the developers perspective, it is nice to verify the whole flow in the system
+for a feature.</p>
 </div>
+<div class="paragraph">
+<p>In the case of microservices, the scale starts to be a problem, as the following image shows:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/many_microservices.png" alt="many microservices">
+</div>
+<div class="title">Figure 4. Many microservices deployed in different versions</div>
+</div>
+<div class="paragraph">
+<p>The following questions arise:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Should I queue deployments of microservices on one testing environment or should I have an environment per microservice?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If I queue deployments, people have to wait for hours to have their tests run. That can be a problem</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>To remove that issue, I can have an environment for each microservice.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Who will pay the bills? (Imagine 100 microservices, each having each own environment).</p>
+</li>
+<li>
+<p>Who will support each of those environments?</p>
+</li>
+<li>
+<p>Should we spawn a new environment each time we execute a new pipeline and then wrap it up or should we have
+them up and running for the whole day?</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>In which versions should I deploy the dependent microservices - development or production versions?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If I have development versions, I can test my application against a feature that is not yet on production.
+That can lead to exceptions in production.</p>
+</li>
+<li>
+<p>If I test against production versions, I can never test against a feature under development
+anytime before deployment to production.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>One of the possibilities of tackling these problems is to not do end-to-end tests.</p>
+</div>
+<div class="paragraph">
+<p>The following image shows one solution to the problem, in the form of stubbed dependencies:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/stubbed_dependencies.png" alt="stubbed dependencies">
+</div>
+<div class="title">Figure 5. Execute tests on a deployed microservice on stubbed dependencies</div>
+</div>
+<div class="paragraph">
+<p>If we stub out all the dependencies of our application, most of the problems presented earlier
+disappear. There is no need to start and setup the infrastructure required by the dependent
+microservices. That way, the testing setup looks like the following image:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://raw.githubusercontent.com/cloudpipelines/scripts/master/docs/images/intro/stubbed_dependencies.png" alt="stubbed dependencies">
+</div>
+<div class="title">Figure 6. We&#8217;re testing microservices in isolation</div>
+</div>
+<div class="paragraph">
+<p>Such an approach to testing and deployment gives the following benefits
+(thanks to the usage of <a href="http://cloud.spring.io/spring-cloud-contract/spring-cloud-contract.html">Spring Cloud Contract</a>):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>No need to deploy dependent services.</p>
+</li>
+<li>
+<p>The stubs used for the tests run on a deployed microservice are the same as those used during integration tests.</p>
+</li>
+<li>
+<p>Those stubs have been tested against the application that produces them (see <a href="http://cloud.spring.io/spring-cloud-contract/spring-cloud-contract.html">Spring Cloud Contract</a> for more information).</p>
+</li>
+<li>
+<p>We do not have many slow tests running on a deployed application, so the pipeline gets executed much faster.</p>
+</li>
+<li>
+<p>We do not have to queue deployments. We test in isolation so that pipelines do not interfere with each other.</p>
+</li>
+<li>
+<p>We do not have to spawn virtual machines each time for deployment purposes.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>However, this approach brings the following challenges:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>No end-to-end tests before production. You do not have full certainty that a feature is working.</p>
+</li>
+<li>
+<p>The first time the applications interact in a real way is on production.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As with every solution, it has its benefits and drawbacks. The opinionated pipeline
+lets you configure whether you want to follow this flow or not.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="general-view">2.4. General View</h4>
+<div class="paragraph">
+<p>The general view behind this deployment pipeline is to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Test the application in isolation.</p>
+</li>
+<li>
+<p>Test the backwards compatibility of the application, in order to roll it back if necessary.</p>
+</li>
+<li>
+<p>Allow testing of the packaged application in a deployed environment.</p>
+</li>
+<li>
+<p>Allow user acceptance tests and performance tests in a deployed environment.</p>
+</li>
+<li>
+<p>Allow deployment to production.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The pipeline could have been split to more steps, but it seems that all of the aforementioned
+actions fit nicely in our opinionated proposal.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-08-10 09:50:33 CEST
+Last updated 2018-08-13 11:41:14 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
