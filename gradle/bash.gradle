@@ -130,7 +130,7 @@ task shellcheck {
 	}
 }
 
-task initalizeSubModules() {
+task initlializeSubModules() {
 	doLast {
 		exec {
 			commandLine "bash", new File(project.rootDir, "tools/build-helper.sh").path, "initialize-submodules"
@@ -171,7 +171,7 @@ task bats {
 shellcheck.dependsOn("installShellcheckIfMissing")
 test.dependsOn("shellcheck")
 
-installBatsIfMissing.dependsOn("initalizeSubModules")
+installBatsIfMissing.dependsOn("initlializeSubModules")
 bats.dependsOn("installBatsIfMissing")
 test.dependsOn("bats")
 test.dependsOn("zsd")
