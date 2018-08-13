@@ -595,10 +595,10 @@ needs. The following bash script shows how to do so:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ # pass the branch (e.g. master) or a particular tag (e.g. v1.0.0.RELEASE)
-$ SC_PIPELINES_RELEASE=...
-$ curl -LOk https://github.com/spring-cloud/spring-cloud-pipelines/archive/${SC_PIPELINES_RELEASE}.zip
-$ unzip ${SC_PIPELINES_RELEASE}.zip
-$ cd spring-cloud-pipelines-${SC_PIPELINES_RELEASE}
+$ CLOUD_PIPELINES_RELEASE=...
+$ curl -LOk https://github.com/cloudpipelines/scripts/archive/${CLOUD_PIPELINES_RELEASE}.zip
+$ unzip ${CLOUD_PIPELINES_RELEASE}.zip
+$ cd spring-cloud-pipelines-${CLOUD_PIPELINES_RELEASE}
 $ git init
 $ # modify the pipelines to suit your needs
 $ git add .
@@ -2556,7 +2556,7 @@ pull to update it. The following command clones the project:</p>
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ git clone --recursive https://github.com/spring-cloud/spring-cloud-pipelines.git</code></pre>
+<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ git clone --recursive https://github.com/cloudpipelines/scripts.git</code></pre>
 </div>
 </div>
 </div>
