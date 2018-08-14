@@ -1,4 +1,4 @@
-= Cloud Pipelines
+= Cloud Pipelines Scripts
 
 This project tries to solve the following problems:
 
@@ -8,6 +8,9 @@ This project tries to solve the following problems:
 
 A common way of running, configuring, and deploying applications lowers support costs
 and time needed by new developers to blend in when they change projects.
+
+It contains bash scripts that allow you to build, test and deploy
+your applications in various languages and frameworks.
 
 include::INTRO.adoc[]
 

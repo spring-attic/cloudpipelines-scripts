@@ -25,15 +25,8 @@ profile setting, and so on. That way, if you create a new application,
 your application can follow those conventions and the deployment pipeline works.
 Since no one pipeline can serve the purposes of all
 teams in a company, we believe that minor deployment pipeline tweaking should take place.
-That is why we allow the usage of that `sc-pipelines.yml` descriptor, which allows for
+That is why we allow the usage of that `cloud-pipelines.yml` descriptor, which allows for
 provide some customization.
-
-From the pipeline visualization perspective, we have prepared templates for Concourse
-and Jenkins (through the Jenkins Job DSL and Jenkinsfile). That means you can reuse them
-immediately to visualize a deployment pipeline. If you use some other tool for
-continuous delivery, you can set the visualization yourself and reference the
-bash scripts for each step. In other words, Cloud Pipelines can be reused
-with any continuous delivery tool.
 
 ==== How to Use It
 
@@ -140,6 +133,8 @@ parameter, which contains the list of repositories.
 * For Concourse, call `fly` and set the
 pipeline for every repository.
 
+To achieve this you can use the https://github.com/spring-cloud/project-crawler/[Project Crawler] library.
+
 TIP: We recommend using Cloud Pipelines this way.
 
 ==== A Pipeline for Each Repository
@@ -151,18 +146,11 @@ the pipeline definitions (the bash scripts), so the
 only piece of logic that needs to be in your application's
 repository is the pipeline definition.
 
-For Jenkins, you need to either set up the `Jenkinsfile`
-or the jobs by using the Jenkins Job DSL plugin in your repo.
-Then, in Jenkins, whenever you set up a new pipeline for a repository,
-you can reference the pipeline definition in that repo.
-For Concourse, each project contains its own pipeline steps,
-and it is up to the project to set up the pipeline.
-
 include::FLOW.adoc[]
 
 === Pipeline Descriptor
 
-Each application can contain a file (called `sc-pipelines.yml`) with the following structure:
+Each application can contain a file (called `cloud-pipelines.yml`) with the following structure:
 
 ====
 [source,yaml]

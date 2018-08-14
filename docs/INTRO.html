@@ -516,16 +516,8 @@ profile setting, and so on. That way, if you create a new application,
 your application can follow those conventions and the deployment pipeline works.
 Since no one pipeline can serve the purposes of all
 teams in a company, we believe that minor deployment pipeline tweaking should take place.
-That is why we allow the usage of that <code>sc-pipelines.yml</code> descriptor, which allows for
+That is why we allow the usage of that <code>cloud-pipelines.yml</code> descriptor, which allows for
 provide some customization.</p>
-</div>
-<div class="paragraph">
-<p>From the pipeline visualization perspective, we have prepared templates for Concourse
-and Jenkins (through the Jenkins Job DSL and Jenkinsfile). That means you can reuse them
-immediately to visualize a deployment pipeline. If you use some other tool for
-continuous delivery, you can set the visualization yourself and reference the
-bash scripts for each step. In other words, Cloud Pipelines can be reused
-with any continuous delivery tool.</p>
 </div>
 <div class="sect3">
 <h4 id="how-to-use-it"><a class="link" href="#how-to-use-it">1.2.1. How to Use It</a></h4>
@@ -684,6 +676,9 @@ pipeline for every repository.</p>
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>To achieve this you can use the <a href="https://github.com/spring-cloud/project-crawler/">Project Crawler</a> library.</p>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -706,14 +701,6 @@ its code. Cloud Pipelines clones the code with
 the pipeline definitions (the bash scripts), so the
 only piece of logic that needs to be in your application&#8217;s
 repository is the pipeline definition.</p>
-</div>
-<div class="paragraph">
-<p>For Jenkins, you need to either set up the <code>Jenkinsfile</code>
-or the jobs by using the Jenkins Job DSL plugin in your repo.
-Then, in Jenkins, whenever you set up a new pipeline for a repository,
-you can reference the pipeline definition in that repo.
-For Concourse, each project contains its own pipeline steps,
-and it is up to the project to set up the pipeline.</p>
 </div>
 </div>
 </div>
@@ -998,7 +985,7 @@ actions fit nicely in our opinionated proposal.</p>
 <div class="sect2">
 <h3 id="pipeline-descriptor"><a class="link" href="#pipeline-descriptor">1.5. Pipeline Descriptor</a></h3>
 <div class="paragraph">
-<p>Each application can contain a file (called <code>sc-pipelines.yml</code>) with the following structure:</p>
+<p>Each application can contain a file (called <code>cloud-pipelines.yml</code>) with the following structure:</p>
 </div>
 <div class="exampleblock">
 <div class="content">
