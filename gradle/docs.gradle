@@ -69,6 +69,9 @@ asciidoctor {
 		parse: 'false',
 		nofooter: '',
 		sectlinks: 'true',
+		'branch': branch,
+		'org': ghOrg,
+		'repo': repo,
 		'allow-uri-read': '',
 		'docs-base-url': docsBaseUrl,
 		'intro-root-docs': "${docsBaseUrl}/docs/images/intro"

@@ -64,6 +64,10 @@ To keep your repository aligned with the changes in the upstream repository, you
 clone the repository. To not have many merge conflicts, we recommend using the `custom`
 folder hooks to override functions.
 
+Cloud Pipelines Scripts contains bash scripts that are required at runtime of
+execution of a pipeline. If you want to read their documentation, it's
+available under https://github.com/{org}/{repo}/blob/{branch}/src/main/bash/README.adoc[`src/main/bash/README.adoc`] file of Cloud Pipelines repository.
+
 ==== How It Works
 
 As the following image shows, Cloud Pipelines contains logic to generate a
