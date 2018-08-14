@@ -68,6 +68,8 @@ asciidoctor {
 		idseparator: '-',
 		safe: 'unsafe',
 		parse: 'false',
+		nofooter: '',
+		sectlinks: 'true',
 		'allow-uri-read': '',
 		'docs-base-url': docsBaseUrl,
 		'intro-root-docs': "${docsBaseUrl}/docs/images/intro"

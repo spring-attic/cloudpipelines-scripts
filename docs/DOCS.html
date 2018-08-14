@@ -532,7 +532,7 @@ and time needed by new developers to blend in when they change projects.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="introduction">1. Introduction</h2>
+<h2 id="introduction"><a class="link" href="#introduction">1. Introduction</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section describes the rationale
@@ -554,7 +554,7 @@ Cloud Pipelines that you think best suit your needs.
 </table>
 </div>
 <div class="sect2">
-<h3 id="five-second-introduction">1.1. Five-second Introduction</h3>
+<h3 id="five-second-introduction"><a class="link" href="#five-second-introduction">1.1. Five-second Introduction</a></h3>
 <div class="paragraph">
 <p>Cloud Pipelines provides scripts, configuration, and convention for automated
 deployment pipeline creation with Cloud Foundry or Kubernetes.
@@ -563,7 +563,7 @@ you can use it with whatever automation server you have.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="five-minute-introduction">1.2. Five-minute Introduction</h3>
+<h3 id="five-minute-introduction"><a class="link" href="#five-minute-introduction">1.2. Five-minute Introduction</a></h3>
 <div class="paragraph">
 <p>Cloud Pipelines comes with bash scripts (available under <code>src//main/bash</code>)
 that represent the logic of all steps in our opinionated deployment pipeline.
@@ -585,7 +585,7 @@ bash scripts for each step. In other words, Cloud Pipelines can be reused
 with any continuous delivery tool.</p>
 </div>
 <div class="sect3">
-<h4 id="how-to-use-it">1.2.1. How to Use It</h4>
+<h4 id="how-to-use-it"><a class="link" href="#how-to-use-it">1.2.1. How to Use It</a></h4>
 <div class="paragraph">
 <p>This repository can be treated as a template for your pipeline. We provide some opinionated
 implementation that you can alter to suit your needs. To use it, we recommend downloading
@@ -619,7 +619,7 @@ folder hooks to override functions.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="how-it-works">1.2.2. How It Works</h4>
+<h4 id="how-it-works"><a class="link" href="#how-it-works">1.2.2. How It Works</a></h4>
 <div class="paragraph">
 <p>As the following image shows, Cloud Pipelines contains logic to generate a
 pipeline and the runtime to execute pipeline steps.</p>
@@ -648,7 +648,7 @@ You can read about them in the <a href="#project-opinions">Project Opinions</a> 
 </div>
 </div>
 <div class="sect3">
-<h4 id="deployment-languages-compatibility-matrix">1.2.3. Deployment &amp; languages compatibility matrix</h4>
+<h4 id="deployment-languages-compatibility-matrix"><a class="link" href="#deployment-languages-compatibility-matrix">1.2.3. Deployment &amp; languages compatibility matrix</a></h4>
 <div class="paragraph">
 <p>In the following table we present which language is supported by which deployment
 mechanism.</p>
@@ -717,7 +717,7 @@ can be used.
 </div>
 </div>
 <div class="sect3">
-<h4 id="centralized-pipeline-creation">1.2.4. Centralized Pipeline Creation</h4>
+<h4 id="centralized-pipeline-creation"><a class="link" href="#centralized-pipeline-creation">1.2.4. Centralized Pipeline Creation</a></h4>
 <div class="paragraph">
 <p>You can use Cloud Pipelines to generate pipelines
 for all the projects in your system. You can scan all your
@@ -750,7 +750,7 @@ We recommend using Cloud Pipelines this way.
 </div>
 </div>
 <div class="sect3">
-<h4 id="a-pipeline-for-each-repository">1.2.5. A Pipeline for Each Repository</h4>
+<h4 id="a-pipeline-for-each-repository"><a class="link" href="#a-pipeline-for-each-repository">1.2.5. A Pipeline for Each Repository</a></h4>
 <div class="paragraph">
 <p>You can use Cloud Pipelines in such a way that
 each project contains its own pipeline definition in
@@ -770,7 +770,7 @@ and it is up to the project to set up the pipeline.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="the-flow">1.3. The Flow</h3>
+<h3 id="the-flow"><a class="link" href="#the-flow">1.3. The Flow</a></h3>
 <div class="paragraph">
 <p>The following images show the flow of the opinionated pipeline:</p>
 </div>
@@ -792,13 +792,13 @@ split it into pieces and describe each piece independently.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="vocabulary">1.4. Vocabulary</h3>
+<h3 id="vocabulary"><a class="link" href="#vocabulary">1.4. Vocabulary</a></h3>
 <div class="paragraph">
 <p>This section defines some common vocabulary. We describe four typical
 environments in terms of running the pipeline.</p>
 </div>
 <div class="sect3">
-<h4 id="environments">1.4.1. Environments</h4>
+<h4 id="environments"><a class="link" href="#environments">1.4.1. Environments</a></h4>
 <div class="paragraph">
 <p>We typically encounter the following environments:</p>
 </div>
@@ -829,7 +829,7 @@ deployed for our customers.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="tests">1.4.2. Tests</h4>
+<h4 id="tests"><a class="link" href="#tests">1.4.2. Tests</a></h4>
 <div class="paragraph">
 <p>We typically encounter the following kinds of tests:</p>
 </div>
@@ -876,7 +876,7 @@ staging (against the whole system).</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="testing-against-stubs">1.4.3. Testing against Stubs</h4>
+<h4 id="testing-against-stubs"><a class="link" href="#testing-against-stubs">1.4.3. Testing against Stubs</a></h4>
 <div class="paragraph">
 <p>Before we go into the details of the flow, consider the example described by the following image:</p>
 </div>
@@ -1018,7 +1018,7 @@ lets you configure whether you want to follow this flow or not.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="general-view">1.4.4. General View</h4>
+<h4 id="general-view"><a class="link" href="#general-view">1.4.4. General View</a></h4>
 <div class="paragraph">
 <p>The general view behind this deployment pipeline is to:</p>
 </div>
@@ -1048,7 +1048,7 @@ actions fit nicely in our opinionated proposal.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="pipeline-descriptor">1.5. Pipeline Descriptor</h3>
+<h3 id="pipeline-descriptor"><a class="link" href="#pipeline-descriptor">1.5. Pipeline Descriptor</a></h3>
 <div class="paragraph">
 <p>Each application can contain a file (called <code>sc-pipelines.yml</code>) with the following structure:</p>
 </div>
@@ -1135,7 +1135,7 @@ a docker image (<code>organization/nameOfImage</code>), and so on.</p>
 </ul>
 </div>
 <div class="sect3">
-<h4 id="pipeline-descriptor-for-cloud-foundry">1.5.1. Pipeline Descriptor for Cloud Foundry</h4>
+<h4 id="pipeline-descriptor-for-cloud-foundry"><a class="link" href="#pipeline-descriptor-for-cloud-foundry">1.5.1. Pipeline Descriptor for Cloud Foundry</a></h4>
 <div class="paragraph">
 <p>When deploying to Cloud Foundry you can provide services
 of the following types:</p>
@@ -1296,7 +1296,7 @@ require you to push the sources. The default value is <code>binary</code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="project-setup">1.6. Project Setup</h3>
+<h3 id="project-setup"><a class="link" href="#project-setup">1.6. Project Setup</a></h3>
 <div class="paragraph">
 <p>Cloud Pipelines supports three main types of project setup:</p>
 </div>
@@ -1335,7 +1335,7 @@ treats the <code>something</code> directory as the root of the <code>something</
 </div>
 </div>
 <div class="sect1">
-<h2 id="how-do-the-scripts-work">2. How the Scripts Work</h2>
+<h2 id="how-do-the-scripts-work"><a class="link" href="#how-do-the-scripts-work">2. How the Scripts Work</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section describes how the scripts and jobs correspond to each other.
@@ -1343,7 +1343,7 @@ If you need to see detailed documentation of the bash scripts, go to the
 code repository and read <code>src//main/bash/README.adoc</code>.</p>
 </div>
 <div class="sect2">
-<h3 id="build-and-deployment">2.1. Build and Deployment</h3>
+<h3 id="build-and-deployment"><a class="link" href="#build-and-deployment">2.1. Build and Deployment</a></h3>
 <div class="paragraph">
 <p>The following text image shows a high-level overview:</p>
 </div>
@@ -1429,7 +1429,7 @@ to override any functions you want.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="opinionated-implementation">3. Opinionated Implementation</h2>
+<h2 id="opinionated-implementation"><a class="link" href="#opinionated-implementation">3. Opinionated Implementation</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section describes a full flow of deploying an app via the deployment pipeline.</p>
@@ -1458,7 +1458,7 @@ to override any functions you want.</p>
 </ul>
 </div>
 <div class="sect2">
-<h3 id="build">3.1. Build</h3>
+<h3 id="build"><a class="link" href="#build">3.1. Build</a></h3>
 <div class="paragraph">
 <p>The following image shows the results of building the demo pipeline (which the rest of this chapter describes):</p>
 </div>
@@ -1509,7 +1509,7 @@ exactly which version of the pipeline corresponds to which Git hash.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="test">3.2. Test</h3>
+<h3 id="test"><a class="link" href="#test">3.2. Test</a></h3>
 <div class="paragraph">
 <p>The following image shows the result of doing smoke tests and rolling back:</p>
 </div>
@@ -1566,7 +1566,7 @@ application to a stage environment.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="stage">3.3. Stage</h3>
+<h3 id="stage"><a class="link" href="#stage">3.3. Stage</a></h3>
 <div class="paragraph">
 <p>The following image shows the result of deploying to a stage environment:</p>
 </div>
@@ -1594,7 +1594,7 @@ application to a stage environment.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="prod">3.4. Prod</h3>
+<h3 id="prod"><a class="link" href="#prod">3.4. Prod</a></h3>
 <div class="paragraph">
 <p>The following image shows the result of deploying to a production environment:</p>
 </div>
@@ -1719,14 +1719,14 @@ Remember to run this step only after you have confirmed that both instances work
 </div>
 </div>
 <div class="sect1">
-<h2 id="project-opinions">4. Project Opinions</h2>
+<h2 id="project-opinions"><a class="link" href="#project-opinions">4. Project Opinions</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section goes through the assumptions we made in the project
 structure and project properties.</p>
 </div>
 <div class="sect2">
-<h3 id="cloud-foundry-project-opinions">4.1. Cloud Foundry Project Opinions</h3>
+<h3 id="cloud-foundry-project-opinions"><a class="link" href="#cloud-foundry-project-opinions">4.1. Cloud Foundry Project Opinions</a></h3>
 <div class="paragraph">
 <p>We take the following opinionated decisions for a Cloud Foundry based project:</p>
 </div>
@@ -1975,7 +1975,7 @@ ZIP with a self-contained DLL, together with all manifests and deployment files.
 </div>
 </div>
 <div class="sect2">
-<h3 id="kubernetes-project-opinions">4.2. Kubernetes Project Opinions</h3>
+<h3 id="kubernetes-project-opinions"><a class="link" href="#kubernetes-project-opinions">4.2. Kubernetes Project Opinions</a></h3>
 <div class="paragraph">
 <p>We use the following opinionated decisions for a Cloud Foundry based project:</p>
 </div>
@@ -2140,7 +2140,7 @@ ZIP with a self-contained DLL, together with all manifests and deployment files.
 </div>
 </div>
 <div class="sect1">
-<h2 id="customizing-the-project">5. Customizing the Project</h2>
+<h2 id="customizing-the-project"><a class="link" href="#customizing-the-project">5. Customizing the Project</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Cloud Pipelines offers a number of ways to customize a Pipelines project:</p>
@@ -2159,7 +2159,7 @@ ZIP with a self-contained DLL, together with all manifests and deployment files.
 </ul>
 </div>
 <div class="sect2">
-<h3 id="customization-overriding-scripts">5.1. Overriding Scripts</h3>
+<h3 id="customization-overriding-scripts"><a class="link" href="#customization-overriding-scripts">5.1. Overriding Scripts</a></h3>
 <div class="paragraph">
 <p>Since Cloud Pipelines evolves, you may want to pull the most recent changes to your
 Cloud Pipelines fork. To not have merge conflicts, the best approach
@@ -2201,7 +2201,7 @@ calling the Gradle build process, we echo the following text: <code>I am executi
 </div>
 </div>
 <div class="sect1">
-<h2 id="building-the-project">6. Building the Project</h2>
+<h2 id="building-the-project"><a class="link" href="#building-the-project">6. Building the Project</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section covers how to build the project. It covers:</p>
@@ -2232,7 +2232,7 @@ calling the Gradle build process, we echo the following text: <code>I am executi
 </ul>
 </div>
 <div class="sect2">
-<h3 id="building-project-setup">6.1. Project Setup</h3>
+<h3 id="building-project-setup"><a class="link" href="#building-project-setup">6.1. Project Setup</a></h3>
 <div class="paragraph">
 <p>In the <code>src/main/bash</code> folder, you can find all the Bash scripts that contain the pipeline logic. These
 scripts are reused by both the Concourse and Jenkins pipelines.</p>
@@ -2249,7 +2249,7 @@ contains no tests or documentation, it is extremely small and can be used in the
 </div>
 </div>
 <div class="sect2">
-<h3 id="building-prerequisites">6.2. Prerequisites</h3>
+<h3 id="building-prerequisites"><a class="link" href="#building-prerequisites">6.2. Prerequisites</a></h3>
 <div class="paragraph">
 <p>As prerequisites, you need to have <a href="http://www.shellcheck.net/">shellcheck</a>,
 <a href="https://github.com/sstephenson/bats">bats</a>, <a href="https://stedolan.github.io/jq/">jq</a>
@@ -2281,7 +2281,7 @@ $ brew install shellcheck</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="building-bats-submodules">6.3. Bats Submodules</h3>
+<h3 id="building-bats-submodules"><a class="link" href="#building-bats-submodules">6.3. Bats Submodules</a></h3>
 <div class="paragraph">
 <p>To make <code>bats</code> work properly, we needed to attach Git submodules. To have them
 initialized, either clone the project or (if you have already cloned the project)
@@ -2314,7 +2314,7 @@ $ git submodule update</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="building-build-and-test">6.4. Build and test</h3>
+<h3 id="building-build-and-test"><a class="link" href="#building-build-and-test">6.4. Build and test</a></h3>
 <div class="paragraph">
 <p>Once you have installed all the prerequisites, you can run the following command to build and test the project:</p>
 </div>
@@ -2329,7 +2329,7 @@ $ git submodule update</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="building-generate-documentation">6.5. Generate Documentation</h3>
+<h3 id="building-generate-documentation"><a class="link" href="#building-generate-documentation">6.5. Generate Documentation</a></h3>
 <div class="paragraph">
 <p>To generate the documentation, run the following command:</p>
 </div>
@@ -2344,7 +2344,7 @@ $ git submodule update</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="building-distributions">6.6. Distributions</h3>
+<h3 id="building-distributions"><a class="link" href="#building-distributions">6.6. Distributions</a></h3>
 <div class="paragraph">
 <p>Cloud Pipelines has a lot of tests, including Git repositories. Those
 and the documentation &#8220;weigh&#8221; a lot. That is why, under the <code>dist</code> folder, we
@@ -2364,7 +2364,7 @@ distribution generation pass the <code>skipDist</code> property on the command l
 </div>
 </div>
 <div class="sect2">
-<h3 id="building-making-a-release">6.7. Making a Release</h3>
+<h3 id="building-making-a-release"><a class="link" href="#building-making-a-release">6.7. Making a Release</a></h3>
 <div class="paragraph">
 <p>You can run the <code>release</code> task to automatically test the project,
 build the distributions, change the versions, build the docs, upload the docs to Spring Cloud Static,
@@ -2384,7 +2384,7 @@ following command:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="releasing-the-project">7. Releasing the Project</h2>
+<h2 id="releasing-the-project"><a class="link" href="#releasing-the-project">7. Releasing the Project</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section covers how to release the project by publishing a Docker image.</p>
@@ -2392,7 +2392,7 @@ following command:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="ci-server-worker-prerequisites">8. CI Server Worker Prerequisites</h2>
+<h2 id="ci-server-worker-prerequisites"><a class="link" href="#ci-server-worker-prerequisites">8. CI Server Worker Prerequisites</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Cloud Pipelines uses Bash scripts extensively. The following list shows the software
@@ -2418,11 +2418,6 @@ that needs to be installed on a CI server worker for the build to pass:</p>
 </div>
 </div>
 </div>
-</div>
-</div>
-<div id="footer">
-<div id="footer-text">
-Last updated 2018-08-10 09:50:33 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">

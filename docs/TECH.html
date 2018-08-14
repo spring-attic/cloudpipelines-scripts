@@ -454,7 +454,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="building-the-project">1. Building the Project</h2>
+<h2 id="building-the-project"><a class="link" href="#building-the-project">1. Building the Project</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section covers how to build the project. It covers:</p>
@@ -485,7 +485,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </div>
 <div class="sect2">
-<h3 id="building-project-setup">1.1. Project Setup</h3>
+<h3 id="building-project-setup"><a class="link" href="#building-project-setup">1.1. Project Setup</a></h3>
 <div class="paragraph">
 <p>In the <code>src/main/bash</code> folder, you can find all the Bash scripts that contain the pipeline logic. These
 scripts are reused by both the Concourse and Jenkins pipelines.</p>
@@ -502,7 +502,7 @@ contains no tests or documentation, it is extremely small and can be used in the
 </div>
 </div>
 <div class="sect2">
-<h3 id="building-prerequisites">1.2. Prerequisites</h3>
+<h3 id="building-prerequisites"><a class="link" href="#building-prerequisites">1.2. Prerequisites</a></h3>
 <div class="paragraph">
 <p>As prerequisites, you need to have <a href="http://www.shellcheck.net/">shellcheck</a>,
 <a href="https://github.com/sstephenson/bats">bats</a>, <a href="https://stedolan.github.io/jq/">jq</a>
@@ -534,7 +534,7 @@ $ brew install shellcheck</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="building-bats-submodules">1.3. Bats Submodules</h3>
+<h3 id="building-bats-submodules"><a class="link" href="#building-bats-submodules">1.3. Bats Submodules</a></h3>
 <div class="paragraph">
 <p>To make <code>bats</code> work properly, we needed to attach Git submodules. To have them
 initialized, either clone the project or (if you have already cloned the project)
@@ -567,7 +567,7 @@ $ git submodule update</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="building-build-and-test">1.4. Build and test</h3>
+<h3 id="building-build-and-test"><a class="link" href="#building-build-and-test">1.4. Build and test</a></h3>
 <div class="paragraph">
 <p>Once you have installed all the prerequisites, you can run the following command to build and test the project:</p>
 </div>
@@ -582,7 +582,7 @@ $ git submodule update</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="building-generate-documentation">1.5. Generate Documentation</h3>
+<h3 id="building-generate-documentation"><a class="link" href="#building-generate-documentation">1.5. Generate Documentation</a></h3>
 <div class="paragraph">
 <p>To generate the documentation, run the following command:</p>
 </div>
@@ -597,7 +597,7 @@ $ git submodule update</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="building-distributions">1.6. Distributions</h3>
+<h3 id="building-distributions"><a class="link" href="#building-distributions">1.6. Distributions</a></h3>
 <div class="paragraph">
 <p>Cloud Pipelines has a lot of tests, including Git repositories. Those
 and the documentation &#8220;weigh&#8221; a lot. That is why, under the <code>dist</code> folder, we
@@ -617,7 +617,7 @@ distribution generation pass the <code>skipDist</code> property on the command l
 </div>
 </div>
 <div class="sect2">
-<h3 id="building-making-a-release">1.7. Making a Release</h3>
+<h3 id="building-making-a-release"><a class="link" href="#building-making-a-release">1.7. Making a Release</a></h3>
 <div class="paragraph">
 <p>You can run the <code>release</code> task to automatically test the project,
 build the distributions, change the versions, build the docs, upload the docs to Spring Cloud Static,
@@ -637,7 +637,7 @@ following command:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="releasing-the-project">2. Releasing the Project</h2>
+<h2 id="releasing-the-project"><a class="link" href="#releasing-the-project">2. Releasing the Project</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section covers how to release the project by publishing a Docker image.</p>
@@ -645,7 +645,7 @@ following command:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="ci-server-worker-prerequisites">3. CI Server Worker Prerequisites</h2>
+<h2 id="ci-server-worker-prerequisites"><a class="link" href="#ci-server-worker-prerequisites">3. CI Server Worker Prerequisites</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Cloud Pipelines uses Bash scripts extensively. The following list shows the software
@@ -671,11 +671,6 @@ that needs to be installed on a CI server worker for the build to pass:</p>
 </div>
 </div>
 </div>
-</div>
-</div>
-<div id="footer">
-<div id="footer-text">
-Last updated 2018-08-13 14:55:28 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
