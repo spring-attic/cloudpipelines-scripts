@@ -133,7 +133,7 @@ parameter, which contains the list of repositories.
 * For Concourse, call `fly` and set the
 pipeline for every repository.
 
-To achieve this you can use the https://github.com/spring-cloud/project-crawler/[Project Crawler] library.
+To achieve this you can use the https://github.com/CloudPipelines/project-crawler/[Project Crawler] library.
 
 TIP: We recommend using Cloud Pipelines this way.
 
