@@ -2026,6 +2026,302 @@ ZIP with a self-contained DLL, together with all manifests and deployment files.
 </div>
 </div>
 </div>
+<<<<<<< HEAD:docs/OPINIONATED.html
+=======
+<div class="sect1">
+<h2 id="customizing-the-project"><a class="link" href="#customizing-the-project">5. Customizing the Project</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cloud Pipelines offers a number of ways to customize a Pipelines project:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#customization-overriding-scripts">Overriding Scripts</a></p>
+</li>
+<li>
+<p><a href="#customization-overriding-pipelines">[customization-overriding-pipelines]</a></p>
+</li>
+<li>
+<p><a href="#customization-picking-features">[customization-picking-features]</a></p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="customization-overriding-scripts"><a class="link" href="#customization-overriding-scripts">5.1. Overriding Scripts</a></h3>
+<div class="paragraph">
+<p>Since Cloud Pipelines evolves, you may want to pull the most recent changes to your
+Cloud Pipelines fork. To not have merge conflicts, the best approach
+to extending the functionality is to use a separate script with customizations.</p>
+</div>
+<div class="paragraph">
+<p>When we execute a script that represents a step (for example, a script named <code>build_and_upload.sh</code>),
+after we source all the deployment and build-specific scripts (such as <code>pipeline-cf.sh</code>
+and <code>projectType/pipeline-jvm.sh</code> with <code>projectType/pipeline-gradle.sh</code>), we set
+a hook that lets you customize the behavior. If the script that we run
+is <code>src//main/bash/build_and_upload.sh</code>, we search for a script in the
+Cloud Pipelines repository under <code>src//main/bash/custom/build_and_upload.sh</code>,
+and we source that script just before running any functions.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows such a customization:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 1. custom/build_and_upload.sh</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
+
+function build() {
+    echo "I am executing a custom build function"
+}
+
+export -f build</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>when the <code>build</code> function is called for our Gradle project, instead of
+calling the Gradle build process, we echo the following text: <code>I am executing a custom build function</code>.</p>
+</div>
+<div class="paragraph">
+<p>In order to improve the extensibility, we allow fetching
+of a tarball with additional files / scripts that should be applied at runtime.
+That means that if you have a custom implementation of a platform that you would like
+to apply, instead of maintaining your fork of Cloud Pipeline Scripts, you can
+create your own repository, containing the necessary files, and produce a
+tarball with those files. Then you can use <code>ADDITIONAL_SCRIPTS_TARBALL_URL</code>
+<code>ADDITIONAL_SCRIPTS_REPO_USERNAME</code>, <code>ADDITIONAL_SCRIPTS_REPO_PASSWORD</code> environment
+variables, to provide the URL of the tarball, together with username and password
+for basic authentication if necessary (we default the credentials to <code>M2_SETTINGS_REPO_USERNAME:M2_SETTINGS_REPO_PASSWORD</code>
+env vars). If the <code>ADDITIONAL_SCRIPTS_TARBALL_URL</code> is present, then we will fetch
+the tarball and unpack it in the <code>src/main/bash</code> directory of Cloud Pipelines Scripts.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="building-the-project"><a class="link" href="#building-the-project">6. Building the Project</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section covers how to build the project. It covers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#building-project-setup">Project Setup</a></p>
+</li>
+<li>
+<p><a href="#building-prerequisites">Prerequisites</a></p>
+</li>
+<li>
+<p><a href="#building-bats-submodules">Bats Submodules</a></p>
+</li>
+<li>
+<p><a href="#building-build-and-test">Build and test</a></p>
+</li>
+<li>
+<p><a href="#building-generate-documentation">Generate Documentation</a></p>
+</li>
+<li>
+<p><a href="#building-distributions">Distributions</a></p>
+</li>
+<li>
+<p><a href="#building-making-a-release">Making a Release</a></p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="building-project-setup"><a class="link" href="#building-project-setup">6.1. Project Setup</a></h3>
+<div class="paragraph">
+<p>In the <code>src/main/bash</code> folder, you can find all the Bash scripts that contain the pipeline logic. These
+scripts are reused by both the Concourse and Jenkins pipelines.</p>
+</div>
+<div class="paragraph">
+<p>In the <code>dist</code> folder, you can find the packaged sources of the project. Since the package
+contains no tests or documentation, it is extremely small and can be used in the pipelines.</p>
+</div>
+<div class="paragraph">
+<p>In the <code>docs</code> folder, you can find the whole generated documentation of the project.</p>
+</div>
+<div class="paragraph">
+<p>In the <code>docs-source</code> folder, you can find the sources required to generate the documentation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="building-prerequisites"><a class="link" href="#building-prerequisites">6.2. Prerequisites</a></h3>
+<div class="paragraph">
+<p>As prerequisites, you need to have <a href="http://www.shellcheck.net/">shellcheck</a>,
+<a href="https://github.com/sstephenson/bats">bats</a>, <a href="https://stedolan.github.io/jq/">jq</a>
+and <a href="https://rubyinstaller.org/downloads/">ruby</a> installed. If you use a Linux
+machine, <code>bats</code> and <code>shellcheck</code> are installed for you.</p>
+</div>
+<div class="paragraph">
+<p>To install the required software on Linux, type the following command:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ sudo apt-get install -y ruby jq</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>If you use a Mac, run the following commands to install the missing software:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ brew install jq
+$ brew install ruby
+$ brew install bats
+$ brew install shellcheck</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="building-bats-submodules"><a class="link" href="#building-bats-submodules">6.3. Bats Submodules</a></h3>
+<div class="paragraph">
+<p>To make <code>bats</code> work properly, we needed to attach Git submodules. To have them
+initialized, either clone the project or (if you have already cloned the project)
+pull to update it. The following command clones the project:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ git clone --recursive https://github.com/CloudPipelines/scripts.git</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The following commands pull the project:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ git submodule init
+$ git submodule update</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>If you forget about this step, Gradle runs these steps for you.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="building-build-and-test"><a class="link" href="#building-build-and-test">6.4. Build and test</a></h3>
+<div class="paragraph">
+<p>Once you have installed all the prerequisites, you can run the following command to build and test the project:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ ./gradlew clean build</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="building-generate-documentation"><a class="link" href="#building-generate-documentation">6.5. Generate Documentation</a></h3>
+<div class="paragraph">
+<p>To generate the documentation, run the following command:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ ./gradlew generateDocs</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="building-distributions"><a class="link" href="#building-distributions">6.6. Distributions</a></h3>
+<div class="paragraph">
+<p>Cloud Pipelines has a lot of tests, including Git repositories. Those
+and the documentation &#8220;weigh&#8221; a lot. That is why, under the <code>dist</code> folder, we
+publish <code>zip</code> and <code>tar.gz</code> distributions of the sources without tests and documentation.
+Whenever we release a distribution, we attach a <code>VERSION</code> file to it that contains
+build and SCM information (build time, revision number, and other details). To skip the
+distribution generation pass the <code>skipDist</code> property on the command line, as follows:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ ./gradlew build -PskipDist</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="building-making-a-release"><a class="link" href="#building-making-a-release">6.7. Making a Release</a></h3>
+<div class="paragraph">
+<p>You can run the <code>release</code> task to automatically test the project,
+build the distributions, change the versions, build the docs, upload the docs to Spring Cloud Static,
+tag the repo, and then revert the changed versions back to default. To do so, run the
+following command:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ ./gradlew release -PnewVersion=1.0.0.RELEASE</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="releasing-the-project"><a class="link" href="#releasing-the-project">7. Releasing the Project</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section covers how to release the project by publishing a Docker image.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ci-server-worker-prerequisites"><a class="link" href="#ci-server-worker-prerequisites">8. CI Server Worker Prerequisites</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cloud Pipelines uses Bash scripts extensively. The following list shows the software
+that needs to be installed on a CI server worker for the build to pass:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash"> apt-get -y install \
+    bash \
+    git \
+    tar \
+    zip \
+    curl \
+    ruby \
+    wget \
+    unzip \
+    python \
+    jq</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+>>>>>>> Added an option to fetch tarball with scripts:docs/index.html
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>

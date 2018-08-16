@@ -9,6 +9,7 @@ set -o pipefail
 # steps of deployment pipeline.
 #
 # Sources:
+#
 #  - projectType/pipeline-projectType.sh
 #  - pipeline-${paasType}.sh (e.g. pipeline-cf.sh)
 #  - custom/${scriptName}.sh (e.g. custom/build_and_upload.sh)
@@ -32,6 +33,18 @@ set -o pipefail
 # arbitrarily chose the platform type via the PAAS_TYPE env variable That value,
 # via convention, gets applied to the string [pipeline-${paasType}.sh]
 # that represents a file that we will source in order to apply all the deployment functions.
+#
+# In order to improve the extensibility, we allow fetching
+# of a tarball with additional files / scripts that should be applied at runtime.
+# That means that if you have a custom implementation of a platform that you would like
+# to apply, instead of maintaining your fork of Cloud Pipeline Scripts, you can
+# create your own repository, containing the necessary files, and produce a
+# tarball with those files. Then you can use [ADDITIONAL_SCRIPTS_TARBALL_URL]
+# [ADDITIONAL_SCRIPTS_REPO_USERNAME], [ADDITIONAL_SCRIPTS_REPO_PASSWORD] environment
+# variables, to provide the URL of the tarball, together with username and password
+# for basic authentication if necessary (we default the credentials to [M2_SETTINGS_REPO_USERNAME:M2_SETTINGS_REPO_PASSWORD]
+# env vars). If the [ADDITIONAL_SCRIPTS_TARBALL_URL] is present, then we will fetch
+# the tarball and unpack it in the [src/main/bash] directory of Cloud Pipelines Scripts.
 # }}}
 
 IFS=$' \n\t'
@@ -516,6 +529,9 @@ export PIPELINE_DESCRIPTOR PAAS_TYPE LOWERCASE_ENV GIT_BIN
 export ROOT_PROJECT_DIR PROJECT_SETUP PROJECT_NAME DEFAULT_PROJECT_NAME
 export LANGUAGE_TYPE SOURCE_ARTIFACT_TYPE_NAME BINARY_ARTIFACT_TYPE_NAME
 export OUTPUT_FOLDER TEST_REPORTS_FOLDER DOWNLOADABLE_SOURCES
+export CURL_BIN TAR_BIN ADDITIONAL_SCRIPTS_TARBALL_URL CUSTOM_SCRIPT_IDENTIFIER
+export ADDITIONAL_SCRIPTS_REPO_USERNAME ADDITIONAL_SCRIPTS_REPO_PASSWORD
+
 SOURCE_ARTIFACT_TYPE_NAME="source"
 BINARY_ARTIFACT_TYPE_NAME="binary"
 
@@ -565,9 +581,34 @@ echo "Project with name [${PROJECT_NAME}] is setup as [${PROJECT_SETUP}]. The pr
  echo "No pipeline-${PAAS_TYPE}.sh found"
 
 # ================================================================
+#  Fetching tarball with additional code
+# ================================================================
+TAR_BIN="${TAR_BIN:-tar}"
+CURL_BIN="${CURL_BIN:-curl}"
+ADDITIONAL_SCRIPTS_TARBALL_URL="${ADDITIONAL_SCRIPTS_TARBALL_URL:-}"
+ADDITIONAL_SCRIPTS_REPO_USERNAME="${ADDITIONAL_SCRIPTS_REPO_USERNAME:-${M2_SETTINGS_REPO_USERNAME:-}}"
+ADDITIONAL_SCRIPTS_REPO_PASSWORD="${ADDITIONAL_SCRIPTS_REPO_PASSWORD:-${M2_SETTINGS_REPO_PASSWORD:-}}"
+TMP_DIR="$( mktemp -d )"
+if [[ "${ADDITIONAL_SCRIPTS_TARBALL_URL}" != "" ]]; then
+	echo "Will fetch additional scripts from [${ADDITIONAL_SCRIPTS_TARBALL_URL}] to [${TMP_DIR}]"
+	success="false"
+	destination="${TMP_DIR}/scripts.tar.gz"
+	"${CURL_BIN}" -u "${M2_SETTINGS_REPO_USERNAME}:${M2_SETTINGS_REPO_PASSWORD}" "${ADDITIONAL_SCRIPTS_TARBALL_URL}" -o "${destination}" --fail && success="true"
+	if [[ "${success}" == "true" ]]; then
+		echo "File downloaded successfully to [${destination}]!"
+		"${TAR_BIN}" -zxf "${destination}" -C "${__DIR}"
+		echo "Files unpacked successfully from [${destination}] to [${__DIR}]"
+	else
+		echo "Failed to download file!"
+	fi
+else
+	echo "No additional scripts will be downloaded"
+fi
+
+# ================================================================
 #  Customizing via the folder "custom/script_name.sh"
 # ================================================================
-export CUSTOM_SCRIPT_IDENTIFIER="${CUSTOM_SCRIPT_IDENTIFIER:-custom}"
+CUSTOM_SCRIPT_IDENTIFIER="${CUSTOM_SCRIPT_IDENTIFIER:-custom}"
 echo "Custom script identifier is [${CUSTOM_SCRIPT_IDENTIFIER}]"
 CUSTOM_SCRIPT_DIR="${__ROOT}/${CUSTOM_SCRIPT_IDENTIFIER}"
 mkdir -p "${__ROOT}/${CUSTOM_SCRIPT_IDENTIFIER}"

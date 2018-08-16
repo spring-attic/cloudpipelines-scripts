@@ -39,3 +39,15 @@ export -f build
 
 when the `build` function is called for our Gradle project, instead of
 calling the Gradle build process, we echo the following text: `I am executing a custom build function`.
+
+In order to improve the extensibility, we allow fetching
+of a tarball with additional files / scripts that should be applied at runtime.
+That means that if you have a custom implementation of a platform that you would like
+to apply, instead of maintaining your fork of Cloud Pipeline Scripts, you can
+create your own repository, containing the necessary files, and produce a
+tarball with those files. Then you can use `ADDITIONAL_SCRIPTS_TARBALL_URL`
+`ADDITIONAL_SCRIPTS_REPO_USERNAME`, `ADDITIONAL_SCRIPTS_REPO_PASSWORD` environment
+variables, to provide the URL of the tarball, together with username and password
+for basic authentication if necessary (we default the credentials to `M2_SETTINGS_REPO_USERNAME:M2_SETTINGS_REPO_PASSWORD`
+env vars). If the `ADDITIONAL_SCRIPTS_TARBALL_URL` is present, then we will fetch
+the tarball and unpack it in the `src/main/bash` directory of Cloud Pipelines Scripts.

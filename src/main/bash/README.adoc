@@ -17,6 +17,7 @@ Contains interfaces for all essential functions for different
 steps of deployment pipeline.
 
 Sources:
+
 - projectType/pipeline-projectType.sh
 - pipeline-${paasType}.sh (e.g. pipeline-cf.sh)
 - custom/${scriptName}.sh (e.g. custom/build_and_upload.sh)
@@ -40,6 +41,18 @@ to PAAS. For NPM we're pushing sources. You can
 arbitrarily chose the platform type via the PAAS_TYPE env variable That value,
 via convention, gets applied to the string [pipeline-${paasType}.sh]
 that represents a file that we will source in order to apply all the deployment functions.
+
+In order to improve the extensibility, we allow fetching
+of a tarball with additional files / scripts that should be applied at runtime.
+That means that if you have a custom implementation of a platform that you would like
+to apply, instead of maintaining your fork of Cloud Pipeline Scripts, you can
+create your own repository, containing the necessary files, and produce a
+tarball with those files. Then you can use [ADDITIONAL_SCRIPTS_TARBALL_URL]
+[ADDITIONAL_SCRIPTS_REPO_USERNAME], [ADDITIONAL_SCRIPTS_REPO_PASSWORD] environment
+variables, to provide the URL of the tarball, together with username and password
+for basic authentication if necessary (we default the credentials to [M2_SETTINGS_REPO_USERNAME:M2_SETTINGS_REPO_PASSWORD]
+env vars). If the [ADDITIONAL_SCRIPTS_TARBALL_URL] is present, then we will fetch
+the tarball and unpack it in the [src/main/bash] directory of Cloud Pipelines Scripts.
 
 
 FUNCTIONS
@@ -86,7 +99,7 @@ DETAILS
 Script Body
 ~~~~~~~~~~~
 
-Has 50 line(s). Calls functions:
+Has 74 line(s). Calls functions:
 
  Script-Body
  |-- defineProjectSetup
@@ -95,7 +108,7 @@ Has 50 line(s). Calls functions:
 
 Uses feature(s): _export_, _source_
 
-_Exports (environment):_ BINARY_ARTIFACT_TYPE_NAME [big]*//* CUSTOM_SCRIPT_IDENTIFIER [big]*//* DEFAULT_PROJECT_NAME [big]*//* DOWNLOADABLE_SOURCES [big]*//* GIT_BIN [big]*//* LANGUAGE_TYPE [big]*//* LOWERCASE_ENV [big]*//* OUTPUT_FOLDER [big]*//* PAAS_TYPE [big]*//* PIPELINE_DESCRIPTOR [big]*//* PROJECT_NAME [big]*//* PROJECT_SETUP [big]*//* ROOT_PROJECT_DIR [big]*//* SOURCE_ARTIFACT_TYPE_NAME [big]*//* TEST_REPORTS_FOLDER
+_Exports (environment):_ ADDITIONAL_SCRIPTS_REPO_PASSWORD [big]*//* ADDITIONAL_SCRIPTS_REPO_USERNAME [big]*//* ADDITIONAL_SCRIPTS_TARBALL_URL [big]*//* BINARY_ARTIFACT_TYPE_NAME [big]*//* CURL_BIN [big]*//* CUSTOM_SCRIPT_IDENTIFIER [big]*//* DEFAULT_PROJECT_NAME [big]*//* DOWNLOADABLE_SOURCES [big]*//* GIT_BIN [big]*//* LANGUAGE_TYPE [big]*//* LOWERCASE_ENV [big]*//* OUTPUT_FOLDER [big]*//* PAAS_TYPE [big]*//* PIPELINE_DESCRIPTOR [big]*//* PROJECT_NAME [big]*//* PROJECT_SETUP [big]*//* ROOT_PROJECT_DIR [big]*//* SOURCE_ARTIFACT_TYPE_NAME [big]*//* TAR_BIN [big]*//* TEST_REPORTS_FOLDER
 
 apiCompatibilityCheck
 ~~~~~~~~~~~~~~~~~~~~~

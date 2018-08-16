@@ -18,6 +18,17 @@ setup() {
 	cp -a "${SOURCE_DIR}" "${TEMP_DIR}/sc-pipelines"
 }
 
+function curl_stub {
+	echo "curl $*"
+}
+
+function tar_stub {
+	echo "tar $*"
+}
+
+export -f curl_stub
+export -f tar_stub
+
 teardown() {
 	rm -f "${SOURCE_DIR}/pipeline-dummy.sh"
 	rm -f "${SOURCE_DIR}/projectType/pipeline-dummy.sh"
@@ -458,4 +469,22 @@ function stubbed_git() {
 
 	run removeProdTag "prod/bar/2.0.0"
 	assert_output --partial "git push --delete origin prod/bar/2.0.0"
+}
+
+@test "should download custom script and unpack it to the current dir" {
+	export PAAS_TYPE=cf
+	export CURL_BIN="curl_stub"
+	export TAR_BIN="tar_stub"
+	export ADDITIONAL_SCRIPTS_TARBALL_URL="http://tarball.com"
+	export ADDITIONAL_SCRIPTS_REPO_USERNAME="username"
+	export ADDITIONAL_SCRIPTS_REPO_PASSWORD="password"
+	# for env vars
+	source "${SOURCE_DIR}/pipeline.sh"
+
+	run "${SOURCE_DIR}/pipeline.sh"
+
+	assert_output --partial "curl -u : http://tarball.com -o"
+	assert_output --partial "tar -zxf"
+	assert_output --partial "scripts.tar.gz -C ${__DIR}"
+	assert_success
 }
