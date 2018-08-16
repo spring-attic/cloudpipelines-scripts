@@ -2206,6 +2206,12 @@ for basic authentication if necessary (we default the credentials to <code>M2_SE
 env vars). If the <code>ADDITIONAL_SCRIPTS_TARBALL_URL</code> is present, then we will fetch
 the tarball and unpack it in the <code>src/main/bash</code> directory of Cloud Pipelines Scripts.</p>
 </div>
+<div class="paragraph">
+<p>If you want to customize the Cloud Pipelines build, you can update the contents
+of the <code>gradle/custom.gradle</code> build script. That way your customizations will not
+interfere with the changes in the main part of the code, thus there should be
+no merge conflicts when pulling the changes from Cloud Pipeline repositories.</p>
+</div>
 </div>
 </div>
 </div>

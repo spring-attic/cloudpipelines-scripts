@@ -51,3 +51,8 @@ variables, to provide the URL of the tarball, together with username and passwor
 for basic authentication if necessary (we default the credentials to `M2_SETTINGS_REPO_USERNAME:M2_SETTINGS_REPO_PASSWORD`
 env vars). If the `ADDITIONAL_SCRIPTS_TARBALL_URL` is present, then we will fetch
 the tarball and unpack it in the `src/main/bash` directory of Cloud Pipelines Scripts.
+
+If you want to customize the Cloud Pipelines build, you can update the contents
+of the `gradle/custom.gradle` build script. That way your customizations will not
+interfere with the changes in the main part of the code, thus there should be
+no merge conflicts when pulling the changes from Cloud Pipeline repositories.
