@@ -1369,7 +1369,7 @@ code repository and read <code>src//main/bash/README.adoc</code>.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="sourcing.png" alt="sourcing" width="657" height="374">
+<img src="sourcing.png" alt="sourcing" width="751" height="475">
 </div>
 </div>
 <div class="paragraph">
@@ -1410,7 +1410,11 @@ variable, we can source proper PAAS functions (for example, <code>pipeline-cf.sh
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Search for a file called <code>${sc-pipelines-root}/src//main/bash/custom/build_and_upload.sh</code>
+<p>If <code>ADDITIONAL_SCRIPTS_TARBALL_URL</code> env variable is set, we can download
+a tarball with additional scripts and copy it to <code>${sc-pipelines-root}/src/main/bash/</code></p>
+</li>
+<li>
+<p>Search for a file called <code>${sc-pipelines-root}/src/main/bash/custom/build_and_upload.sh</code>
 to override any functions you want.</p>
 </li>
 </ol>

@@ -381,11 +381,14 @@ script->language: What is your language?
 language->script: I'm written in X language
 language->framework: What framework do you use?
 framework->script: I use Y framework
-script->paas: I know that you use Z PAAS?
+script->paas: I know that you use Z PAAS...
 paas->script: Here are all Z-related deployment functions
+script->customization: Oh, you've provided a URL with tarball with custom scripts
+customization->script: Correct, there you go
+script->script: Let me unpack it and copy to the sources
 script->customization: Anything custom to override in bash?
-customization->script: Not this time...
-script->script: Ok, run the script
+customization->script: Yeah, let me override the [build_and_upload.sh] script
+script->script: Ok, override and run the script
 ----
 
 The process works as follows:
@@ -401,6 +404,8 @@ sources `projectType/pipeline-projectType.sh`.
 . Once we know what the project type is, we can deal with PAAS. Depending on the value of the `PAAS_TYPE` environment
 variable, we can source proper PAAS functions (for example, `pipeline-cf.sh` for Cloud Foundry).
 . Determine whether we can do some further customization.
-.. Search for a file called `${sc-pipelines-root}/src//main/bash/custom/build_and_upload.sh`
+.. If `ADDITIONAL_SCRIPTS_TARBALL_URL` env variable is set, we can download
+a tarball with additional scripts and copy it to `${sc-pipelines-root}/src/main/bash/`
+.. Search for a file called `${sc-pipelines-root}/src/main/bash/custom/build_and_upload.sh`
 to override any functions you want.
 . Run the `build` function from `build_and_upload.sh`
