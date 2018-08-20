@@ -40,10 +40,10 @@ task cleanDocs(type: Delete) {
 }
 
 task createFolder() {
+	dependsOn("cleanDocs")
 	doLast {
 		new File(project.rootDir, "docs").mkdirs()
 	}
-	mustRunAfter "cleanDocs"
 }
 
 dependencies {
@@ -79,5 +79,5 @@ asciidoctor {
 
 task generateDocs() {
 	description = "Creates documentation for the project"
-	dependsOn = ["cleanDocs", "asciidoctor"]
+	dependsOn = ["asciidoctor"]
 }
