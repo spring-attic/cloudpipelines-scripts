@@ -1,0 +1,3 @@
+:doctype: book
+
+include::{docs-base-url}/src/main/bash/README.adoc[]

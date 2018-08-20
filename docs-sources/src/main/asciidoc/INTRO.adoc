@@ -61,6 +61,8 @@ Cloud Pipelines Scripts contains bash scripts that are required at runtime of
 execution of a pipeline. If you want to read their documentation, it's
 available under https://github.com/{org}/{repo}/blob/{branch}/src/main/bash/README.adoc[`src/main/bash/README.adoc`] file of Cloud Pipelines repository.
 
+You can link:BASH_SCRIPTS.html[click here to go the separate subpage containing that documentation].
+
 ==== How It Works
 
 As the following image shows, Cloud Pipelines contains logic to generate a
