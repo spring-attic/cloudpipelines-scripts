@@ -95,7 +95,7 @@ DETAILS
 Script Body
 ~~~~~~~~~~~
 
-Has 74 line(s). Calls functions:
+Has 78 line(s). Calls functions:
 
  Script-Body
  |-- defineProjectSetup

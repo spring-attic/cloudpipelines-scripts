@@ -363,6 +363,8 @@ note right of paas: Loading all \ndeployment-related functions
 note left of pipeline: Ok, we know that it's Maven \nand should be deployed to CF
 pipeline->custom: Try to source [custom/build_and_upload.sh]
 note right of custom: No such file so \nnothing custom to be done
+pipeline->custom: Try to source [custom/pipeline-cf.sh]
+note right of custom: No such file so \nnothing custom to be done
 note right of script: All build related functions \n overridden by language / framework scripts
 note right of script: All deploy related functions \n overridden by paas scripts
 script->script: run [build] function
@@ -386,8 +388,10 @@ script->paas: I know that you use Z PAAS...
 paas->script: Here are all Z-related deployment functions
 script->script: You've passed a URL with tarball with custom scripts
 script->script: Let me fetch, unpack it and copy to the sources
-script->customization: Anything custom to override in bash?
-customization->script: Yeah, let me override the [build_and_upload.sh] script
+script->customization: Any language / framework custom scripts to override in bash?
+customization->script: Yeah, let me source the [custom/build_and_upload.sh] script
+script->customization: Any PAAS custom scripts to override in bash?
+customization->script: Yeah, let me source the [custom/pipeline-cf.sh] script
 script->script: Ok, override and run the script
 ----
 

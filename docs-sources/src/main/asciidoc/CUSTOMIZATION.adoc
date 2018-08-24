@@ -18,7 +18,7 @@ after we source all the deployment and build-specific scripts (such as `pipeline
 and `projectType/pipeline-jvm.sh` with `projectType/pipeline-gradle.sh`), we set
 a hook that lets you customize the behavior. If the script that we run
 is `src//main/bash/build_and_upload.sh`, we search for a script in the
-Cloud Pipelines repository under `src//main/bash/custom/build_and_upload.sh`,
+Cloud Pipelines repository under `src/main/bash/custom/build_and_upload.sh`,
 and we source that script just before running any functions.
 
 The following example shows such a customization:
@@ -39,6 +39,27 @@ export -f build
 
 when the `build` function is called for our Gradle project, instead of
 calling the Gradle build process, we echo the following text: `I am executing a custom build function`.
+
+Another customization option is the convention that under `src/main/bash/custom`,
+if we find the file equal to the name of the sourced PAAS script (e.g.
+`pipeline-cf.sh`) then we will source it after all the other scripts got sourced.
+That way you can override the way platform related functionality is executed.
+Example:
+
+.custom/pipeline-cf.sh
+====
+[source,bash]
+----
+#!/bin/bash
+
+function logInToPaas() {
+    echo "I am executing a custom login function"
+}
+
+export -f logInToPaas
+----
+====
+
 
 In order to improve the extensibility, we allow fetching
 of a tarball with additional files / scripts that should be applied at runtime.
