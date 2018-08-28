@@ -8,7 +8,9 @@ pipeline-ansible.sh - a shell script
 
 SYNOPSIS
 --------
-Documentation automatically generated with `zshelldoc'
+
+Contains all Ansible related deployment functions
+
 
 FUNCTIONS
 ---------
@@ -31,10 +33,16 @@ DETAILS
 Script Body
 ~~~~~~~~~~~
 
-Has 10 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
+Has 15 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
 
 __ansible_inventory
 ~~~~~~~~~~~~~~~~~~~
+
+____
+ # Loads the Ansible inventory from the given [ANSIBLE_INVENTORY_DIR]. The convention is such
+ # that every environment has its own file with the name of the environment. E.g. for environment
+ # [test] the inventory file would be [${ANSIBLE_INVENTORY_DIR}/test].
+____
 
 Has 8 line(s). Doesn't call other functions.
 
@@ -44,6 +52,14 @@ _Environment variables used:_ test_smoke.sh -> ENVIRONMENT
 
 __ansible_playbook
 ~~~~~~~~~~~~~~~~~~
+
+____
+ # Given the presence of the Ansible inventory will first try to load a custom
+ # playbook from [${ANSIBLE_CUSTOM_PLAYBOOKS_DIR}/${playbook_name}]. E.g.
+ # for playbook with name [deploy-jvm-service.yml] will search by default for
+ # [${__ROOT}/ansible/custom/deploy-jvm-service.yml] to apply first. If there's
+ # no such file will continue applying the defaultplaybook  [${__ROOT}/ansible/deploy-jvm-service.yml]
+____
 
 Has 19 line(s). Doesn't call other functions.
 
@@ -61,6 +77,10 @@ _Environment variables used:_ test_smoke.sh -> ENVIRONMENT
 completeSwitchOver
 ~~~~~~~~~~~~~~~~~~
 
+____
+ # Implementation of the Ansible switch over on production
+____
+
 Has 5 line(s). Calls functions:
 
  completeSwitchOver
@@ -75,12 +95,20 @@ _Environment variables used:_ pipeline.sh -> LANGUAGE_TYPE
 logInToPaas
 ~~~~~~~~~~~
 
+____
+ # Since there's no concept of explicit logging in in Ansible, this method does nothing
+____
+
 Has 1 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 prepareForE2eTests
 ~~~~~~~~~~~~~~~~~~
+
+____
+ # Ansible implementation of prepare for e2e tests
+____
 
 Has 9 line(s). Doesn't call other functions.
 
@@ -94,6 +122,10 @@ _List of exports (to environment):_ APPLICATION_URL
 
 prepareForSmokeTests
 ~~~~~~~~~~~~~~~~~~~~
+
+____
+ # Ansible implementation of prepare for smoke tests
+____
 
 Has 14 line(s). Doesn't call other functions.
 
@@ -110,6 +142,10 @@ _List of exports (to environment):_ APPLICATION_URL [big]*//* STUBRUNNER_URL
 prodDeploy
 ~~~~~~~~~~
 
+____
+ # Implementation of the Ansible deployment to prod
+____
+
 Has 7 line(s). Calls functions:
 
  prodDeploy
@@ -123,6 +159,10 @@ _Environment variables used:_ pipeline.sh -> LANGUAGE_TYPE
 
 rollbackToPreviousVersion
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+____
+ # Implementation of the Ansible rolling back on production to previous version
+____
 
 Has 4 line(s). Calls functions:
 
@@ -138,6 +178,10 @@ _Environment variables used:_ pipeline.sh -> LANGUAGE_TYPE
 stageDeploy
 ~~~~~~~~~~~
 
+____
+ # Implementation of the Ansible deployment to stage
+____
+
 Has 6 line(s). Calls functions:
 
  stageDeploy
@@ -152,6 +196,10 @@ _Environment variables used:_ pipeline.sh -> LANGUAGE_TYPE
 testDeploy
 ~~~~~~~~~~
 
+____
+ # Implementation of the Ansible deployment to test
+____
+
 Has 15 line(s). Calls functions:
 
  testDeploy
@@ -165,6 +213,10 @@ _Environment variables used:_ pipeline.sh -> LANGUAGE_TYPE
 
 testRollbackDeploy
 ~~~~~~~~~~~~~~~~~~
+
+____
+ # Implementation of the Ansible deployment to test for rollback tests
+____
 
 Has 21 line(s). Calls functions:
 

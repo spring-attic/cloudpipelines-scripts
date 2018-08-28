@@ -1,6 +1,12 @@
 #!/bin/bash
 
-set -e
+set -o errexit
+set -o errtrace
+set -o pipefail
+
+# synopsis {{{
+# Contains all Ansible related deployment functions
+# }}}
 
 __ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ANSIBLE_INVENTORY_DIR="${ANSIBLE_INVENTORY_DIR:-ansible-inventory}"
@@ -9,6 +15,13 @@ ANSIBLE_CUSTOM_PLAYBOOKS_DIR="${ANSIBLE_CUSTOM_PLAYBOOKS_DIR:-${__ROOT}/ansible/
 PIPELINE_DESCRIPTOR="$( pwd )/${PIPELINE_DESCRIPTOR}"
 ENVIRONMENT="${ENVIRONMENT:?}"
 
+ANSIBLE_INVENTORY_BIN="${ANSIBLE_INVENTORY_BIN:-ansible-inventory}"
+ANSIBLE_PLAYBOOK_BIN="${ANSIBLE_PLAYBOOK_BIN:-ansible-playbook}"
+
+# FUNCTION: __ansible_inventory {{{
+# Loads the Ansible inventory from the given [ANSIBLE_INVENTORY_DIR]. The convention is such
+# that every environment has its own file with the name of the environment. E.g. for environment
+# [test] the inventory file would be [${ANSIBLE_INVENTORY_DIR}/test].
 function __ansible_inventory() {
 	local environment
 
@@ -17,9 +30,15 @@ function __ansible_inventory() {
 		echo "Could not find inventory!"
 		exit 1
 	fi
-	ansible-inventory -i "${ANSIBLE_INVENTORY_DIR}/${environment}" "$@"
-}
+	"${ANSIBLE_INVENTORY_BIN}" -i "${ANSIBLE_INVENTORY_DIR}/${environment}" "$@"
+} # }}}
 
+# FUNCTION: __ansible_playbook {{{
+# Given the presence of the Ansible inventory will first try to load a custom
+# playbook from [${ANSIBLE_CUSTOM_PLAYBOOKS_DIR}/${playbook_name}]. E.g.
+# for playbook with name [deploy-jvm-service.yml] will search by default for
+# [${__ROOT}/ansible/custom/deploy-jvm-service.yml] to apply first. If there's
+# no such file will continue applying the defaultplaybook  [${__ROOT}/ansible/deploy-jvm-service.yml]
 function __ansible_playbook() {
 	local playbook_name="$1"
 	local environment
@@ -38,14 +57,18 @@ function __ansible_playbook() {
 	echo "Executing playbook [${playbook_path}]"
 	ANSIBLE_HOST_KEY_CHECKING="False" \
 	ANSIBLE_STDOUT_CALLBACK="debug" \
-	ansible-playbook -D -i "${ANSIBLE_INVENTORY_DIR}/${environment}" \
+	"${ANSIBLE_PLAYBOOK_BIN}" -D -i "${ANSIBLE_INVENTORY_DIR}/${environment}" \
 		"${playbook_path}" "$@"
-}
+} # }}}
 
+# FUNCTION: logInToPaas {{{
+# Since there's no concept of explicit logging in in Ansible, this method does nothing
 function logInToPaas() {
 	:
-}
+} # }}}
 
+# FUNCTION: testDeploy {{{
+# Implementation of the Ansible deployment to test
 function testDeploy() {
 	local appName
 
@@ -62,8 +85,10 @@ function testDeploy() {
 		-e "app_name=${appName}" \
 		-e "app_group_id=$( retrieveGroupId )" \
 		-e "app_version=${PIPELINE_VERSION}"
-}
+} # }}}
 
+# FUNCTION: testRollbackDeploy {{{
+# Implementation of the Ansible deployment to test for rollback tests
 function testRollbackDeploy() {
 	local latestProdTag="${1}"
 	local latestProdVersion
@@ -88,8 +113,10 @@ function testRollbackDeploy() {
 	STUBRUNNER_URL=${STUBRUNNER_URL}
 	LATEST_PROD_TAG=${latestProdTag}
 	EOF
-}
+} # }}}
 
+# FUNCTION: prepareForSmokeTests {{{
+# Ansible implementation of prepare for smoke tests
 function prepareForSmokeTests() {
 	local applicationHost
 	local applicationPort
@@ -109,8 +136,10 @@ function prepareForSmokeTests() {
 
 	export APPLICATION_URL="${applicationHost}:${applicationPort}"
 	export STUBRUNNER_URL="${stubrunnerHost}:${stubrunnerPort}"
-}
+} # }}}
 
+# FUNCTION: stageDeploy {{{
+# Implementation of the Ansible deployment to stage
 function stageDeploy() {
 	__ansible_playbook bootstrap-environment.yml
 
@@ -118,8 +147,10 @@ function stageDeploy() {
 		-e "app_name=$( retrieveAppName )" \
 		-e "app_group_id=$( retrieveGroupId )" \
 		-e "app_version=${PIPELINE_VERSION}"
-}
+} # }}}
 
+# FUNCTION: prepareForE2eTests {{{
+# Ansible implementation of prepare for e2e tests
 function prepareForE2eTests() {
 	local applicationHost
 	local applicationPort
@@ -132,8 +163,10 @@ function prepareForE2eTests() {
 	applicationPort="$( __ansible_inventory --host "${applicationHost}" | jq -r ".\"${appName}_port\"" )"
 
 	export APPLICATION_URL="${applicationHost}:${applicationPort}"
-}
+} # }}}
 
+# FUNCTION: prodDeploy {{{
+# Implementation of the Ansible deployment to prod
 function prodDeploy() {
 	__ansible_playbook bootstrap-environment.yml
 
@@ -142,19 +175,23 @@ function prodDeploy() {
 		-e "app_group_id=$( retrieveGroupId )" \
 		-e "app_version=${PIPELINE_VERSION}" \
 		-e "target=blue"
-}
+} # }}}
 
+# FUNCTION: completeSwitchOver {{{
+# Implementation of the Ansible switch over on production
 function completeSwitchOver() {
 	__ansible_playbook "deploy-${LANGUAGE_TYPE}-service.yml" \
 		-e "app_name=$( retrieveAppName )" \
 		-e "app_group_id=$( retrieveGroupId )" \
 		-e "app_version=${PIPELINE_VERSION}" \
 		-e "target=green"
-}
+} # }}}
 
+# FUNCTION: rollbackToPreviousVersion {{{
+# Implementation of the Ansible rolling back on production to previous version
 function rollbackToPreviousVersion() {
 	__ansible_playbook "deploy-${LANGUAGE_TYPE}-service.yml" \
 		-e "app_name=$( retrieveAppName )" \
 		-e "app_group_id=$( retrieveGroupId )" \
 		-e "app_version=${PIPELINE_VERSION}"
-}
+} # }}}
