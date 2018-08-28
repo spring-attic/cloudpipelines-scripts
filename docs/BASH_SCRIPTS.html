@@ -1023,7 +1023,7 @@ yaml2json</pre>
 <p><em>List of exports (to environment):</em> LATEST_PROD_TAG <strong class="big">//</strong> PASSED_LATEST_PROD_TAG</p>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> OUTPUT_FOLDER <strong class="big">//</strong> PROJECT_NAME <strong class="big">//</strong> LATEST_PROD_TAG <strong class="big">//</strong> PASSED_LATEST_PROD_TAG</p>
+<p><em>Environment variables used:</em> LATEST_PROD_TAG <strong class="big">//</strong> PASSED_LATEST_PROD_TAG <strong class="big">//</strong> OUTPUT_FOLDER <strong class="big">//</strong> PROJECT_NAME</p>
 </div>
 </div>
 <div class="sect2">
@@ -1104,7 +1104,7 @@ yaml2json</pre>
 </div>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> PROJECT_NAME <strong class="big">//</strong> PROJECT_SETUP <strong class="big">//</strong> PIPELINE_DESCRIPTOR_PRESENT</p>
+<p><em>Environment variables used:</em> PIPELINE_DESCRIPTOR_PRESENT <strong class="big">//</strong> PROJECT_NAME <strong class="big">//</strong> PROJECT_SETUP</p>
 </div>
 </div>
 <div class="sect2">
@@ -1199,7 +1199,7 @@ pipeline-k8s.sh/testDeploy</pre>
 </div>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> LOWERCASE_ENV <strong class="big">//</strong> PARSED_YAML <strong class="big">//</strong> test_smoke.sh &#8594; ENVIRONMENT</p>
+<p><em>Environment variables used:</em> PARSED_YAML <strong class="big">//</strong> LOWERCASE_ENV <strong class="big">//</strong> test_smoke.sh &#8594; ENVIRONMENT</p>
 </div>
 </div>
 <div class="sect2">
@@ -1395,9 +1395,9 @@ pipeline-cf.sh/propagatePropertiesForTests</pre>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>Script-Body
-defineProjectSetup
+<pre>defineProjectSetup
 deployServices
+Script-Body
 pipeline-cf.sh/prepareForSmokeTests
 pipeline-cf.sh/testRollbackDeploy
 pipeline-k8s.sh/testRollbackDeploy</pre>
@@ -1407,7 +1407,7 @@ pipeline-k8s.sh/testRollbackDeploy</pre>
 <p><em>List of exports (to environment):</em> PARSED_YAML <strong class="big">//</strong> PIPELINE_DESCRIPTOR_PRESENT</p>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> PIPELINE_DESCRIPTOR <strong class="big">//</strong> PARSED_YAML <strong class="big">//</strong> PIPELINE_DESCRIPTOR_PRESENT</p>
+<p><em>Environment variables used:</em> PARSED_YAML <strong class="big">//</strong> PIPELINE_DESCRIPTOR_PRESENT <strong class="big">//</strong> PIPELINE_DESCRIPTOR</p>
 </div>
 </div>
 <div class="sect2">
@@ -1951,7 +1951,7 @@ projectType</pre>
 <p>Uses feature(s): <em>export</em>, <em>source</em></p>
 </div>
 <div class="paragraph">
-<p><em>Exports (environment):</em> BINARY_EXTENSION <strong class="big">//</strong> MAVEN_OPTS <strong class="big">//</strong> PROJECT_TYPE <strong class="big">//</strong> projectType</p>
+<p><em>Exports (environment):</em> BINARY_EXTENSION <strong class="big">//</strong> MAVEN_OPTS <strong class="big">//</strong> projectType <strong class="big">//</strong> PROJECT_TYPE</p>
 </div>
 </div>
 <div class="sect2">
@@ -2102,7 +2102,7 @@ testResultsAntPattern</pre>
 <p>Uses feature(s): <em>export</em></p>
 </div>
 <div class="paragraph">
-<p><em>Exports (environment):</em> BUILD_OPTIONS <strong class="big">//</strong> MAVENW_BIN <strong class="big">//</strong> build <strong class="big">//</strong> executeApiCompatibilityCheck <strong class="big">//</strong> outputFolder <strong class="big">//</strong> retrieveAppName <strong class="big">//</strong> retrieveGroupId <strong class="big">//</strong> runE2eTests <strong class="big">//</strong> runSmokeTests <strong class="big">//</strong> testResultsAntPattern</p>
+<p><em>Exports (environment):</em> build <strong class="big">//</strong> BUILD_OPTIONS <strong class="big">//</strong> executeApiCompatibilityCheck <strong class="big">//</strong> MAVENW_BIN <strong class="big">//</strong> outputFolder <strong class="big">//</strong> retrieveAppName <strong class="big">//</strong> retrieveGroupId <strong class="big">//</strong> runE2eTests <strong class="big">//</strong> runSmokeTests <strong class="big">//</strong> testResultsAntPattern</p>
 </div>
 </div>
 <div class="sect2">
@@ -2427,7 +2427,7 @@ testResultsAntPattern</pre>
 <p>Uses feature(s): <em>export</em></p>
 </div>
 <div class="paragraph">
-<p><em>Exports (environment):</em> BUILD_OPTIONS <strong class="big">//</strong> GRADLEW_BIN <strong class="big">//</strong> build <strong class="big">//</strong> executeApiCompatibilityCheck <strong class="big">//</strong> outputFolder <strong class="big">//</strong> retrieveAppName <strong class="big">//</strong> retrieveGroupId <strong class="big">//</strong> runE2eTests <strong class="big">//</strong> runSmokeTests <strong class="big">//</strong> testResultsAntPattern</p>
+<p><em>Exports (environment):</em> build <strong class="big">//</strong> BUILD_OPTIONS <strong class="big">//</strong> executeApiCompatibilityCheck <strong class="big">//</strong> GRADLEW_BIN <strong class="big">//</strong> outputFolder <strong class="big">//</strong> retrieveAppName <strong class="big">//</strong> retrieveGroupId <strong class="big">//</strong> runE2eTests <strong class="big">//</strong> runSmokeTests <strong class="big">//</strong> testResultsAntPattern</p>
 </div>
 </div>
 <div class="sect2">
@@ -3656,7 +3656,7 @@ testResultsAntPattern</pre>
 <p>Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).</p>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> DOTNET_BIN <strong class="big">//</strong> PROJECT_NAME</p>
+<p><em>Environment variables used:</em> PROJECT_NAME <strong class="big">//</strong> DOTNET_BIN</p>
 </div>
 </div>
 <div class="sect2">
@@ -4249,7 +4249,7 @@ deployService</pre>
 <p>Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).</p>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> pipeline.sh &#8594; LOWERCASE_ENV <strong class="big">//</strong> pipeline.sh &#8594; PARSED_YAML</p>
+<p><em>Environment variables used:</em> pipeline.sh &#8594; PARSED_YAML <strong class="big">//</strong> pipeline.sh &#8594; LOWERCASE_ENV</p>
 </div>
 </div>
 <div class="sect2">
@@ -4342,7 +4342,7 @@ deployService</pre>
 <p>Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).</p>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> pipeline.sh &#8594; BINARY_ARTIFACT_TYPE_NAME <strong class="big">//</strong> pipeline.sh &#8594; LANGUAGE_TYPE <strong class="big">//</strong> pipeline.sh &#8594; SOURCE_ARTIFACT_TYPE_NAME <strong class="big">//</strong> pipeline.sh &#8594; PARSED_YAML</p>
+<p><em>Environment variables used:</em> pipeline.sh &#8594; PARSED_YAML <strong class="big">//</strong> pipeline.sh &#8594; BINARY_ARTIFACT_TYPE_NAME <strong class="big">//</strong> pipeline.sh &#8594; LANGUAGE_TYPE <strong class="big">//</strong> pipeline.sh &#8594; SOURCE_ARTIFACT_TYPE_NAME</p>
 </div>
 </div>
 <div class="sect2">
@@ -4695,7 +4695,7 @@ test_smoke.sh/Script-Body</pre>
 </div>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> APPLICATION_URL <strong class="big">//</strong> STUBRUNNER_URL <strong class="big">//</strong> pipeline.sh &#8594; OUTPUT_FOLDER <strong class="big">//</strong> pipeline.sh &#8594; LATEST_PROD_TAG</p>
+<p><em>Environment variables used:</em> APPLICATION_URL <strong class="big">//</strong> STUBRUNNER_URL <strong class="big">//</strong> pipeline.sh &#8594; LATEST_PROD_TAG <strong class="big">//</strong> pipeline.sh &#8594; OUTPUT_FOLDER</p>
 </div>
 </div>
 <div class="sect2">
@@ -4778,7 +4778,7 @@ testRollbackDeploy</pre>
 <p><em>List of exports (to environment):</em> APPLICATION_URL <strong class="big">//</strong> STUBRUNNER_URL</p>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> pipeline.sh &#8594; LOWERCASE_ENV <strong class="big">//</strong> pipeline.sh &#8594; OUTPUT_FOLDER <strong class="big">//</strong> pipeline.sh &#8594; PARSED_YAML</p>
+<p><em>Environment variables used:</em> pipeline.sh &#8594; PARSED_YAML <strong class="big">//</strong> pipeline.sh &#8594; LOWERCASE_ENV <strong class="big">//</strong> pipeline.sh &#8594; OUTPUT_FOLDER</p>
 </div>
 </div>
 <div class="sect2">
@@ -5195,7 +5195,7 @@ testRollbackDeploy</pre>
 <p>Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).</p>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> pipeline.sh &#8594; LOWERCASE_ENV <strong class="big">//</strong> pipeline.sh &#8594; OUTPUT_FOLDER <strong class="big">//</strong> pipeline.sh &#8594; PARSED_YAML <strong class="big">//</strong> test_smoke.sh &#8594; ENVIRONMENT</p>
+<p><em>Environment variables used:</em> pipeline.sh &#8594; PARSED_YAML <strong class="big">//</strong> pipeline.sh &#8594; LOWERCASE_ENV <strong class="big">//</strong> pipeline.sh &#8594; OUTPUT_FOLDER <strong class="big">//</strong> test_smoke.sh &#8594; ENVIRONMENT</p>
 </div>
 </div>
 <div class="sect2">
@@ -5289,7 +5289,7 @@ testRollbackDeploy</pre>
 <h2 id="synopsis-11"><a class="link" href="#synopsis-11">42. SYNOPSIS</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Documentation automatically generated with `zshelldoc'</p>
+<p>Contains all Ansible related deployment functions</p>
 </div>
 </div>
 </div>
@@ -5319,11 +5319,22 @@ testRollbackDeploy</pre>
 <div class="sect2">
 <h3 id="script-body-11"><a class="link" href="#script-body-11">44.1. Script Body</a></h3>
 <div class="paragraph">
-<p>Has 10 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).</p>
+<p>Has 15 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="__ansible_inventory"><a class="link" href="#__ansible_inventory">44.2. __ansible_inventory</a></h3>
+<div class="quoteblock">
+<blockquote>
+<div class="literalblock">
+<div class="content">
+<pre># Loads the Ansible inventory from the given [ANSIBLE_INVENTORY_DIR]. The convention is such
+# that every environment has its own file with the name of the environment. E.g. for environment
+# [test] the inventory file would be [${ANSIBLE_INVENTORY_DIR}/test].</pre>
+</div>
+</div>
+</blockquote>
+</div>
 <div class="paragraph">
 <p>Has 8 line(s). Doesn&#8217;t call other functions.</p>
 </div>
@@ -5336,6 +5347,19 @@ testRollbackDeploy</pre>
 </div>
 <div class="sect2">
 <h3 id="__ansible_playbook"><a class="link" href="#__ansible_playbook">44.3. __ansible_playbook</a></h3>
+<div class="quoteblock">
+<blockquote>
+<div class="literalblock">
+<div class="content">
+<pre># Given the presence of the Ansible inventory will first try to load a custom
+# playbook from [${ANSIBLE_CUSTOM_PLAYBOOKS_DIR}/${playbook_name}]. E.g.
+# for playbook with name [deploy-jvm-service.yml] will search by default for
+# [${__ROOT}/ansible/custom/deploy-jvm-service.yml] to apply first. If there's
+# no such file will continue applying the defaultplaybook  [${__ROOT}/ansible/deploy-jvm-service.yml]</pre>
+</div>
+</div>
+</blockquote>
+</div>
 <div class="paragraph">
 <p>Has 19 line(s). Doesn&#8217;t call other functions.</p>
 </div>
@@ -5358,6 +5382,15 @@ testRollbackDeploy</pre>
 </div>
 <div class="sect2">
 <h3 id="completeswitchover-3"><a class="link" href="#completeswitchover-3">44.4. completeSwitchOver</a></h3>
+<div class="quoteblock">
+<blockquote>
+<div class="literalblock">
+<div class="content">
+<pre># Implementation of the Ansible switch over on production</pre>
+</div>
+</div>
+</blockquote>
+</div>
 <div class="paragraph">
 <p>Has 5 line(s). Calls functions:</p>
 </div>
@@ -5381,6 +5414,15 @@ testRollbackDeploy</pre>
 </div>
 <div class="sect2">
 <h3 id="logintopaas-3"><a class="link" href="#logintopaas-3">44.5. logInToPaas</a></h3>
+<div class="quoteblock">
+<blockquote>
+<div class="literalblock">
+<div class="content">
+<pre># Since there's no concept of explicit logging in in Ansible, this method does nothing</pre>
+</div>
+</div>
+</blockquote>
+</div>
 <div class="paragraph">
 <p>Has 1 line(s). Doesn&#8217;t call other functions.</p>
 </div>
@@ -5390,6 +5432,15 @@ testRollbackDeploy</pre>
 </div>
 <div class="sect2">
 <h3 id="preparefore2etests-3"><a class="link" href="#preparefore2etests-3">44.6. prepareForE2eTests</a></h3>
+<div class="quoteblock">
+<blockquote>
+<div class="literalblock">
+<div class="content">
+<pre># Ansible implementation of prepare for e2e tests</pre>
+</div>
+</div>
+</blockquote>
+</div>
 <div class="paragraph">
 <p>Has 9 line(s). Doesn&#8217;t call other functions.</p>
 </div>
@@ -5410,6 +5461,15 @@ testRollbackDeploy</pre>
 </div>
 <div class="sect2">
 <h3 id="prepareforsmoketests-3"><a class="link" href="#prepareforsmoketests-3">44.7. prepareForSmokeTests</a></h3>
+<div class="quoteblock">
+<blockquote>
+<div class="literalblock">
+<div class="content">
+<pre># Ansible implementation of prepare for smoke tests</pre>
+</div>
+</div>
+</blockquote>
+</div>
 <div class="paragraph">
 <p>Has 14 line(s). Doesn&#8217;t call other functions.</p>
 </div>
@@ -5432,6 +5492,15 @@ test_smoke.sh/Script-Body</pre>
 </div>
 <div class="sect2">
 <h3 id="proddeploy-3"><a class="link" href="#proddeploy-3">44.8. prodDeploy</a></h3>
+<div class="quoteblock">
+<blockquote>
+<div class="literalblock">
+<div class="content">
+<pre># Implementation of the Ansible deployment to prod</pre>
+</div>
+</div>
+</blockquote>
+</div>
 <div class="paragraph">
 <p>Has 7 line(s). Calls functions:</p>
 </div>
@@ -5455,6 +5524,15 @@ test_smoke.sh/Script-Body</pre>
 </div>
 <div class="sect2">
 <h3 id="rollbacktopreviousversion-3"><a class="link" href="#rollbacktopreviousversion-3">44.9. rollbackToPreviousVersion</a></h3>
+<div class="quoteblock">
+<blockquote>
+<div class="literalblock">
+<div class="content">
+<pre># Implementation of the Ansible rolling back on production to previous version</pre>
+</div>
+</div>
+</blockquote>
+</div>
 <div class="paragraph">
 <p>Has 4 line(s). Calls functions:</p>
 </div>
@@ -5478,6 +5556,15 @@ test_smoke.sh/Script-Body</pre>
 </div>
 <div class="sect2">
 <h3 id="stagedeploy-3"><a class="link" href="#stagedeploy-3">44.10. stageDeploy</a></h3>
+<div class="quoteblock">
+<blockquote>
+<div class="literalblock">
+<div class="content">
+<pre># Implementation of the Ansible deployment to stage</pre>
+</div>
+</div>
+</blockquote>
+</div>
 <div class="paragraph">
 <p>Has 6 line(s). Calls functions:</p>
 </div>
@@ -5501,6 +5588,15 @@ test_smoke.sh/Script-Body</pre>
 </div>
 <div class="sect2">
 <h3 id="testdeploy-4"><a class="link" href="#testdeploy-4">44.11. testDeploy</a></h3>
+<div class="quoteblock">
+<blockquote>
+<div class="literalblock">
+<div class="content">
+<pre># Implementation of the Ansible deployment to test</pre>
+</div>
+</div>
+</blockquote>
+</div>
 <div class="paragraph">
 <p>Has 15 line(s). Calls functions:</p>
 </div>
@@ -5524,6 +5620,15 @@ test_smoke.sh/Script-Body</pre>
 </div>
 <div class="sect2">
 <h3 id="testrollbackdeploy-4"><a class="link" href="#testrollbackdeploy-4">44.12. testRollbackDeploy</a></h3>
+<div class="quoteblock">
+<blockquote>
+<div class="literalblock">
+<div class="content">
+<pre># Implementation of the Ansible deployment to test for rollback tests</pre>
+</div>
+</div>
+</blockquote>
+</div>
 <div class="paragraph">
 <p>Has 21 line(s). Calls functions:</p>
 </div>
