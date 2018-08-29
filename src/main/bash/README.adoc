@@ -2909,7 +2909,7 @@ DETAILS
 Script Body
 ~~~~~~~~~~~
 
-Has 15 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
+Has 16 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
 
 __ansible_inventory
 ~~~~~~~~~~~~~~~~~~~
@@ -2937,7 +2937,7 @@ ____
  # no such file will continue applying the defaultplaybook  [${__ROOT}/ansible/deploy-jvm-service.yml]
 ____
 
-Has 19 line(s). Doesn't call other functions.
+Has 21 line(s). Doesn't call other functions.
 
 Called by:
 
@@ -3040,7 +3040,7 @@ ____
  # Implementation of the Ansible rolling back on production to previous version
 ____
 
-Has 4 line(s). Calls functions:
+Has 15 line(s). Calls functions:
 
  rollbackToPreviousVersion
  `-- __ansible_playbook
@@ -3094,7 +3094,7 @@ ____
  # Implementation of the Ansible deployment to test for rollback tests
 ____
 
-Has 21 line(s). Calls functions:
+Has 23 line(s). Calls functions:
 
  testRollbackDeploy
  |-- __ansible_playbook

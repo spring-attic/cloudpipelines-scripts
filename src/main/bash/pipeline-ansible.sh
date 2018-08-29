@@ -17,6 +17,7 @@ ENVIRONMENT="${ENVIRONMENT:?}"
 
 ANSIBLE_INVENTORY_BIN="${ANSIBLE_INVENTORY_BIN:-ansible-inventory}"
 ANSIBLE_PLAYBOOK_BIN="${ANSIBLE_PLAYBOOK_BIN:-ansible-playbook}"
+JQ_BIN="${JQ_BIN:-jq}"
 
 # FUNCTION: __ansible_inventory {{{
 # Loads the Ansible inventory from the given [ANSIBLE_INVENTORY_DIR]. The convention is such
@@ -53,6 +54,8 @@ function __ansible_playbook() {
 	if [[ -f "${ANSIBLE_CUSTOM_PLAYBOOKS_DIR}/${playbook_name}" ]]; then
 		echo "Found custom playbook [${playbook_name}]"
 		playbook_path="${ANSIBLE_CUSTOM_PLAYBOOKS_DIR}/${playbook_name}"
+	else
+		echo "No custom playbook found under [${ANSIBLE_CUSTOM_PLAYBOOKS_DIR}/${playbook_name}]"
 	fi
 	echo "Executing playbook [${playbook_path}]"
 	ANSIBLE_HOST_KEY_CHECKING="False" \
@@ -92,8 +95,10 @@ function testDeploy() {
 function testRollbackDeploy() {
 	local latestProdTag="${1}"
 	local latestProdVersion
+	local appName
+	appName=$(retrieveAppName)
 
-	latestProdVersion="${latestProdTag#prod/}"
+	latestProdVersion="${latestProdTag#prod/${appName}/}"
 
 	rm -rf -- "${OUTPUT_FOLDER}/test.properties"
 	mkdir -p "${OUTPUT_FOLDER}"
@@ -101,7 +106,7 @@ function testRollbackDeploy() {
 	echo "Last prod version equals ${latestProdVersion}"
 
 	__ansible_playbook "deploy-${LANGUAGE_TYPE}-service.yml" \
-		-e "app_name=$( retrieveAppName )" \
+		-e "app_name=${appName}" \
 		-e "app_group_id=$( retrieveGroupId )" \
 		-e "app_version=${latestProdVersion}"
 
@@ -127,12 +132,12 @@ function prepareForSmokeTests() {
 	appName="$( retrieveAppName )"
 
 	# we assume that we have only one test instance
-	applicationHost="$( __ansible_inventory --list | jq -r '.app_server.hosts[0]' )"
-	applicationPort="$( __ansible_inventory --host "${applicationHost}" | jq -r ".\"${appName}_port\"" )"
+	applicationHost="$( __ansible_inventory --list | "${JQ_BIN}" -r '.app_server.hosts[0]' )"
+	applicationPort="$( __ansible_inventory --host "${applicationHost}" | "${JQ_BIN}" -r ".\"${appName}_port\"" )"
 
 	# and we assume that stubrunner should run on the same host
 	stubrunnerHost="${applicationHost}"
-	stubrunnerPort="$( __ansible_inventory --host "${stubrunnerHost}" | jq -r ".\"${appName}_stubrunner_port\"" )"
+	stubrunnerPort="$( __ansible_inventory --host "${stubrunnerHost}" | "${JQ_BIN}" -r ".\"${appName}_stubrunner_port\"" )"
 
 	export APPLICATION_URL="${applicationHost}:${applicationPort}"
 	export STUBRUNNER_URL="${stubrunnerHost}:${stubrunnerPort}"
@@ -159,8 +164,8 @@ function prepareForE2eTests() {
 	appName="$( retrieveAppName )"
 
 	# we assume that we have only one test instance
-	applicationHost="$( __ansible_inventory --list | jq -r '.app_server.hosts[0]' )"
-	applicationPort="$( __ansible_inventory --host "${applicationHost}" | jq -r ".\"${appName}_port\"" )"
+	applicationHost="$( __ansible_inventory --list | "${JQ_BIN}" -r '.app_server.hosts[0]' )"
+	applicationPort="$( __ansible_inventory --host "${applicationHost}" | "${JQ_BIN}" -r ".\"${appName}_port\"" )"
 
 	export APPLICATION_URL="${applicationHost}:${applicationPort}"
 } # }}}
@@ -190,8 +195,20 @@ function completeSwitchOver() {
 # FUNCTION: rollbackToPreviousVersion {{{
 # Implementation of the Ansible rolling back on production to previous version
 function rollbackToPreviousVersion() {
-	__ansible_playbook "deploy-${LANGUAGE_TYPE}-service.yml" \
-		-e "app_name=$( retrieveAppName )" \
-		-e "app_group_id=$( retrieveGroupId )" \
-		-e "app_version=${PIPELINE_VERSION}"
+	local appName
+	appName=$(retrieveAppName)
+	# Find latest prod version
+	latestProdTag="$(findLatestProdTag)"
+	if [[ "${latestProdTag}" != "" ]]; then
+		latestProdVersion="${latestProdTag#prod/${appName}/}"
+		echo "Last prod version equals ${latestProdVersion}"
+		__ansible_playbook "deploy-${LANGUAGE_TYPE}-service.yml" \
+			-e "app_name=$( retrieveAppName )" \
+			-e "app_group_id=$( retrieveGroupId )" \
+			-e "app_version=${latestProdVersion}"
+		return 0
+	else
+		echo "No latest prod tag found"
+		return 1
+	fi
 } # }}}

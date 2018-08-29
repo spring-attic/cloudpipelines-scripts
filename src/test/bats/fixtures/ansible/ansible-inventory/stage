@@ -1,0 +1,15 @@
+[mysql]
+10.164.0.3 ansible_user=deploy
+
+[rabbitmq]
+10.164.0.3 ansible_user=deploy
+
+[eureka]
+10.164.0.3 ansible_user=deploy
+
+[app_server]
+10.164.0.3 ansible_user=deploy
+
+[app_server:vars]
+github-analytics_port = 8081
+github-webhook_port = 8082
