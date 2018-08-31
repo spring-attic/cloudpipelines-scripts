@@ -26,11 +26,11 @@ function build() {
 	echo "Building"
 	"${DOTNET_BIN}" build
 	echo "Unit tests"
-	"${DOTNET_BIN}" msbuild /nologo /t:CFPUnitTests
+	"${DOTNET_BIN}" msbuild /nologo /t:UnitTests
 	echo "Integration tests"
-	"${DOTNET_BIN}" msbuild /nologo /t:CFPIntegrationTests
+	"${DOTNET_BIN}" msbuild /nologo /t:IntegrationTests
 	echo "Publishing"
-	"${DOTNET_BIN}" msbuild /nologo /t:CFPPublish /p:Configuration=Release
+	"${DOTNET_BIN}" msbuild /nologo /t:Publish /p:Configuration=Release
 } # }}}
 
 # FUNCTION: downloadAppBinary {{{
@@ -82,13 +82,13 @@ function executeApiCompatibilityCheck() {
 	EXTERNAL_CONTRACTS_PATH="/"
 	EXTERNAL_CONTRACTS_CLASSIFIER="stubs"
 	EXTERNAL_CONTRACTS_VERSION="${latestProdVersion}"
-	"${DOTNET_BIN}" msbuild /nologo /t:CFPApiCompatibilityTest
+	"${DOTNET_BIN}" msbuild /nologo /t:ApiCompatibilityTest
 } # }}}
 
 # FUNCTION: retrieveGroupId {{{
 # Dotnet implementation of the retrieve group id
 function retrieveGroupId() {
-	"${DOTNET_BIN}" msbuild /nologo /t:CFPGroupId | tail -1 | xargs
+	"${DOTNET_BIN}" msbuild /nologo /t:GroupId | tail -1 | xargs
 } # }}}
 
 # FUNCTION: retrieveAppName {{{
@@ -97,14 +97,14 @@ function retrieveAppName() {
 	if [[ "${PROJECT_NAME}" != "" && "${PROJECT_NAME}" != "${DEFAULT_PROJECT_NAME}" ]]; then
 		echo "${PROJECT_NAME}"
 	else
-		"${DOTNET_BIN}" msbuild /nologo /t:CFPAppName | tail -1 | xargs
+		"${DOTNET_BIN}" msbuild /nologo /t:AppName | tail -1 | xargs
 	fi
 } # }}}
 
 # FUNCTION: retrieveStubRunnerIds {{{
 # Dotnet implementation of the retrieve stub runner ids
 function retrieveStubRunnerIds() {
-	"${DOTNET_BIN}" msbuild /nologo /t:CFPStubIds | tail -1 | xargs
+	"${DOTNET_BIN}" msbuild /nologo /t:StubIds | tail -1 | xargs
 } # }}}
 
 # ---- TEST PHASE ----
@@ -112,7 +112,7 @@ function retrieveStubRunnerIds() {
 # FUNCTION: runSmokeTests {{{
 # Dotnet implementation of the run smoke tests
 function runSmokeTests() {
-	"${DOTNET_BIN}" msbuild /nologo /t:CFPSmokeTests
+	"${DOTNET_BIN}" msbuild /nologo /t:SmokeTests
 } # }}}
 
 # ---- STAGE PHASE ----
@@ -120,7 +120,7 @@ function runSmokeTests() {
 # FUNCTION: runE2eTests {{{
 # Dotnet implementation of the run e2e tests
 function runE2eTests() {
-	"${DOTNET_BIN}" msbuild /nologo /t:CFPE2eTests
+	"${DOTNET_BIN}" msbuild /nologo /t:E2eTests
 } # }}}
 
 # ---- COMMON ----

@@ -3,8 +3,6 @@
 Cloud Pipelines offers a number of ways to customize a Pipelines project:
 
 * <<customization-overriding-scripts>>
-* <<customization-overriding-pipelines>>
-* <<customization-picking-features>>
 
 [[customization-overriding-scripts]]
 === Overriding Scripts

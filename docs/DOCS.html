@@ -483,6 +483,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#cloud-foundry-project-opinions">4.1. Cloud Foundry Project Opinions</a></li>
 <li><a href="#kubernetes-project-opinions">4.2. Kubernetes Project Opinions</a></li>
+<li><a href="#kubernetes-project-opinions-2">4.3. Kubernetes Project Opinions</a></li>
 </ul>
 </li>
 <li><a href="#customizing-the-project">5. Customizing the Project</a>
@@ -1941,32 +1942,32 @@ structure and project properties.</p>
 <p><code>dotnet build</code> is called to build the project.</p>
 </li>
 <li>
-<p><code>dotnet msbuild /nologo /t:CFPUnitTests</code> is called to run unit tests.</p>
+<p><code>dotnet msbuild /nologo /t:UnitTests</code> is called to run unit tests.</p>
 </li>
 <li>
-<p><code>dotnet msbuild /nologo /t:CFPIntegrationTests</code> is called to run integration tests.</p>
+<p><code>dotnet msbuild /nologo /t:IntegrationTests</code> is called to run integration tests.</p>
 </li>
 <li>
-<p><code>dotnet msbuild /nologo /t:CFPPublish /p:Configuration=Release</code> is called to publish a
+<p><code>dotnet msbuild /nologo /t:Publish /p:Configuration=Release</code> is called to publish a
 ZIP with a self-contained DLL, together with all manifests and deployment files.</p>
 </li>
 <li>
-<p><code>dotnet msbuild /nologo /t:CFPGroupId</code> is the npm task that echos the group ID.</p>
+<p><code>dotnet msbuild /nologo /t:GroupId</code> is the npm task that echos the group ID.</p>
 </li>
 <li>
-<p><code>dotnet msbuild /nologo /t:CFPAppName</code> is the npm task that echos application name.</p>
+<p><code>dotnet msbuild /nologo /t:AppName</code> is the npm task that echos application name.</p>
 </li>
 <li>
-<p><code>dotnet msbuild /nologo /t:CFPStubIds</code> is the npm task that echos stub runner IDs.</p>
+<p><code>dotnet msbuild /nologo /t:StubIds</code> is the npm task that echos stub runner IDs.</p>
 </li>
 <li>
-<p><code>dotnet msbuild /nologo /t:CFPApiCompatibilityTest</code> is run for API compatibility tests.</p>
+<p><code>dotnet msbuild /nologo /t:ApiCompatibilityTest</code> is run for API compatibility tests.</p>
 </li>
 <li>
-<p><code>dotnet msbuild /nologo /t:CFPSmokeTests</code> is executed for smoke testing.</p>
+<p><code>dotnet msbuild /nologo /t:SmokeTests</code> is executed for smoke testing.</p>
 </li>
 <li>
-<p><code>dotnet msbuild /nologo /t:CFPE2eTests</code> is executed for end-to-end testing.</p>
+<p><code>dotnet msbuild /nologo /t:E2eTests</code> is executed for end-to-end testing.</p>
 </li>
 <li>
 <p><code>target</code> is assumed to be the output folder. Add it to <code>.gitignore</code>.</p>
@@ -2140,6 +2141,169 @@ ZIP with a self-contained DLL, together with all manifests and deployment files.
 </ul>
 </div>
 </div>
+<div class="sect2">
+<h3 id="kubernetes-project-opinions-2"><a class="link" href="#kubernetes-project-opinions-2">4.3. Kubernetes Project Opinions</a></h3>
+<div class="paragraph">
+<p>We use the following opinionated decisions for a Cloud Foundry based project:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The application is built by using the Maven or Gradle wrappers.</p>
+</li>
+<li>
+<p>The application is deployed to Kubernetes.</p>
+</li>
+<li>
+<p>The Java Docker image needs to allow passing of system properties through the <code>SYSTEM_PROPS</code> environment variable.</p>
+</li>
+<li>
+<p>For Maven (<a href="https://github.com/spring-cloud-samples/github-webhook-kubernetes">example project</a>), we assume:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Usage of the Maven Wrapper.</p>
+</li>
+<li>
+<p><code>settings.xml</code> is parametrized to pass the credentials to push code to Artifactory and Docker repositories:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>M2_SETTINGS_REPO_ID</code>: Server ID for Artifactory or Nexus deployment.</p>
+</li>
+<li>
+<p><code>M2_SETTINGS_REPO_USERNAME</code>: User name for Artifactory or Nexus deployment.</p>
+</li>
+<li>
+<p><code>M2_SETTINGS_REPO_PASSWORD</code>: Password for Artifactory or Nexus deployment.</p>
+</li>
+<li>
+<p><code>DOCKER_SERVER_ID</code>: Server ID for Docker image pushing.</p>
+</li>
+<li>
+<p><code>DOCKER_USERNAME</code>: User name for Docker image pushing.</p>
+</li>
+<li>
+<p><code>DOCKER_PASSWORD</code>: Password for Docker image pushing.</p>
+</li>
+<li>
+<p><code>DOCKER_EMAIL</code>: Email for Artifactory or Nexus deployment</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>DOCKER_REGISTRY_URL</code> environment variable: Contains (Overridable - defaults to DockerHub) URL of the Docker registry.</p>
+</li>
+<li>
+<p><code>DOCKER_REGISTRY_ORGANIZATION</code> environment variable: Contains the organization where your Docker repository resides.</p>
+</li>
+<li>
+<p>Artifacts and Docker image deployment is done by using <code>./mvnw clean deploy</code>.</p>
+</li>
+<li>
+<p><code>stubrunner.ids</code> property: To retrieve list of collaborators for which stubs should be downloaded.</p>
+</li>
+<li>
+<p><code>repo.with.binaries</code> property (injected by the pipeline): Contains the URL to the repo containing binaries (for example, Artifactory).</p>
+</li>
+<li>
+<p><code>distribution.management.release.id</code> property (injected by the pipeline): Contains the ID of the distribution management. Corresponds to the server ID in <code>settings.xml</code></p>
+</li>
+<li>
+<p><code>distribution.management.release.url</code> property (injected by the pipeline): Contains the URL or the repository that contains binaries (for example, Artifactory).</p>
+</li>
+<li>
+<p><code>deployment.yml</code> contains the Kubernetes deployment descriptor.</p>
+</li>
+<li>
+<p><code>service.yml</code> contains the Kubernetes service descriptor.</p>
+</li>
+<li>
+<p>running API compatibility tests with the <code>apicompatibility</code> Maven profile.</p>
+</li>
+<li>
+<p><code>latest.production.version</code> property (injected by the pipeline): Contains the latest production version for the repository (retrieved from Git tags).</p>
+</li>
+<li>
+<p>Running smoke tests on a deployed app with the <code>smoke</code> Maven profile.</p>
+</li>
+<li>
+<p>Running end to end tests on a deployed app with the <code>e2e</code> Maven profile.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>For Gradle  (<a href="https://github.com/spring-cloud-samples/github-analytics-kubernetes">example project</a> check the <code>gradle/pipeline.gradle</code> file), we assume:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Usage of the Gradlew Wrapper.</p>
+</li>
+<li>
+<p><code>deploy</code> task for artifact deployment.</p>
+</li>
+<li>
+<p><code>REPO_WITH_BINARIES_FOR_UPLOAD</code> env var (injected by the pipeline): Contains the URL to the repository that contains binaries (for example, Artifactory).</p>
+</li>
+<li>
+<p><code>M2_SETTINGS_REPO_USERNAME</code> environment variable: User name used to send the binary to the repository that contains binaries (for example, Artifactory).</p>
+</li>
+<li>
+<p><code>M2_SETTINGS_REPO_PASSWORD</code> environment variable: Password used to send the binary to the repository that contains binaries (for example, Artifactory).</p>
+</li>
+<li>
+<p><code>DOCKER_REGISTRY_URL</code> environment variable: (Overridable - defaults to DockerHub) URL of the Docker registry.</p>
+</li>
+<li>
+<p><code>DOCKER_USERNAME</code> environment variable: User name used to send the the Docker image.</p>
+</li>
+<li>
+<p><code>DOCKER_PASSWORD</code> environment variable: Password used to send the the Docker image.</p>
+</li>
+<li>
+<p><code>DOCKER_EMAIL</code> environment variable: Email used to send the the Docker image.</p>
+</li>
+<li>
+<p><code>DOCKER_REGISTRY_ORGANIZATION</code> environment variable: Contains the organization where your Docker repo resides.</p>
+</li>
+<li>
+<p><code>deployment.yml</code> contains the Kubernetes deployment descriptor.</p>
+</li>
+<li>
+<p><code>service.yml</code> contains the Kubernetes service descriptor.</p>
+</li>
+<li>
+<p>Running API compatibility tests with the <code>apiCompatibility</code> task.</p>
+</li>
+<li>
+<p><code>latestProductionVersion</code> property (injected by the pipeline): Contains the latest production version for the repositoryi (retrieved from Git tags).</p>
+</li>
+<li>
+<p>Running smoke tests on a deployed application with the <code>smoke</code> task.</p>
+</li>
+<li>
+<p>Running end to end tests on a deployed application with the <code>e2e</code> task.</p>
+</li>
+<li>
+<p><code>groupId</code> task to retrieve group ID.</p>
+</li>
+<li>
+<p><code>artifactId</code> task to retrieve artifact ID.</p>
+</li>
+<li>
+<p><code>currentVersion</code> task to retrieve the current version.</p>
+</li>
+<li>
+<p><code>stubIds</code> task to retrieve the list of collaborators for which stubs should be downloaded.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -2152,12 +2316,6 @@ ZIP with a self-contained DLL, together with all manifests and deployment files.
 <ul>
 <li>
 <p><a href="#customization-overriding-scripts">Overriding Scripts</a></p>
-</li>
-<li>
-<p><a href="#customization-overriding-pipelines">[customization-overriding-pipelines]</a></p>
-</li>
-<li>
-<p><a href="#customization-picking-features">[customization-picking-features]</a></p>
 </li>
 </ul>
 </div>

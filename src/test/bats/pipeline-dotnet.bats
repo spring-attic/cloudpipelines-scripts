@@ -55,9 +55,9 @@ function curl_stub {
 	run build
 
 	# App
-	assert_output --partial "msbuild /nologo /t:CFPUnitTests"
-	assert_output --partial "msbuild /nologo /t:CFPIntegrationTests"
-	assert_output --partial "msbuild /nologo /t:CFPPublish /p:Configuration=Release"
+	assert_output --partial "msbuild /nologo /t:UnitTests"
+	assert_output --partial "msbuild /nologo /t:IntegrationTests"
+	assert_output --partial "msbuild /nologo /t:Publish /p:Configuration=Release"
 	# We don't want exception on jq parsing
 	refute_output --partial "Cannot iterate over null (null)"
 	assert_success
@@ -137,7 +137,7 @@ function curl_stub {
 	export DEFAULT_PROJECT_NAME="foo"
 	source "${SOURCE_DIR}/projectType/pipeline-dotnet.sh"
 
-	assert_equal "$( executeApiCompatibilityCheck )" "dotnet msbuild /nologo /t:CFPApiCompatibilityTest"
+	assert_equal "$( executeApiCompatibilityCheck )" "dotnet msbuild /nologo /t:ApiCompatibilityTest"
 	assert_success
 }
 
@@ -146,7 +146,7 @@ function curl_stub {
 	export DEFAULT_PROJECT_NAME="foo"
 	source "${SOURCE_DIR}/projectType/pipeline-dotnet.sh"
 
-	assert_equal "$( runSmokeTests )" "dotnet msbuild /nologo /t:CFPSmokeTests"
+	assert_equal "$( runSmokeTests )" "dotnet msbuild /nologo /t:SmokeTests"
 	assert_success
 }
 
@@ -155,7 +155,7 @@ function curl_stub {
 	export DEFAULT_PROJECT_NAME="foo"
 	source "${SOURCE_DIR}/projectType/pipeline-dotnet.sh"
 
-	assert_equal "$( runE2eTests )" "dotnet msbuild /nologo /t:CFPE2eTests"
+	assert_equal "$( runE2eTests )" "dotnet msbuild /nologo /t:E2eTests"
 	assert_success
 }
 

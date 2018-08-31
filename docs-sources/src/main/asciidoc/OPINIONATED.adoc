@@ -179,17 +179,69 @@ We take the following opinionated decisions for a Cloud Foundry based project:
 * For .Net (https://github.com/spring-cloud-samples/AspNetCoreExample[example project]):
 ** Usage of https://www.microsoft.com/net/core[ASP.NET core]
 ** `dotnet build` is called to build the project.
-** `dotnet msbuild /nologo /t:CFPUnitTests` is called to run unit tests.
-** `dotnet msbuild /nologo /t:CFPIntegrationTests` is called to run integration tests.
-** `dotnet msbuild /nologo /t:CFPPublish /p:Configuration=Release` is called to publish a
+** `dotnet msbuild /nologo /t:UnitTests` is called to run unit tests.
+** `dotnet msbuild /nologo /t:IntegrationTests` is called to run integration tests.
+** `dotnet msbuild /nologo /t:Publish /p:Configuration=Release` is called to publish a
 ZIP with a self-contained DLL, together with all manifests and deployment files.
-** `dotnet msbuild /nologo /t:CFPGroupId` is the npm task that echos the group ID.
-** `dotnet msbuild /nologo /t:CFPAppName` is the npm task that echos application name.
-** `dotnet msbuild /nologo /t:CFPStubIds` is the npm task that echos stub runner IDs.
-** `dotnet msbuild /nologo /t:CFPApiCompatibilityTest` is run for API compatibility tests.
-** `dotnet msbuild /nologo /t:CFPSmokeTests` is executed for smoke testing.
-** `dotnet msbuild /nologo /t:CFPE2eTests` is executed for end-to-end testing.
+** `dotnet msbuild /nologo /t:GroupId` is the npm task that echos the group ID.
+** `dotnet msbuild /nologo /t:AppName` is the npm task that echos application name.
+** `dotnet msbuild /nologo /t:StubIds` is the npm task that echos stub runner IDs.
+** `dotnet msbuild /nologo /t:ApiCompatibilityTest` is run for API compatibility tests.
+** `dotnet msbuild /nologo /t:SmokeTests` is executed for smoke testing.
+** `dotnet msbuild /nologo /t:E2eTests` is executed for end-to-end testing.
 ** `target` is assumed to be the output folder. Add it to `.gitignore`.
+
+=== Kubernetes Project Opinions
+
+We use the following opinionated decisions for a Cloud Foundry based project:
+
+* The application is built by using the Maven or Gradle wrappers.
+* The application is deployed to Kubernetes.
+* The Java Docker image needs to allow passing of system properties through the `SYSTEM_PROPS` environment variable.
+* For Maven (https://github.com/spring-cloud-samples/github-webhook-kubernetes[example project]), we assume:
+** Usage of the Maven Wrapper.
+** `settings.xml` is parametrized to pass the credentials to push code to Artifactory and Docker repositories:
+*** `M2_SETTINGS_REPO_ID`: Server ID for Artifactory or Nexus deployment.
+*** `M2_SETTINGS_REPO_USERNAME`: User name for Artifactory or Nexus deployment.
+*** `M2_SETTINGS_REPO_PASSWORD`: Password for Artifactory or Nexus deployment.
+*** `DOCKER_SERVER_ID`: Server ID for Docker image pushing.
+*** `DOCKER_USERNAME`: User name for Docker image pushing.
+*** `DOCKER_PASSWORD`: Password for Docker image pushing.
+*** `DOCKER_EMAIL`: Email for Artifactory or Nexus deployment
+** `DOCKER_REGISTRY_URL` environment variable: Contains (Overridable - defaults to DockerHub) URL of the Docker registry.
+** `DOCKER_REGISTRY_ORGANIZATION` environment variable: Contains the organization where your Docker repository resides.
+** Artifacts and Docker image deployment is done by using `./mvnw clean deploy`.
+** `stubrunner.ids` property: To retrieve list of collaborators for which stubs should be downloaded.
+** `repo.with.binaries` property (injected by the pipeline): Contains the URL to the repo containing binaries (for example, Artifactory).
+** `distribution.management.release.id` property (injected by the pipeline): Contains the ID of the distribution management. Corresponds to the server ID in `settings.xml`
+** `distribution.management.release.url` property (injected by the pipeline): Contains the URL or the repository that contains binaries (for example, Artifactory).
+** `deployment.yml` contains the Kubernetes deployment descriptor.
+** `service.yml` contains the Kubernetes service descriptor.
+** running API compatibility tests with the `apicompatibility` Maven profile.
+** `latest.production.version` property (injected by the pipeline): Contains the latest production version for the repository (retrieved from Git tags).
+** Running smoke tests on a deployed app with the `smoke` Maven profile.
+** Running end to end tests on a deployed app with the `e2e` Maven profile.
+* For Gradle  (https://github.com/spring-cloud-samples/github-analytics-kubernetes[example project] check the `gradle/pipeline.gradle` file), we assume:
+** Usage of the Gradlew Wrapper.
+** `deploy` task for artifact deployment.
+** `REPO_WITH_BINARIES_FOR_UPLOAD` env var (injected by the pipeline): Contains the URL to the repository that contains binaries (for example, Artifactory).
+** `M2_SETTINGS_REPO_USERNAME` environment variable: User name used to send the binary to the repository that contains binaries (for example, Artifactory).
+** `M2_SETTINGS_REPO_PASSWORD` environment variable: Password used to send the binary to the repository that contains binaries (for example, Artifactory).
+** `DOCKER_REGISTRY_URL` environment variable: (Overridable - defaults to DockerHub) URL of the Docker registry.
+** `DOCKER_USERNAME` environment variable: User name used to send the the Docker image.
+** `DOCKER_PASSWORD` environment variable: Password used to send the the Docker image.
+** `DOCKER_EMAIL` environment variable: Email used to send the the Docker image.
+** `DOCKER_REGISTRY_ORGANIZATION` environment variable: Contains the organization where your Docker repo resides.
+** `deployment.yml` contains the Kubernetes deployment descriptor.
+** `service.yml` contains the Kubernetes service descriptor.
+** Running API compatibility tests with the `apiCompatibility` task.
+** `latestProductionVersion` property (injected by the pipeline): Contains the latest production version for the repositoryi (retrieved from Git tags).
+** Running smoke tests on a deployed application with the `smoke` task.
+** Running end to end tests on a deployed application with the `e2e` task.
+** `groupId` task to retrieve group ID.
+** `artifactId` task to retrieve artifact ID.
+** `currentVersion` task to retrieve the current version.
+** `stubIds` task to retrieve the list of collaborators for which stubs should be downloaded.
 
 === Kubernetes Project Opinions
 
