@@ -253,8 +253,8 @@ We use the following opinionated decisions for deployment using Ansible:
 `test` the inventory file would be `${ANSIBLE_INVENTORY_DIR}/test`.
 * Given the presence of the Ansible inventory will first try to load a custom playbook from
 `${ANSIBLE_CUSTOM_PLAYBOOKS_DIR}/${playbook_name}`. E.g. for playbook with name [deploy-jvm-service.yml] will
-search by default for `${__ROOT}/ansible/custom/deploy-jvm-service.yml` to apply first. If there's
-no such file will continue applying the defaultplaybook  [${__ROOT}/ansible/deploy-jvm-service.yml]
+search by default for `ansible/custom/deploy-jvm-service.yml` to apply first. If there's
+no such file will continue applying the default playbook `/ansible/deploy-jvm-service.yml`
 * Uses Docker images for services required by tests
 * Deploys Java applications as JARs
 * For Maven (https://github.com/spring-cloud-samples/github-webhook[example project]), we assume:

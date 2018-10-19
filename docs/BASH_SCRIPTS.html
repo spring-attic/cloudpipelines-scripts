@@ -1023,7 +1023,7 @@ yaml2json</pre>
 <p><em>List of exports (to environment):</em> LATEST_PROD_TAG <strong class="big">//</strong> PASSED_LATEST_PROD_TAG</p>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> LATEST_PROD_TAG <strong class="big">//</strong> PASSED_LATEST_PROD_TAG <strong class="big">//</strong> OUTPUT_FOLDER <strong class="big">//</strong> PROJECT_NAME</p>
+<p><em>Environment variables used:</em> OUTPUT_FOLDER <strong class="big">//</strong> PROJECT_NAME <strong class="big">//</strong> LATEST_PROD_TAG <strong class="big">//</strong> PASSED_LATEST_PROD_TAG</p>
 </div>
 </div>
 <div class="sect2">
@@ -1104,7 +1104,7 @@ yaml2json</pre>
 </div>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> PIPELINE_DESCRIPTOR_PRESENT <strong class="big">//</strong> PROJECT_NAME <strong class="big">//</strong> PROJECT_SETUP</p>
+<p><em>Environment variables used:</em> PROJECT_NAME <strong class="big">//</strong> PROJECT_SETUP <strong class="big">//</strong> PIPELINE_DESCRIPTOR_PRESENT</p>
 </div>
 </div>
 <div class="sect2">
@@ -1199,7 +1199,7 @@ pipeline-k8s.sh/testDeploy</pre>
 </div>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> PARSED_YAML <strong class="big">//</strong> LOWERCASE_ENV <strong class="big">//</strong> test_smoke.sh &#8594; ENVIRONMENT</p>
+<p><em>Environment variables used:</em> LOWERCASE_ENV <strong class="big">//</strong> PARSED_YAML <strong class="big">//</strong> test_smoke.sh &#8594; ENVIRONMENT</p>
 </div>
 </div>
 <div class="sect2">
@@ -1395,9 +1395,9 @@ pipeline-cf.sh/propagatePropertiesForTests</pre>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>defineProjectSetup
+<pre>Script-Body
+defineProjectSetup
 deployServices
-Script-Body
 pipeline-cf.sh/prepareForSmokeTests
 pipeline-cf.sh/testRollbackDeploy
 pipeline-k8s.sh/testRollbackDeploy</pre>
@@ -1407,7 +1407,7 @@ pipeline-k8s.sh/testRollbackDeploy</pre>
 <p><em>List of exports (to environment):</em> PARSED_YAML <strong class="big">//</strong> PIPELINE_DESCRIPTOR_PRESENT</p>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> PARSED_YAML <strong class="big">//</strong> PIPELINE_DESCRIPTOR_PRESENT <strong class="big">//</strong> PIPELINE_DESCRIPTOR</p>
+<p><em>Environment variables used:</em> PIPELINE_DESCRIPTOR <strong class="big">//</strong> PARSED_YAML <strong class="big">//</strong> PIPELINE_DESCRIPTOR_PRESENT</p>
 </div>
 </div>
 <div class="sect2">
@@ -1951,7 +1951,7 @@ projectType</pre>
 <p>Uses feature(s): <em>export</em>, <em>source</em></p>
 </div>
 <div class="paragraph">
-<p><em>Exports (environment):</em> BINARY_EXTENSION <strong class="big">//</strong> MAVEN_OPTS <strong class="big">//</strong> projectType <strong class="big">//</strong> PROJECT_TYPE</p>
+<p><em>Exports (environment):</em> BINARY_EXTENSION <strong class="big">//</strong> MAVEN_OPTS <strong class="big">//</strong> PROJECT_TYPE <strong class="big">//</strong> projectType</p>
 </div>
 </div>
 <div class="sect2">
@@ -2102,7 +2102,7 @@ testResultsAntPattern</pre>
 <p>Uses feature(s): <em>export</em></p>
 </div>
 <div class="paragraph">
-<p><em>Exports (environment):</em> build <strong class="big">//</strong> BUILD_OPTIONS <strong class="big">//</strong> executeApiCompatibilityCheck <strong class="big">//</strong> MAVENW_BIN <strong class="big">//</strong> outputFolder <strong class="big">//</strong> retrieveAppName <strong class="big">//</strong> retrieveGroupId <strong class="big">//</strong> runE2eTests <strong class="big">//</strong> runSmokeTests <strong class="big">//</strong> testResultsAntPattern</p>
+<p><em>Exports (environment):</em> BUILD_OPTIONS <strong class="big">//</strong> MAVENW_BIN <strong class="big">//</strong> build <strong class="big">//</strong> executeApiCompatibilityCheck <strong class="big">//</strong> outputFolder <strong class="big">//</strong> retrieveAppName <strong class="big">//</strong> retrieveGroupId <strong class="big">//</strong> runE2eTests <strong class="big">//</strong> runSmokeTests <strong class="big">//</strong> testResultsAntPattern</p>
 </div>
 </div>
 <div class="sect2">
@@ -2427,7 +2427,7 @@ testResultsAntPattern</pre>
 <p>Uses feature(s): <em>export</em></p>
 </div>
 <div class="paragraph">
-<p><em>Exports (environment):</em> build <strong class="big">//</strong> BUILD_OPTIONS <strong class="big">//</strong> executeApiCompatibilityCheck <strong class="big">//</strong> GRADLEW_BIN <strong class="big">//</strong> outputFolder <strong class="big">//</strong> retrieveAppName <strong class="big">//</strong> retrieveGroupId <strong class="big">//</strong> runE2eTests <strong class="big">//</strong> runSmokeTests <strong class="big">//</strong> testResultsAntPattern</p>
+<p><em>Exports (environment):</em> BUILD_OPTIONS <strong class="big">//</strong> GRADLEW_BIN <strong class="big">//</strong> build <strong class="big">//</strong> executeApiCompatibilityCheck <strong class="big">//</strong> outputFolder <strong class="big">//</strong> retrieveAppName <strong class="big">//</strong> retrieveGroupId <strong class="big">//</strong> runE2eTests <strong class="big">//</strong> runSmokeTests <strong class="big">//</strong> testResultsAntPattern</p>
 </div>
 </div>
 <div class="sect2">
@@ -3656,7 +3656,7 @@ testResultsAntPattern</pre>
 <p>Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).</p>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> PROJECT_NAME <strong class="big">//</strong> DOTNET_BIN</p>
+<p><em>Environment variables used:</em> DOTNET_BIN <strong class="big">//</strong> PROJECT_NAME</p>
 </div>
 </div>
 <div class="sect2">
@@ -4249,7 +4249,7 @@ deployService</pre>
 <p>Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).</p>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> pipeline.sh &#8594; PARSED_YAML <strong class="big">//</strong> pipeline.sh &#8594; LOWERCASE_ENV</p>
+<p><em>Environment variables used:</em> pipeline.sh &#8594; LOWERCASE_ENV <strong class="big">//</strong> pipeline.sh &#8594; PARSED_YAML</p>
 </div>
 </div>
 <div class="sect2">
@@ -4342,7 +4342,7 @@ deployService</pre>
 <p>Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).</p>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> pipeline.sh &#8594; PARSED_YAML <strong class="big">//</strong> pipeline.sh &#8594; BINARY_ARTIFACT_TYPE_NAME <strong class="big">//</strong> pipeline.sh &#8594; LANGUAGE_TYPE <strong class="big">//</strong> pipeline.sh &#8594; SOURCE_ARTIFACT_TYPE_NAME</p>
+<p><em>Environment variables used:</em> pipeline.sh &#8594; BINARY_ARTIFACT_TYPE_NAME <strong class="big">//</strong> pipeline.sh &#8594; LANGUAGE_TYPE <strong class="big">//</strong> pipeline.sh &#8594; SOURCE_ARTIFACT_TYPE_NAME <strong class="big">//</strong> pipeline.sh &#8594; PARSED_YAML</p>
 </div>
 </div>
 <div class="sect2">
@@ -4695,7 +4695,7 @@ test_smoke.sh/Script-Body</pre>
 </div>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> APPLICATION_URL <strong class="big">//</strong> STUBRUNNER_URL <strong class="big">//</strong> pipeline.sh &#8594; LATEST_PROD_TAG <strong class="big">//</strong> pipeline.sh &#8594; OUTPUT_FOLDER</p>
+<p><em>Environment variables used:</em> APPLICATION_URL <strong class="big">//</strong> STUBRUNNER_URL <strong class="big">//</strong> pipeline.sh &#8594; OUTPUT_FOLDER <strong class="big">//</strong> pipeline.sh &#8594; LATEST_PROD_TAG</p>
 </div>
 </div>
 <div class="sect2">
@@ -4778,7 +4778,7 @@ testRollbackDeploy</pre>
 <p><em>List of exports (to environment):</em> APPLICATION_URL <strong class="big">//</strong> STUBRUNNER_URL</p>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> pipeline.sh &#8594; PARSED_YAML <strong class="big">//</strong> pipeline.sh &#8594; LOWERCASE_ENV <strong class="big">//</strong> pipeline.sh &#8594; OUTPUT_FOLDER</p>
+<p><em>Environment variables used:</em> pipeline.sh &#8594; LOWERCASE_ENV <strong class="big">//</strong> pipeline.sh &#8594; OUTPUT_FOLDER <strong class="big">//</strong> pipeline.sh &#8594; PARSED_YAML</p>
 </div>
 </div>
 <div class="sect2">
@@ -5195,7 +5195,7 @@ testRollbackDeploy</pre>
 <p>Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).</p>
 </div>
 <div class="paragraph">
-<p><em>Environment variables used:</em> pipeline.sh &#8594; PARSED_YAML <strong class="big">//</strong> pipeline.sh &#8594; LOWERCASE_ENV <strong class="big">//</strong> pipeline.sh &#8594; OUTPUT_FOLDER <strong class="big">//</strong> test_smoke.sh &#8594; ENVIRONMENT</p>
+<p><em>Environment variables used:</em> pipeline.sh &#8594; LOWERCASE_ENV <strong class="big">//</strong> pipeline.sh &#8594; OUTPUT_FOLDER <strong class="big">//</strong> pipeline.sh &#8594; PARSED_YAML <strong class="big">//</strong> test_smoke.sh &#8594; ENVIRONMENT</p>
 </div>
 </div>
 <div class="sect2">
