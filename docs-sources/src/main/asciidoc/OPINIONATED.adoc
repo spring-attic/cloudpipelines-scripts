@@ -122,7 +122,7 @@ We take the following opinionated decisions for a Cloud Foundry based project:
 * The application is built by using the Maven or Gradle wrapper.
 * The application is deployed to Cloud Foundry.
 * Your application needs a `manifest.yml` Cloud Foundry descriptor.
-* For the Maven (https://github.com/spring-cloud-samples/github-webhook[example project]), we assume:
+* For Maven (https://github.com/spring-cloud-samples/github-webhook[example project]), we assume:
 ** Usage of the Maven Wrapper.
 ** `settings.xml` is parametrized to pass the credentials to push code to Artifactory:
 *** `M2_SETTINGS_REPO_ID` contains the server ID for Artifactory or Nexus deployment.
@@ -243,54 +243,46 @@ We use the following opinionated decisions for a Cloud Foundry based project:
 ** `currentVersion` task to retrieve the current version.
 ** `stubIds` task to retrieve the list of collaborators for which stubs should be downloaded.
 
-=== Kubernetes Project Opinions
+=== Ansible Project Opinions
 
-We use the following opinionated decisions for a Cloud Foundry based project:
+We use the following opinionated decisions for deployment using Ansible:
 
 * The application is built by using the Maven or Gradle wrappers.
-* The application is deployed to Kubernetes.
-* The Java Docker image needs to allow passing of system properties through the `SYSTEM_PROPS` environment variable.
-* For Maven (https://github.com/spring-cloud-samples/github-webhook-kubernetes[example project]), we assume:
+* The application is deployed via Ansible.
+* Each environment has its own Ansible inventory file with the name of the environment. E.g. for environment
+`test` the inventory file would be `${ANSIBLE_INVENTORY_DIR}/test`.
+* Given the presence of the Ansible inventory will first try to load a custom playbook from
+`${ANSIBLE_CUSTOM_PLAYBOOKS_DIR}/${playbook_name}`. E.g. for playbook with name [deploy-jvm-service.yml] will
+search by default for `${__ROOT}/ansible/custom/deploy-jvm-service.yml` to apply first. If there's
+no such file will continue applying the defaultplaybook  [${__ROOT}/ansible/deploy-jvm-service.yml]
+* Uses Docker images for services required by tests
+* Deploys Java applications as JARs
+* For Maven (https://github.com/spring-cloud-samples/github-webhook[example project]), we assume:
 ** Usage of the Maven Wrapper.
-** `settings.xml` is parametrized to pass the credentials to push code to Artifactory and Docker repositories:
-*** `M2_SETTINGS_REPO_ID`: Server ID for Artifactory or Nexus deployment.
-*** `M2_SETTINGS_REPO_USERNAME`: User name for Artifactory or Nexus deployment.
-*** `M2_SETTINGS_REPO_PASSWORD`: Password for Artifactory or Nexus deployment.
-*** `DOCKER_SERVER_ID`: Server ID for Docker image pushing.
-*** `DOCKER_USERNAME`: User name for Docker image pushing.
-*** `DOCKER_PASSWORD`: Password for Docker image pushing.
-*** `DOCKER_EMAIL`: Email for Artifactory or Nexus deployment
-** `DOCKER_REGISTRY_URL` environment variable: Contains (Overridable - defaults to DockerHub) URL of the Docker registry.
-** `DOCKER_REGISTRY_ORGANIZATION` environment variable: Contains the organization where your Docker repository resides.
-** Artifacts and Docker image deployment is done by using `./mvnw clean deploy`.
-** `stubrunner.ids` property: To retrieve list of collaborators for which stubs should be downloaded.
+** `settings.xml` is parametrized to pass the credentials to push code to Artifactory:
+*** `M2_SETTINGS_REPO_ID` contains the server ID for Artifactory or Nexus deployment.
+*** `M2_SETTINGS_REPO_USERNAME` contains the username for Artifactory or Nexus deployment.
+*** `M2_SETTINGS_REPO_PASSWORD` contains the password for Artifactory or Nexus deployment.
+** Artifacts are deployed by `./mvnw clean deploy`.
+** We use the `stubrunner.ids` property to retrieve list of collaborators for which stubs should be downloaded.
 ** `repo.with.binaries` property (injected by the pipeline): Contains the URL to the repo containing binaries (for example, Artifactory).
-** `distribution.management.release.id` property (injected by the pipeline): Contains the ID of the distribution management. Corresponds to the server ID in `settings.xml`
-** `distribution.management.release.url` property (injected by the pipeline): Contains the URL or the repository that contains binaries (for example, Artifactory).
-** `deployment.yml` contains the Kubernetes deployment descriptor.
-** `service.yml` contains the Kubernetes service descriptor.
-** running API compatibility tests with the `apicompatibility` Maven profile.
-** `latest.production.version` property (injected by the pipeline): Contains the latest production version for the repository (retrieved from Git tags).
+** `distribution.management.release.id` property (injected by the pipeline): Contains the ID of the distribution management. It corresponds to server ID in `settings.xml`.
+** `distribution.management.release.url` property (injected by the pipeline): Contains the URL of the repository that contains binaries (for example, Artifactory).
+** Running API compatibility tests with the `apicompatibility` Maven profile.
+** `latest.production.version` property (injected by the pipeline): Contains the latest production version for the repo (retrieved from Git tags).
 ** Running smoke tests on a deployed app with the `smoke` Maven profile.
 ** Running end to end tests on a deployed app with the `e2e` Maven profile.
-* For Gradle  (https://github.com/spring-cloud-samples/github-analytics-kubernetes[example project] check the `gradle/pipeline.gradle` file), we assume:
+* For Gradle (https://github.com/spring-cloud-samples/github-analytics[example project] check the `gradle/pipeline.gradle` file), we assume:
 ** Usage of the Gradlew Wrapper.
-** `deploy` task for artifact deployment.
-** `REPO_WITH_BINARIES_FOR_UPLOAD` env var (injected by the pipeline): Contains the URL to the repository that contains binaries (for example, Artifactory).
-** `M2_SETTINGS_REPO_USERNAME` environment variable: User name used to send the binary to the repository that contains binaries (for example, Artifactory).
-** `M2_SETTINGS_REPO_PASSWORD` environment variable: Password used to send the binary to the repository that contains binaries (for example, Artifactory).
-** `DOCKER_REGISTRY_URL` environment variable: (Overridable - defaults to DockerHub) URL of the Docker registry.
-** `DOCKER_USERNAME` environment variable: User name used to send the the Docker image.
-** `DOCKER_PASSWORD` environment variable: Password used to send the the Docker image.
-** `DOCKER_EMAIL` environment variable: Email used to send the the Docker image.
-** `DOCKER_REGISTRY_ORGANIZATION` environment variable: Contains the organization where your Docker repo resides.
-** `deployment.yml` contains the Kubernetes deployment descriptor.
-** `service.yml` contains the Kubernetes service descriptor.
+** A `deploy` task for artifact deployment.
+** The `REPO_WITH_BINARIES_FOR_UPLOAD` environment variable (Injected by the pipeline) contains the URL to the repository that contains binaries (for example, Artifactory).
+** The `M2_SETTINGS_REPO_USERNAME` environment variable contains the user name used to send the binary to the repository that contains binaries (for exampl,e Artifactory).
+** The `M2_SETTINGS_REPO_PASSWORD` environment variable contains the password used to send the binary to the repository that contains binaries (for example, Artifactory).
 ** Running API compatibility tests with the `apiCompatibility` task.
-** `latestProductionVersion` property (injected by the pipeline): Contains the latest production version for the repositoryi (retrieved from Git tags).
-** Running smoke tests on a deployed application with the `smoke` task.
-** Running end to end tests on a deployed application with the `e2e` task.
-** `groupId` task to retrieve group ID.
-** `artifactId` task to retrieve artifact ID.
+** `latestProductionVersion` property (injected by the pipeline): Contains the latest production version for the repository (retrieved from Git tags).
+** Running smoke tests on a deployed app with the `smoke` task.
+** Running end to end tests on a deployed app with the `e2e` task.
+** `groupId` task to retrieve the group ID.
+** `artifactId` task to retrieve the artifact ID.
 ** `currentVersion` task to retrieve the current version.
 ** `stubIds` task to retrieve the list of collaborators for which stubs should be downloaded.

@@ -448,7 +448,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#cloud-foundry-project-opinions">2.1. Cloud Foundry Project Opinions</a></li>
 <li><a href="#kubernetes-project-opinions">2.2. Kubernetes Project Opinions</a></li>
-<li><a href="#kubernetes-project-opinions-2">2.3. Kubernetes Project Opinions</a></li>
+<li><a href="#ansible-project-opinions">2.3. Ansible Project Opinions</a></li>
 </ul>
 </li>
 </ul>
@@ -769,7 +769,7 @@ structure and project properties.</p>
 <p>Your application needs a <code>manifest.yml</code> Cloud Foundry descriptor.</p>
 </li>
 <li>
-<p>For the Maven (<a href="https://github.com/spring-cloud-samples/github-webhook">example project</a>), we assume:</p>
+<p>For Maven (<a href="https://github.com/spring-cloud-samples/github-webhook">example project</a>), we assume:</p>
 <div class="ulist">
 <ul>
 <li>
@@ -1165,9 +1165,9 @@ ZIP with a self-contained DLL, together with all manifests and deployment files.
 </div>
 </div>
 <div class="sect2">
-<h3 id="kubernetes-project-opinions-2"><a class="link" href="#kubernetes-project-opinions-2">2.3. Kubernetes Project Opinions</a></h3>
+<h3 id="ansible-project-opinions"><a class="link" href="#ansible-project-opinions">2.3. Ansible Project Opinions</a></h3>
 <div class="paragraph">
-<p>We use the following opinionated decisions for a Cloud Foundry based project:</p>
+<p>We use the following opinionated decisions for deployment using Ansible:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1175,78 +1175,67 @@ ZIP with a self-contained DLL, together with all manifests and deployment files.
 <p>The application is built by using the Maven or Gradle wrappers.</p>
 </li>
 <li>
-<p>The application is deployed to Kubernetes.</p>
+<p>The application is deployed via Ansible.</p>
 </li>
 <li>
-<p>The Java Docker image needs to allow passing of system properties through the <code>SYSTEM_PROPS</code> environment variable.</p>
+<p>Each environment has its own Ansible inventory file with the name of the environment. E.g. for environment
+<code>test</code> the inventory file would be <code>${ANSIBLE_INVENTORY_DIR}/test</code>.</p>
 </li>
 <li>
-<p>For Maven (<a href="https://github.com/spring-cloud-samples/github-webhook-kubernetes">example project</a>), we assume:</p>
+<p>Given the presence of the Ansible inventory will first try to load a custom playbook from
+<code>${ANSIBLE_CUSTOM_PLAYBOOKS_DIR}/${playbook_name}</code>. E.g. for playbook with name [deploy-jvm-service.yml] will
+search by default for <code>${<em>ROOT}/ansible/custom/deploy-jvm-service.yml</code> to apply first. If there&#8217;s
+no such file will continue applying the defaultplaybook  [${</em>ROOT}/ansible/deploy-jvm-service.yml]</p>
+</li>
+<li>
+<p>Uses Docker images for services required by tests</p>
+</li>
+<li>
+<p>Deploys Java applications as JARs</p>
+</li>
+<li>
+<p>For Maven (<a href="https://github.com/spring-cloud-samples/github-webhook">example project</a>), we assume:</p>
 <div class="ulist">
 <ul>
 <li>
 <p>Usage of the Maven Wrapper.</p>
 </li>
 <li>
-<p><code>settings.xml</code> is parametrized to pass the credentials to push code to Artifactory and Docker repositories:</p>
+<p><code>settings.xml</code> is parametrized to pass the credentials to push code to Artifactory:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>M2_SETTINGS_REPO_ID</code>: Server ID for Artifactory or Nexus deployment.</p>
+<p><code>M2_SETTINGS_REPO_ID</code> contains the server ID for Artifactory or Nexus deployment.</p>
 </li>
 <li>
-<p><code>M2_SETTINGS_REPO_USERNAME</code>: User name for Artifactory or Nexus deployment.</p>
+<p><code>M2_SETTINGS_REPO_USERNAME</code> contains the username for Artifactory or Nexus deployment.</p>
 </li>
 <li>
-<p><code>M2_SETTINGS_REPO_PASSWORD</code>: Password for Artifactory or Nexus deployment.</p>
-</li>
-<li>
-<p><code>DOCKER_SERVER_ID</code>: Server ID for Docker image pushing.</p>
-</li>
-<li>
-<p><code>DOCKER_USERNAME</code>: User name for Docker image pushing.</p>
-</li>
-<li>
-<p><code>DOCKER_PASSWORD</code>: Password for Docker image pushing.</p>
-</li>
-<li>
-<p><code>DOCKER_EMAIL</code>: Email for Artifactory or Nexus deployment</p>
+<p><code>M2_SETTINGS_REPO_PASSWORD</code> contains the password for Artifactory or Nexus deployment.</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p><code>DOCKER_REGISTRY_URL</code> environment variable: Contains (Overridable - defaults to DockerHub) URL of the Docker registry.</p>
+<p>Artifacts are deployed by <code>./mvnw clean deploy</code>.</p>
 </li>
 <li>
-<p><code>DOCKER_REGISTRY_ORGANIZATION</code> environment variable: Contains the organization where your Docker repository resides.</p>
-</li>
-<li>
-<p>Artifacts and Docker image deployment is done by using <code>./mvnw clean deploy</code>.</p>
-</li>
-<li>
-<p><code>stubrunner.ids</code> property: To retrieve list of collaborators for which stubs should be downloaded.</p>
+<p>We use the <code>stubrunner.ids</code> property to retrieve list of collaborators for which stubs should be downloaded.</p>
 </li>
 <li>
 <p><code>repo.with.binaries</code> property (injected by the pipeline): Contains the URL to the repo containing binaries (for example, Artifactory).</p>
 </li>
 <li>
-<p><code>distribution.management.release.id</code> property (injected by the pipeline): Contains the ID of the distribution management. Corresponds to the server ID in <code>settings.xml</code></p>
+<p><code>distribution.management.release.id</code> property (injected by the pipeline): Contains the ID of the distribution management. It corresponds to server ID in <code>settings.xml</code>.</p>
 </li>
 <li>
-<p><code>distribution.management.release.url</code> property (injected by the pipeline): Contains the URL or the repository that contains binaries (for example, Artifactory).</p>
+<p><code>distribution.management.release.url</code> property (injected by the pipeline): Contains the URL of the repository that contains binaries (for example, Artifactory).</p>
 </li>
 <li>
-<p><code>deployment.yml</code> contains the Kubernetes deployment descriptor.</p>
+<p>Running API compatibility tests with the <code>apicompatibility</code> Maven profile.</p>
 </li>
 <li>
-<p><code>service.yml</code> contains the Kubernetes service descriptor.</p>
-</li>
-<li>
-<p>running API compatibility tests with the <code>apicompatibility</code> Maven profile.</p>
-</li>
-<li>
-<p><code>latest.production.version</code> property (injected by the pipeline): Contains the latest production version for the repository (retrieved from Git tags).</p>
+<p><code>latest.production.version</code> property (injected by the pipeline): Contains the latest production version for the repo (retrieved from Git tags).</p>
 </li>
 <li>
 <p>Running smoke tests on a deployed app with the <code>smoke</code> Maven profile.</p>
@@ -1258,62 +1247,41 @@ ZIP with a self-contained DLL, together with all manifests and deployment files.
 </div>
 </li>
 <li>
-<p>For Gradle  (<a href="https://github.com/spring-cloud-samples/github-analytics-kubernetes">example project</a> check the <code>gradle/pipeline.gradle</code> file), we assume:</p>
+<p>For Gradle (<a href="https://github.com/spring-cloud-samples/github-analytics">example project</a> check the <code>gradle/pipeline.gradle</code> file), we assume:</p>
 <div class="ulist">
 <ul>
 <li>
 <p>Usage of the Gradlew Wrapper.</p>
 </li>
 <li>
-<p><code>deploy</code> task for artifact deployment.</p>
+<p>A <code>deploy</code> task for artifact deployment.</p>
 </li>
 <li>
-<p><code>REPO_WITH_BINARIES_FOR_UPLOAD</code> env var (injected by the pipeline): Contains the URL to the repository that contains binaries (for example, Artifactory).</p>
+<p>The <code>REPO_WITH_BINARIES_FOR_UPLOAD</code> environment variable (Injected by the pipeline) contains the URL to the repository that contains binaries (for example, Artifactory).</p>
 </li>
 <li>
-<p><code>M2_SETTINGS_REPO_USERNAME</code> environment variable: User name used to send the binary to the repository that contains binaries (for example, Artifactory).</p>
+<p>The <code>M2_SETTINGS_REPO_USERNAME</code> environment variable contains the user name used to send the binary to the repository that contains binaries (for exampl,e Artifactory).</p>
 </li>
 <li>
-<p><code>M2_SETTINGS_REPO_PASSWORD</code> environment variable: Password used to send the binary to the repository that contains binaries (for example, Artifactory).</p>
-</li>
-<li>
-<p><code>DOCKER_REGISTRY_URL</code> environment variable: (Overridable - defaults to DockerHub) URL of the Docker registry.</p>
-</li>
-<li>
-<p><code>DOCKER_USERNAME</code> environment variable: User name used to send the the Docker image.</p>
-</li>
-<li>
-<p><code>DOCKER_PASSWORD</code> environment variable: Password used to send the the Docker image.</p>
-</li>
-<li>
-<p><code>DOCKER_EMAIL</code> environment variable: Email used to send the the Docker image.</p>
-</li>
-<li>
-<p><code>DOCKER_REGISTRY_ORGANIZATION</code> environment variable: Contains the organization where your Docker repo resides.</p>
-</li>
-<li>
-<p><code>deployment.yml</code> contains the Kubernetes deployment descriptor.</p>
-</li>
-<li>
-<p><code>service.yml</code> contains the Kubernetes service descriptor.</p>
+<p>The <code>M2_SETTINGS_REPO_PASSWORD</code> environment variable contains the password used to send the binary to the repository that contains binaries (for example, Artifactory).</p>
 </li>
 <li>
 <p>Running API compatibility tests with the <code>apiCompatibility</code> task.</p>
 </li>
 <li>
-<p><code>latestProductionVersion</code> property (injected by the pipeline): Contains the latest production version for the repositoryi (retrieved from Git tags).</p>
+<p><code>latestProductionVersion</code> property (injected by the pipeline): Contains the latest production version for the repository (retrieved from Git tags).</p>
 </li>
 <li>
-<p>Running smoke tests on a deployed application with the <code>smoke</code> task.</p>
+<p>Running smoke tests on a deployed app with the <code>smoke</code> task.</p>
 </li>
 <li>
-<p>Running end to end tests on a deployed application with the <code>e2e</code> task.</p>
+<p>Running end to end tests on a deployed app with the <code>e2e</code> task.</p>
 </li>
 <li>
-<p><code>groupId</code> task to retrieve group ID.</p>
+<p><code>groupId</code> task to retrieve the group ID.</p>
 </li>
 <li>
-<p><code>artifactId</code> task to retrieve artifact ID.</p>
+<p><code>artifactId</code> task to retrieve the artifact ID.</p>
 </li>
 <li>
 <p><code>currentVersion</code> task to retrieve the current version.</p>
