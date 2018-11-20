@@ -596,8 +596,8 @@ if [[ "${ADDITIONAL_SCRIPTS_TARBALL_URL}" != "" ]]; then
 	"${CURL_BIN}" -u "${M2_SETTINGS_REPO_USERNAME}:${M2_SETTINGS_REPO_PASSWORD}" "${ADDITIONAL_SCRIPTS_TARBALL_URL}" -o "${destination}" --fail && success="true"
 	if [[ "${success}" == "true" ]]; then
 		echo "File downloaded successfully to [${destination}]!"
-		"${TAR_BIN}" -zxf "${destination}" -C "${__DIR}"
-		echo "Files unpacked successfully from [${destination}] to [${__DIR}]"
+		"${TAR_BIN}" -zxf "${destination}" -C "${__ROOT}"
+		echo "Files unpacked successfully from [${destination}] to [${__ROOT}]"
 	else
 		echo "Failed to download file!"
 	fi
