@@ -64,8 +64,6 @@ Script Body
 
 Has 11 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
 
-Uses feature(s): _export_
-
 _Exports (environment):_ CF_BIN [big]*//* CF_CLI_URL [big]*//* RETRIEVE_STUBRUNNER_IDS_FUNCTION
 
 addMultiplePortsSupport
@@ -82,14 +80,9 @@ ____
 
 Has 49 line(s). Calls functions:
 
- addMultiplePortsSupport
- `-- setEnvVar
+ 
 
-Called by:
-
- deployStubRunnerBoot
-
-_Environment variables used:_ CF_BIN [big]*//* test_smoke.sh -> ENVIRONMENT
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 bindService
 ~~~~~~~~~~~
@@ -105,8 +98,6 @@ Has 9 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
-_Environment variables used:_ CF_BIN
-
 completeSwitchOver
 ~~~~~~~~~~~~~~~~~~
 
@@ -116,16 +107,11 @@ ____
  # [Clicked COMPLETE] -> APP running, VEN stopped
 ____
 
-Has 12 line(s). Calls functions:
-
- completeSwitchOver
- `-- logInToPaas
+Has 12 line(s). Doesn't call other functions.
 
 Called by:
 
  prod_complete.sh/Script-Body
-
-_Environment variables used:_ CF_BIN
 
 createServiceWithName
 ~~~~~~~~~~~~~~~~~~~~~
@@ -136,14 +122,9 @@ ____
  # $1 - service name
 ____
 
-Has 5 line(s). Calls functions:
+Has 5 line(s). Doesn't call other functions.
 
- createServiceWithName
- `-- deployCupsService
-
-Called by:
-
- deployAppAsService
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 deleteApp
 ~~~~~~~~~
@@ -156,11 +137,7 @@ ____
 
 Has 6 line(s). Doesn't call other functions.
 
-Called by:
-
- testRollbackDeploy
-
-_Environment variables used:_ CF_BIN
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 deleteService
 ~~~~~~~~~~~~~
@@ -176,8 +153,6 @@ Has 5 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
-_Environment variables used:_ CF_BIN
-
 deployAndRestartAppWithName
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -188,23 +163,9 @@ ____
  # $2 - binary name
 ____
 
-Has 22 line(s). Calls functions:
+Has 22 line(s). Doesn't call other functions.
 
- deployAndRestartAppWithName
- |-- deployAppNoStart
- |   `-- setEnvVar
- |-- parseManifest
- |-- restartApp
- `-- setEnvVar
-
-Called by:
-
- performProductionDeploymentOfTestedApplication
- stageDeploy
- testDeploy
- testRollbackDeploy
-
-_Environment variables used:_ test_smoke.sh -> ENVIRONMENT
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 deployAppAsService
 ~~~~~~~~~~~~~~~~~~
@@ -218,20 +179,9 @@ ____
  # $3 - manifest location
 ____
 
-Has 11 line(s). Calls functions:
+Has 11 line(s). Doesn't call other functions.
 
- deployAppAsService
- |-- createServiceWithName
- |   `-- deployCupsService
- |-- deployAppNoStart
- |   `-- setEnvVar
- `-- restartApp
-
-Called by:
-
- deployService
-
-_Environment variables used:_ pipeline.sh -> LOWERCASE_ENV [big]*//* test_smoke.sh -> ENVIRONMENT
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 deployAppNoStart
 ~~~~~~~~~~~~~~~~
@@ -246,18 +196,9 @@ ____
  # $5 - host name suffix
 ____
 
-Has 37 line(s). Calls functions:
+Has 37 line(s). Doesn't call other functions.
 
- deployAppNoStart
- `-- setEnvVar
-
-Called by:
-
- deployAndRestartAppWithName
- deployAppAsService
- deployStubRunnerBoot
-
-_Environment variables used:_ CF_BIN [big]*//* pipeline.sh -> DOWNLOADABLE_SOURCES [big]*//* pipeline.sh -> SOURCE_ARTIFACT_TYPE_NAME
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 deployBrokeredService
 ~~~~~~~~~~~~~~~~~~~~~
@@ -273,11 +214,7 @@ ____
 
 Has 17 line(s). Doesn't call other functions.
 
-Called by:
-
- deployService
-
-_Environment variables used:_ CF_BIN [big]*//* pipeline.sh -> LOWERCASE_ENV [big]*//* pipeline.sh -> OUTPUT_FOLDER
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 deployCupsService
 ~~~~~~~~~~~~~~~~~
@@ -293,12 +230,7 @@ ____
 
 Has 13 line(s). Doesn't call other functions.
 
-Called by:
-
- createServiceWithName
- deployService
-
-_Environment variables used:_ CF_BIN [big]*//* pipeline.sh -> LOWERCASE_ENV [big]*//* pipeline.sh -> OUTPUT_FOLDER
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 deployService
 ~~~~~~~~~~~~~
@@ -310,28 +242,9 @@ ____
  # $2 - service type
 ____
 
-Has 57 line(s). Calls functions:
-
- deployService
- |-- deployAppAsService
- |   |-- createServiceWithName
- |   |   `-- deployCupsService
- |   |-- deployAppNoStart
- |   |   `-- setEnvVar
- |   `-- restartApp
- |-- deployBrokeredService
- |-- deployCupsService
- `-- deployStubRunnerBoot
-     |-- addMultiplePortsSupport
-     |   `-- setEnvVar
-     |-- deployAppNoStart
-     |   `-- setEnvVar
-     |-- restartApp
-     `-- setEnvVar
+Has 57 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
-
-_Environment variables used:_ pipeline.sh -> LOWERCASE_ENV [big]*//* pipeline.sh -> PARSED_YAML
 
 deployStubRunnerBoot
 ~~~~~~~~~~~~~~~~~~~~
@@ -345,21 +258,9 @@ ____
  # $3 - path to Stub Runner manifest
 ____
 
-Has 16 line(s). Calls functions:
+Has 16 line(s). Doesn't call other functions.
 
- deployStubRunnerBoot
- |-- addMultiplePortsSupport
- |   `-- setEnvVar
- |-- deployAppNoStart
- |   `-- setEnvVar
- |-- restartApp
- `-- setEnvVar
-
-Called by:
-
- deployService
-
-_Environment variables used:_ RETRIEVE_STUBRUNNER_IDS_FUNCTION [big]*//* test_smoke.sh -> ENVIRONMENT
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 getAppHostFromPaas
 ~~~~~~~~~~~~~~~~~~
@@ -374,8 +275,6 @@ Has 4 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
-_Environment variables used:_ CF_BIN
-
 getArtifactType
 ~~~~~~~~~~~~~~~
 
@@ -384,14 +283,9 @@ ____
  # Uses [ARTIFACT_TYPE], [PARSED_YAML], [LANGUAGE_TYPE] env vars
 ____
 
-Has 16 line(s). Calls functions:
-
- getArtifactType
- `-- pipeline.sh/toLowerCase
+Has 16 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
-
-_Environment variables used:_ pipeline.sh -> BINARY_ARTIFACT_TYPE_NAME [big]*//* pipeline.sh -> LANGUAGE_TYPE [big]*//* pipeline.sh -> SOURCE_ARTIFACT_TYPE_NAME [big]*//* pipeline.sh -> PARSED_YAML
 
 getDomain
 ~~~~~~~~~
@@ -406,8 +300,6 @@ Has 2 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
-_Environment variables used:_ CF_BIN
-
 getHostFromManifest
 ~~~~~~~~~~~~~~~~~~~
 
@@ -420,8 +312,6 @@ ____
 Has 3 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
-
-_Environment variables used:_ PARSED_APP_MANIFEST_YAML
 
 getInstancesFromManifest
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -436,8 +326,6 @@ Has 2 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
-_Environment variables used:_ PARSED_APP_MANIFEST_YAML
-
 getProfilesFromManifest
 ~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -450,8 +338,6 @@ ____
 Has 2 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
-
-_Environment variables used:_ PARSED_APP_MANIFEST_YAML
 
 hostname
 ~~~~~~~~
@@ -469,8 +355,6 @@ Has 20 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
-_Environment variables used:_ pipeline.sh -> LOWERCASE_ENV
-
 logInToPaas
 ~~~~~~~~~~~
 
@@ -487,19 +371,7 @@ ____
 
 Has 38 line(s). Doesn't call other functions.
 
-Called by:
-
- completeSwitchOver
- prepareForE2eTests
- prepareForSmokeTests
- prodDeploy
- retrieveApplicationUrl
- rollbackToPreviousVersion
- stageDeploy
- testDeploy
- testRollbackDeploy
-
-_Environment variables used:_ CF_BIN [big]*//* CF_CLI_URL [big]*//* pipeline.sh -> LOWERCASE_ENV [big]*//* test_smoke.sh -> ENVIRONMENT
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 parseManifest
 ~~~~~~~~~~~~~
@@ -510,15 +382,9 @@ ____
 
 Has 8 line(s). Doesn't call other functions.
 
-Uses feature(s): _export_
-
-Called by:
-
- deployAndRestartAppWithName
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 _List of exports (to environment):_ PARSED_APP_MANIFEST_YAML
-
-_Environment variables used:_ PARSED_APP_MANIFEST_YAML
 
 pathToPushToCf
 ~~~~~~~~~~~~~~
@@ -533,8 +399,6 @@ Has 11 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
-_Environment variables used:_ pipeline.sh -> BINARY_ARTIFACT_TYPE_NAME [big]*//* pipeline.sh -> OUTPUT_FOLDER [big]*//* pipeline.sh -> SOURCE_ARTIFACT_TYPE_NAME
-
 pathToUnpackedSources
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -545,8 +409,6 @@ ____
 Has 1 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
-
-_Environment variables used:_ pipeline.sh -> OUTPUT_FOLDER
 
 performProductionDeploymentOfTestedApplication
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -559,21 +421,9 @@ ____
  # [Clicked ROLLBACK] -> APP stopped, VEN running, VEN renamed to APP, latest PROD tag removed -> [Click DEPLOY] -> delete APP, deploy new APP, stop VEN
 ____
 
-Has 27 line(s). Calls functions:
+Has 27 line(s). Doesn't call other functions.
 
- performProductionDeploymentOfTestedApplication
- `-- deployAndRestartAppWithName
-     |-- deployAppNoStart
-     |   `-- setEnvVar
-     |-- parseManifest
-     |-- restartApp
-     `-- setEnvVar
-
-Called by:
-
- prodDeploy
-
-_Environment variables used:_ CF_BIN
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 prepareForE2eTests
 ~~~~~~~~~~~~~~~~~~
@@ -583,20 +433,13 @@ ____
  # You can skip that via [CF_SKIP_PREPARE_FOR_TESTS] set to [true]
 ____
 
-Has 9 line(s). Calls functions:
-
- prepareForE2eTests
- `-- logInToPaas
-
-Uses feature(s): _export_
+Has 9 line(s). Doesn't call other functions.
 
 Called by:
 
  stage_e2e.sh/Script-Body
 
 _List of exports (to environment):_ APPLICATION_URL
-
-_Environment variables used:_ APPLICATION_URL
 
 prepareForSmokeTests
 ~~~~~~~~~~~~~~~~~~~~
@@ -606,21 +449,12 @@ ____
  # the app. You can skip that via [CF_SKIP_PREPARE_FOR_TESTS] set to [true]
 ____
 
-Has 15 line(s). Calls functions:
-
- prepareForSmokeTests
- |-- logInToPaas
- |-- pipeline.sh/parsePipelineDescriptor
- |-- propagatePropertiesForTests
- |   `-- pipeline.sh/envNodeExists
- `-- readTestPropertiesFromFile
+Has 15 line(s). Doesn't call other functions.
 
 Called by:
 
  test_rollback_smoke.sh/Script-Body
  test_smoke.sh/Script-Body
-
-_Environment variables used:_ APPLICATION_URL [big]*//* STUBRUNNER_URL [big]*//* pipeline.sh -> OUTPUT_FOLDER [big]*//* pipeline.sh -> LATEST_PROD_TAG
 
 prodDeploy
 ~~~~~~~~~~
@@ -629,17 +463,7 @@ ____
  # CF implementation of deploy to production
 ____
 
-Has 7 line(s). Calls functions:
-
- prodDeploy
- |-- logInToPaas
- `-- performProductionDeploymentOfTestedApplication
-     `-- deployAndRestartAppWithName
-         |-- deployAppNoStart
-         |   `-- setEnvVar
-         |-- parseManifest
-         |-- restartApp
-         `-- setEnvVar
+Has 7 line(s). Doesn't call other functions.
 
 Called by:
 
@@ -657,24 +481,11 @@ ____
  # $1 - application name
 ____
 
-Has 21 line(s). Calls functions:
+Has 21 line(s). Doesn't call other functions.
 
- propagatePropertiesForTests
- `-- pipeline.sh/envNodeExists
-
-Uses feature(s): _export_
-
-Called by:
-
- prepareForSmokeTests
- retrieveApplicationUrl
- stageDeploy
- testDeploy
- testRollbackDeploy
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 _List of exports (to environment):_ APPLICATION_URL [big]*//* STUBRUNNER_URL
-
-_Environment variables used:_ pipeline.sh -> LOWERCASE_ENV [big]*//* pipeline.sh -> OUTPUT_FOLDER [big]*//* pipeline.sh -> PARSED_YAML
 
 readTestPropertiesFromFile
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -686,14 +497,7 @@ ____
 
 Has 12 line(s). Doesn't call other functions.
 
-Uses feature(s): _eval_
-
-Called by:
-
- prepareForSmokeTests
- retrieveApplicationUrl
-
-_Environment variables used:_ pipeline.sh -> OUTPUT_FOLDER
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 restartApp
 ~~~~~~~~~~
@@ -706,13 +510,7 @@ ____
 
 Has 3 line(s). Doesn't call other functions.
 
-Called by:
-
- deployAndRestartAppWithName
- deployAppAsService
- deployStubRunnerBoot
-
-_Environment variables used:_ CF_BIN
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 retrieveApplicationUrl
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -721,17 +519,9 @@ ____
  # Retrieves the application URL from CF
 ____
 
-Has 9 line(s). Calls functions:
-
- retrieveApplicationUrl
- |-- logInToPaas
- |-- propagatePropertiesForTests
- |   `-- pipeline.sh/envNodeExists
- `-- readTestPropertiesFromFile
+Has 9 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
-
-_Environment variables used:_ APPLICATION_URL [big]*//* pipeline.sh -> OUTPUT_FOLDER
 
 rollbackToPreviousVersion
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -742,16 +532,11 @@ ____
  # [Clicked ROLLBACK] -> APP stopped, VEN running
 ____
 
-Has 16 line(s). Calls functions:
-
- rollbackToPreviousVersion
- `-- logInToPaas
+Has 16 line(s). Doesn't call other functions.
 
 Called by:
 
  prod_rollback.sh/Script-Body
-
-_Environment variables used:_ CF_BIN
 
 setEnvVar
 ~~~~~~~~~
@@ -769,12 +554,6 @@ Has 5 line(s). Doesn't call other functions.
 Called by:
 
  addMultiplePortsSupport
- deployAndRestartAppWithName
- deployAppNoStart
- deployStubRunnerBoot
- setEnvVarIfMissing
-
-_Environment variables used:_ CF_BIN
 
 setEnvVarIfMissing
 ~~~~~~~~~~~~~~~~~~
@@ -787,14 +566,9 @@ ____
  # $3 - env variable value
 ____
 
-Has 5 line(s). Calls functions:
-
- setEnvVarIfMissing
- `-- setEnvVar
+Has 5 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
-
-_Environment variables used:_ CF_BIN
 
 stageDeploy
 ~~~~~~~~~~~
@@ -803,20 +577,7 @@ ____
  # CF implementation of deployment to stage
 ____
 
-Has 12 line(s). Calls functions:
-
- stageDeploy
- |-- deployAndRestartAppWithName
- |   |-- deployAppNoStart
- |   |   `-- setEnvVar
- |   |-- parseManifest
- |   |-- restartApp
- |   `-- setEnvVar
- |-- logInToPaas
- |-- pipeline.sh/deployServices
- |-- propagatePropertiesForTests
- |   `-- pipeline.sh/envNodeExists
- `-- waitForServicesToInitialize
+Has 12 line(s). Doesn't call other functions.
 
 Called by:
 
@@ -831,11 +592,7 @@ ____
 
 Has 2 line(s). Doesn't call other functions.
 
-Called by:
-
- testDeploy
-
-_Environment variables used:_ CF_BIN
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 testDeploy
 ~~~~~~~~~~
@@ -844,21 +601,7 @@ ____
  # Implementation of the CF deployment to test
 ____
 
-Has 13 line(s). Calls functions:
-
- testDeploy
- |-- deployAndRestartAppWithName
- |   |-- deployAppNoStart
- |   |   `-- setEnvVar
- |   |-- parseManifest
- |   |-- restartApp
- |   `-- setEnvVar
- |-- logInToPaas
- |-- pipeline.sh/deployServices
- |-- propagatePropertiesForTests
- |   `-- pipeline.sh/envNodeExists
- |-- testCleanup
- `-- waitForServicesToInitialize
+Has 13 line(s). Doesn't call other functions.
 
 Called by:
 
@@ -871,26 +614,11 @@ ____
  # Implementation of the CF deployment to test for rollback tests
 ____
 
-Has 15 line(s). Calls functions:
-
- testRollbackDeploy
- |-- deleteApp
- |-- deployAndRestartAppWithName
- |   |-- deployAppNoStart
- |   |   `-- setEnvVar
- |   |-- parseManifest
- |   |-- restartApp
- |   `-- setEnvVar
- |-- logInToPaas
- |-- pipeline.sh/parsePipelineDescriptor
- `-- propagatePropertiesForTests
-     `-- pipeline.sh/envNodeExists
+Has 15 line(s). Doesn't call other functions.
 
 Called by:
 
  test_rollback_deploy.sh/Script-Body
-
-_Environment variables used:_ pipeline.sh -> OUTPUT_FOLDER [big]*//* pipeline.sh -> PROJECT_NAME
 
 waitForServicesToInitialize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -901,10 +629,5 @@ ____
 
 Has 10 line(s). Doesn't call other functions.
 
-Called by:
-
- stageDeploy
- testDeploy
-
-_Environment variables used:_ CF_BIN
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 

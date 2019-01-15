@@ -25,11 +25,7 @@ Script Body
 
 Has 21 line(s). Calls functions:
 
- Script-Body
- |-- pipeline.sh/prepareForSmokeTests
- `-- pipeline.sh/runSmokeTests
-
-Uses feature(s): _export_, _source_
+ 
 
 _Exports (environment):_ ENVIRONMENT
 
