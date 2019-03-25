@@ -38,3 +38,8 @@ credentials-k8s.yml
 pom.xml.versionsBackup
 **/zsdoc/data/
 .asciidoctor
+.classpath
+.project
+.settings/
+.vscode/
+bin/

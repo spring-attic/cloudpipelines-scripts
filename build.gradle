@@ -13,10 +13,6 @@ apply from: 'gradle/bash.gradle'
 apply from: 'gradle/docs.gradle'
 apply from: 'gradle/dist.gradle'
 
-repositories {
-	jcenter()
-}
-
 version = project.findProperty("newVersion") ?: project.findProperty("defaultVersion")
 
 // Scripts docs generation
@@ -44,9 +40,5 @@ task generateScriptsReadme(type: JRubyExec) {
 
 generateDocs.dependsOn(generateScriptsReadme)
 // Scripts docs generation
-
-task wrapper(type: Wrapper) {
-	gradleVersion = '4.9'
-}
 
 apply from: "gradle/custom.gradle"

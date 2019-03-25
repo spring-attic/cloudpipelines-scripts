@@ -7,7 +7,12 @@ Requires in the buildscript
 - project `docs-sources` that contains under `src/main/asciidoc` the asciidoc
 */
 buildscript {
-	repositories { jcenter() }
+	repositories { 
+		jcenter()
+		maven { url "http://repo.spring.io/snapshot" }
+		maven { url "http://repo.spring.io/milestone" }
+		maven { url "http://repo.spring.io/release" }
+	}
 
 	dependencies {
 		classpath "org.asciidoctor:asciidoctor-gradle-plugin:${asciidoctorGradleVersion}"
@@ -21,6 +26,13 @@ import org.ajoberstar.grgit.Grgit
 apply plugin: 'java'
 apply plugin: "com.github.jruby-gradle.base"
 apply plugin: 'org.asciidoctor.convert'
+
+repositories {  
+	jcenter()
+	maven { url "http://repo.spring.io/snapshot" }
+	maven { url "http://repo.spring.io/milestone" }
+	maven { url "http://repo.spring.io/release" }
+}
 
 ext {
 	git = Grgit.open()
@@ -46,33 +58,49 @@ task createFolder() {
 	}
 }
 
+configurations {
+	docResources
+}
+
 dependencies {
 	gems 'rubygems:asciidoctor-diagram:1.5.9'
+	docResources "io.spring.docresources:spring-doc-resources:${springDocResourcesVersion}"
+}
+
+def unzippedDir = file('docs')
+
+task unzip(type: Copy) {
+    configurations.docResources.copy().asFileTree.each {
+        from(zipTree(it))
+    }
+    into unzippedDir
 }
 
 asciidoctor {
-	dependsOn = ["createFolder", "jrubyPrepare"]
+	dependsOn = ["createFolder", "jrubyPrepare", "unzip"]
 	sourceDir = file('docs-sources/src/main/asciidoc')
 	gemPath = jrubyPrepare.outputDir
 	outputDir = file('docs')
 	separateOutputDirs = false
 	requires = ['asciidoctor-diagram']
-	attributes 'source-highlighter': 'prettify',
-		toc: 'left',
-		toclevels: '4',
-		'hide-uri-scheme': '',
-		'numbered': '',
-		'icons': 'font',
-		idprefix: '',
-		idseparator: '-',
-		safe: 'unsafe',
-		parse: 'false',
+	attributes  'icons': 'font',
+		'idprefix': '',
+		'idseparator': '-',
+		'source-highlighter': 'coderay@', // TODO switch to 'rouge' once supported by the html5 backend
+		stylesdir: file('docs').absolutePath + '/css/',
+		stylesheet: 'spring.css',
+		'allow-uri-read': true,
 		nofooter: '',
 		sectlinks: 'true',
+		docinfo: 'shared',
+		linkcss: true,
+		highlightjsdir: file('docs').absolutePath + '/js/highlight',
+		'highlightjs-theme': 'atom-one-dark-reasonable',
+		toc: 'left',
+		'toc-levels': 4,
 		'branch': branch,
 		'org': ghOrg,
 		'repo': repo,
-		'allow-uri-read': '',
 		'docs-base-url': docsBaseUrl,
 		'intro-root-docs': "${docsBaseUrl}/docs/images/intro"
 }
