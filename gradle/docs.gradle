@@ -63,7 +63,7 @@ configurations {
 }
 
 dependencies {
-	gems 'rubygems:asciidoctor-diagram:1.5.9'
+	gems 'rubygems:asciidoctor-diagram:1.5.8'
 	docResources "io.spring.docresources:spring-doc-resources:${springDocResourcesVersion}"
 }
 
@@ -83,10 +83,11 @@ asciidoctor {
 	outputDir = file('docs')
 	separateOutputDirs = false
 	requires = ['asciidoctor-diagram']
+	backends = ["html5"]
 	attributes  'icons': 'font',
 		'idprefix': '',
 		'idseparator': '-',
-		'source-highlighter': 'coderay@', // TODO switch to 'rouge' once supported by the html5 backend
+		'source-highlighter': 'highlight.js', // TODO switch to 'rouge' once supported by the html5 backend
 		stylesdir: 'css/',
 		stylesheet: 'spring.css',
 		'allow-uri-read': true,
