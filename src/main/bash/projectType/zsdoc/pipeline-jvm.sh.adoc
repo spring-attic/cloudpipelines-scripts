@@ -29,6 +29,8 @@ Script Body
 
 Has 21 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
 
+Uses feature(s): _export_, _source_
+
 _Exports (environment):_ BINARY_EXTENSION [big]*//* MAVEN_OPTS [big]*//* projectType [big]*//* PROJECT_TYPE
 
 downloadAppBinary
@@ -46,6 +48,8 @@ ____
 Has 21 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ BINARY_EXTENSION
 
 isGradleProject
 ~~~~~~~~~~~~~~~
@@ -82,7 +86,9 @@ ____
 
 Has 7 line(s). Calls functions:
 
- 
+ projectType
+ |-- isGradleProject
+ `-- isMavenProject
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 

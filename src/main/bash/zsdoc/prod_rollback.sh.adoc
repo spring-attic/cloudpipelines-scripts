@@ -24,7 +24,11 @@ Script Body
 
 Has 19 line(s). Calls functions:
 
- 
+ Script-Body
+ |-- pipeline.sh/removeProdTag
+ `-- pipeline.sh/rollbackToPreviousVersion
+
+Uses feature(s): _export_, _source_
 
 _Exports (environment):_ ENVIRONMENT
 

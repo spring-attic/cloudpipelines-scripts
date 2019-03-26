@@ -24,7 +24,11 @@ Script Body
 
 Has 14 line(s). Calls functions:
 
- 
+ Script-Body
+ |-- pipeline.sh/prepareForE2eTests
+ `-- pipeline.sh/runE2eTests
+
+Uses feature(s): _export_, _source_
 
 _Exports (environment):_ ENVIRONMENT
 

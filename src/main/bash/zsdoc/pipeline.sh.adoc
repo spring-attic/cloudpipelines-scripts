@@ -95,7 +95,14 @@ DETAILS
 Script Body
 ~~~~~~~~~~~
 
-Has 78 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
+Has 78 line(s). Calls functions:
+
+ Script-Body
+ |-- defineProjectSetup
+ |   `-- parsePipelineDescriptor
+ `-- parsePipelineDescriptor
+
+Uses feature(s): _export_, _source_
 
 _Exports (environment):_ ADDITIONAL_SCRIPTS_REPO_PASSWORD [big]*//* ADDITIONAL_SCRIPTS_REPO_USERNAME [big]*//* ADDITIONAL_SCRIPTS_TARBALL_URL [big]*//* BINARY_ARTIFACT_TYPE_NAME [big]*//* CURL_BIN [big]*//* CUSTOM_SCRIPT_IDENTIFIER [big]*//* DEFAULT_PROJECT_NAME [big]*//* DOWNLOADABLE_SOURCES [big]*//* GIT_BIN [big]*//* LANGUAGE_TYPE [big]*//* LOWERCASE_ENV [big]*//* OUTPUT_FOLDER [big]*//* PAAS_TYPE [big]*//* PIPELINE_DESCRIPTOR [big]*//* PROJECT_NAME [big]*//* PROJECT_SETUP [big]*//* ROOT_PROJECT_DIR [big]*//* SOURCE_ARTIFACT_TYPE_NAME [big]*//* TAR_BIN [big]*//* TEST_REPORTS_FOLDER
 
@@ -114,13 +121,18 @@ ____
 
 Has 20 line(s). Calls functions:
 
- 
+ apiCompatibilityCheck
+ `-- executeApiCompatibilityCheck
+
+Uses feature(s): _export_
 
 Called by:
 
  build_api_compatibility_check.sh/Script-Body
 
 _List of exports (to environment):_ LATEST_PROD_TAG [big]*//* PASSED_LATEST_PROD_TAG
+
+_Environment variables used:_ LATEST_PROD_TAG [big]*//* PASSED_LATEST_PROD_TAG [big]*//* OUTPUT_FOLDER [big]*//* PROJECT_NAME
 
 build
 ~~~~~
@@ -158,9 +170,16 @@ ____
  # Uses [PROJECT_NAME] env var and [getMainModulePath] functions
 ____
 
-Has 32 line(s). Doesn't call other functions.
+Has 32 line(s). Calls functions:
 
-Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+ defineProjectSetup
+ `-- parsePipelineDescriptor
+
+Called by:
+
+ Script-Body
+
+_Environment variables used:_ PIPELINE_DESCRIPTOR_PRESENT [big]*//* PROJECT_NAME [big]*//* PROJECT_SETUP
 
 deleteService
 ~~~~~~~~~~~~~
@@ -174,7 +193,9 @@ ____
 
 Has 5 line(s). Doesn't call other functions.
 
-Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+Called by:
+
+ deployServices
 
 deployService
 ~~~~~~~~~~~~~
@@ -188,7 +209,9 @@ ____
 
 Has 5 line(s). Doesn't call other functions.
 
-Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+Called by:
+
+ deployServices
 
 deployServices
 ~~~~~~~~~~~~~~
@@ -200,11 +223,24 @@ ____
  # Uses ruby and jq
 ____
 
-Has 28 line(s). Doesn't call other functions.
+Has 28 line(s). Calls functions:
+
+ deployServices
+ |-- deleteService
+ |-- deployService
+ |-- envNodeExists
+ `-- parsePipelineDescriptor
+
+Uses feature(s): _read_
 
 Called by:
 
+ pipeline-cf.sh/stageDeploy
+ pipeline-cf.sh/testDeploy
+ pipeline-k8s.sh/stageDeploy
  pipeline-k8s.sh/testDeploy
+
+_Environment variables used:_ PARSED_YAML [big]*//* LOWERCASE_ENV [big]*//* test_smoke.sh -> ENVIRONMENT
 
 envNodeExists
 ~~~~~~~~~~~~~
@@ -218,7 +254,12 @@ ____
 
 Has 8 line(s). Doesn't call other functions.
 
-Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+Called by:
+
+ deployServices
+ pipeline-cf.sh/propagatePropertiesForTests
+
+_Environment variables used:_ PARSED_YAML
 
 executeApiCompatibilityCheck
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -259,9 +300,13 @@ ____
 
 Has 11 line(s). Doesn't call other functions.
 
+Uses feature(s): _export_
+
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 _List of exports (to environment):_ LATEST_PROD_TAG [big]*//* PASSED_LATEST_PROD_TAG
+
+_Environment variables used:_ LATEST_PROD_TAG [big]*//* PASSED_LATEST_PROD_TAG
 
 getMainModulePath
 ~~~~~~~~~~~~~~~~~
@@ -275,6 +320,8 @@ Has 10 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
+_Environment variables used:_ PARSED_YAML
+
 latestProdTagFromGit
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -285,6 +332,8 @@ ____
 Has 3 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ GIT_BIN [big]*//* PROJECT_NAME
 
 outputFolder
 ~~~~~~~~~~~~
@@ -312,9 +361,20 @@ ____
 
 Has 20 line(s). Doesn't call other functions.
 
-Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+Uses feature(s): _export_
+
+Called by:
+
+ defineProjectSetup
+ deployServices
+ Script-Body
+ pipeline-cf.sh/prepareForSmokeTests
+ pipeline-cf.sh/testRollbackDeploy
+ pipeline-k8s.sh/testRollbackDeploy
 
 _List of exports (to environment):_ PARSED_YAML [big]*//* PIPELINE_DESCRIPTOR_PRESENT
+
+_Environment variables used:_ PARSED_YAML [big]*//* PIPELINE_DESCRIPTOR_PRESENT [big]*//* PIPELINE_DESCRIPTOR
 
 prepareForE2eTests
 ~~~~~~~~~~~~~~~~~~
@@ -382,6 +442,8 @@ Has 4 line(s). Doesn't call other functions.
 Called by:
 
  prod_rollback.sh/Script-Body
+
+_Environment variables used:_ GIT_BIN [big]*//* PROJECT_NAME
 
 retrieveAppName
 ~~~~~~~~~~~~~~~
@@ -536,7 +598,9 @@ ____
 
 Has 1 line(s). Doesn't call other functions.
 
-Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+Called by:
+
+ pipeline-cf.sh/getArtifactType
 
 trimRefsTag
 ~~~~~~~~~~~

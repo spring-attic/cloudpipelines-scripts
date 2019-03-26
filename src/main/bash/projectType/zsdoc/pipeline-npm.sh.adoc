@@ -37,6 +37,8 @@ Script Body
 
 Has 15 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
 
+Uses feature(s): _export_
+
 _Exports (environment):_ ARTIFACT_TYPE [big]*//* NODE_BIN [big]*//* NPM_BIN
 
 build
@@ -49,9 +51,13 @@ ____
 
 Has 3 line(s). Calls functions:
 
- 
+ build
+ `-- downloadNpmIfMissing
+     `-- installNodeIfMissing
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ NPM_BIN
 
 downloadAppBinary
 ~~~~~~~~~~~~~~~~~
@@ -64,6 +70,8 @@ Has 2 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
+_Environment variables used:_ NPM_BIN
+
 downloadNpmIfMissing
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -71,11 +79,22 @@ ____
  # Downloads and installs node and npm if missing
 ____
 
-Has 6 line(s). Doesn't call other functions.
+Has 6 line(s). Calls functions:
+
+ downloadNpmIfMissing
+ `-- installNodeIfMissing
 
 Called by:
 
  build
+ executeApiCompatibilityCheck
+ retrieveAppName
+ retrieveGroupId
+ retrieveStubRunnerIds
+ runE2eTests
+ runSmokeTests
+
+_Environment variables used:_ NPM_BIN
 
 executeApiCompatibilityCheck
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,9 +103,15 @@ ____
  # npm implementation of the execute API compatibility check
 ____
 
-Has 2 line(s). Doesn't call other functions.
+Has 2 line(s). Calls functions:
+
+ executeApiCompatibilityCheck
+ `-- downloadNpmIfMissing
+     `-- installNodeIfMissing
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ NPM_BIN
 
 installNodeIfMissing
 ~~~~~~~~~~~~~~~~~~~~
@@ -97,9 +122,15 @@ ____
 
 Has 7 line(s). Doesn't call other functions.
 
-Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+Uses feature(s): _export_
+
+Called by:
+
+ downloadNpmIfMissing
 
 _List of exports (to environment):_ LANG
+
+_Environment variables used:_ NODE_BIN
 
 outputFolder
 ~~~~~~~~~~~~
@@ -130,9 +161,15 @@ ____
  # npm implementation of the retrieve app name
 ____
 
-Has 6 line(s). Doesn't call other functions.
+Has 6 line(s). Calls functions:
+
+ retrieveAppName
+ `-- downloadNpmIfMissing
+     `-- installNodeIfMissing
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ pipeline-dotnet.sh -> PROJECT_NAME [big]*//* NPM_BIN
 
 retrieveGroupId
 ~~~~~~~~~~~~~~~
@@ -141,9 +178,15 @@ ____
  # npm implementation of the retrieve group id
 ____
 
-Has 2 line(s). Doesn't call other functions.
+Has 2 line(s). Calls functions:
+
+ retrieveGroupId
+ `-- downloadNpmIfMissing
+     `-- installNodeIfMissing
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ NPM_BIN
 
 retrieveStubRunnerIds
 ~~~~~~~~~~~~~~~~~~~~~
@@ -152,9 +195,15 @@ ____
  # npm implementation of the retrieve stub runner ids
 ____
 
-Has 2 line(s). Doesn't call other functions.
+Has 2 line(s). Calls functions:
+
+ retrieveStubRunnerIds
+ `-- downloadNpmIfMissing
+     `-- installNodeIfMissing
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ NPM_BIN
 
 runE2eTests
 ~~~~~~~~~~~
@@ -163,9 +212,15 @@ ____
  # npm implementation of the e2e tests
 ____
 
-Has 2 line(s). Doesn't call other functions.
+Has 2 line(s). Calls functions:
+
+ runE2eTests
+ `-- downloadNpmIfMissing
+     `-- installNodeIfMissing
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ NPM_BIN
 
 runSmokeTests
 ~~~~~~~~~~~~~
@@ -174,9 +229,15 @@ ____
  # npm implementation of the run smoke tests
 ____
 
-Has 2 line(s). Doesn't call other functions.
+Has 2 line(s). Calls functions:
+
+ runSmokeTests
+ `-- downloadNpmIfMissing
+     `-- installNodeIfMissing
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ NPM_BIN
 
 testResultsAntPattern
 ~~~~~~~~~~~~~~~~~~~~~

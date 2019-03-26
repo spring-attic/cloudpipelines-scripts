@@ -48,6 +48,8 @@ Has 8 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
+_Environment variables used:_ test_smoke.sh -> ENVIRONMENT
+
 __ansible_playbook
 ~~~~~~~~~~~~~~~~~~
 
@@ -64,6 +66,13 @@ Has 21 line(s). Doesn't call other functions.
 Called by:
 
  completeSwitchOver
+ prodDeploy
+ rollbackToPreviousVersion
+ stageDeploy
+ testDeploy
+ testRollbackDeploy
+
+_Environment variables used:_ test_smoke.sh -> ENVIRONMENT
 
 completeSwitchOver
 ~~~~~~~~~~~~~~~~~~
@@ -74,11 +83,14 @@ ____
 
 Has 5 line(s). Calls functions:
 
- 
+ completeSwitchOver
+ `-- __ansible_playbook
 
 Called by:
 
  prod_complete.sh/Script-Body
+
+_Environment variables used:_ pipeline.sh -> LANGUAGE_TYPE
 
 logInToPaas
 ~~~~~~~~~~~
@@ -100,6 +112,8 @@ ____
 
 Has 9 line(s). Doesn't call other functions.
 
+Uses feature(s): _export_
+
 Called by:
 
  stage_e2e.sh/Script-Body
@@ -115,8 +129,11 @@ ____
 
 Has 14 line(s). Doesn't call other functions.
 
+Uses feature(s): _export_
+
 Called by:
 
+ testRollbackDeploy
  test_rollback_smoke.sh/Script-Body
  test_smoke.sh/Script-Body
 
@@ -129,11 +146,16 @@ ____
  # Implementation of the Ansible deployment to prod
 ____
 
-Has 7 line(s). Doesn't call other functions.
+Has 7 line(s). Calls functions:
+
+ prodDeploy
+ `-- __ansible_playbook
 
 Called by:
 
  prod_deploy.sh/Script-Body
+
+_Environment variables used:_ pipeline.sh -> LANGUAGE_TYPE
 
 rollbackToPreviousVersion
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,11 +164,16 @@ ____
  # Implementation of the Ansible rolling back on production to previous version
 ____
 
-Has 15 line(s). Doesn't call other functions.
+Has 15 line(s). Calls functions:
+
+ rollbackToPreviousVersion
+ `-- __ansible_playbook
 
 Called by:
 
  prod_rollback.sh/Script-Body
+
+_Environment variables used:_ pipeline.sh -> LANGUAGE_TYPE
 
 stageDeploy
 ~~~~~~~~~~~
@@ -155,11 +182,16 @@ ____
  # Implementation of the Ansible deployment to stage
 ____
 
-Has 6 line(s). Doesn't call other functions.
+Has 6 line(s). Calls functions:
+
+ stageDeploy
+ `-- __ansible_playbook
 
 Called by:
 
  stage_deploy.sh/Script-Body
+
+_Environment variables used:_ pipeline.sh -> LANGUAGE_TYPE
 
 testDeploy
 ~~~~~~~~~~
@@ -168,11 +200,16 @@ ____
  # Implementation of the Ansible deployment to test
 ____
 
-Has 15 line(s). Doesn't call other functions.
+Has 15 line(s). Calls functions:
+
+ testDeploy
+ `-- __ansible_playbook
 
 Called by:
 
  test_deploy.sh/Script-Body
+
+_Environment variables used:_ pipeline.sh -> LANGUAGE_TYPE
 
 testRollbackDeploy
 ~~~~~~~~~~~~~~~~~~
@@ -181,9 +218,15 @@ ____
  # Implementation of the Ansible deployment to test for rollback tests
 ____
 
-Has 23 line(s). Doesn't call other functions.
+Has 23 line(s). Calls functions:
+
+ testRollbackDeploy
+ |-- __ansible_playbook
+ `-- prepareForSmokeTests
 
 Called by:
 
  test_rollback_deploy.sh/Script-Body
+
+_Environment variables used:_ pipeline-k8s.sh -> APPLICATION_URL [big]*//* pipeline-k8s.sh -> STUBRUNNER_URL [big]*//* pipeline.sh -> LANGUAGE_TYPE [big]*//* pipeline.sh -> OUTPUT_FOLDER
 

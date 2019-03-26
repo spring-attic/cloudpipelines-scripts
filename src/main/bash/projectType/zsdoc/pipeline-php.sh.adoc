@@ -37,6 +37,8 @@ Script Body
 
 Has 20 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
 
+Uses feature(s): _export_
+
 _Exports (environment):_ ARTIFACT_TYPE [big]*//* COMPOSER_BIN [big]*//* DOWNLOADABLE_SOURCES [big]*//* PHP_BIN
 
 build
@@ -49,9 +51,15 @@ ____
 
 Has 30 line(s). Calls functions:
 
- 
+ build
+ `-- downloadComposerIfMissing
+     `-- installPhpIfMissing
+
+Uses feature(s): _trap_
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ pipeline-jvm.sh -> BINARY_EXTENSION [big]*//* COMPOSER_BIN
 
 downloadAppBinary
 ~~~~~~~~~~~~~~~~~
@@ -69,6 +77,8 @@ Has 26 line(s). Doesn't call other functions.
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
+_Environment variables used:_ pipeline-jvm.sh -> BINARY_EXTENSION
+
 downloadComposerIfMissing
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -76,11 +86,22 @@ ____
  # Downloads and installs PHP and Composer if missing
 ____
 
-Has 13 line(s). Doesn't call other functions.
+Has 13 line(s). Calls functions:
+
+ downloadComposerIfMissing
+ `-- installPhpIfMissing
 
 Called by:
 
  build
+ executeApiCompatibilityCheck
+ retrieveAppName
+ retrieveGroupId
+ retrieveStubRunnerIds
+ runE2eTests
+ runSmokeTests
+
+_Environment variables used:_ COMPOSER_BIN [big]*//* PHP_BIN
 
 executeApiCompatibilityCheck
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -89,9 +110,15 @@ ____
  # PHP implementation of the execute API compatibility check
 ____
 
-Has 2 line(s). Doesn't call other functions.
+Has 2 line(s). Calls functions:
+
+ executeApiCompatibilityCheck
+ `-- downloadComposerIfMissing
+     `-- installPhpIfMissing
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ COMPOSER_BIN
 
 installPhpIfMissing
 ~~~~~~~~~~~~~~~~~~~
@@ -102,9 +129,15 @@ ____
 
 Has 9 line(s). Doesn't call other functions.
 
-Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+Uses feature(s): _export_
+
+Called by:
+
+ downloadComposerIfMissing
 
 _List of exports (to environment):_ LANG
+
+_Environment variables used:_ PHP_BIN
 
 outputFolder
 ~~~~~~~~~~~~
@@ -135,9 +168,15 @@ ____
  # PHP implementation of the retrieve application name
 ____
 
-Has 6 line(s). Doesn't call other functions.
+Has 6 line(s). Calls functions:
+
+ retrieveAppName
+ `-- downloadComposerIfMissing
+     `-- installPhpIfMissing
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ pipeline-dotnet.sh -> PROJECT_NAME [big]*//* COMPOSER_BIN
 
 retrieveGroupId
 ~~~~~~~~~~~~~~~
@@ -146,9 +185,15 @@ ____
  # PHP implementation of the retrieve group id
 ____
 
-Has 2 line(s). Doesn't call other functions.
+Has 2 line(s). Calls functions:
+
+ retrieveGroupId
+ `-- downloadComposerIfMissing
+     `-- installPhpIfMissing
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ COMPOSER_BIN
 
 retrieveStubRunnerIds
 ~~~~~~~~~~~~~~~~~~~~~
@@ -157,9 +202,15 @@ ____
  # PHP implementation of the retrieve stub runner ids
 ____
 
-Has 2 line(s). Doesn't call other functions.
+Has 2 line(s). Calls functions:
+
+ retrieveStubRunnerIds
+ `-- downloadComposerIfMissing
+     `-- installPhpIfMissing
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ COMPOSER_BIN
 
 runE2eTests
 ~~~~~~~~~~~
@@ -168,9 +219,15 @@ ____
  # PHP implementation of the run e2e tests
 ____
 
-Has 2 line(s). Doesn't call other functions.
+Has 2 line(s). Calls functions:
+
+ runE2eTests
+ `-- downloadComposerIfMissing
+     `-- installPhpIfMissing
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ COMPOSER_BIN
 
 runSmokeTests
 ~~~~~~~~~~~~~
@@ -179,9 +236,15 @@ ____
  # PHP implementation of the run smoke tests
 ____
 
-Has 2 line(s). Doesn't call other functions.
+Has 2 line(s). Calls functions:
+
+ runSmokeTests
+ `-- downloadComposerIfMissing
+     `-- installPhpIfMissing
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ COMPOSER_BIN
 
 testResultsAntPattern
 ~~~~~~~~~~~~~~~~~~~~~

@@ -15,10 +15,53 @@ Contains all Kubernetes related deployment functions
 FUNCTIONS
 ---------
 
+ applicationHost
+ appSystemProps
+ completeSwitchOver
+ deleteAppByFile
+ deleteAppByName
+ deleteAppInstance
+ deleteService
+ deployAndRestartAppWithName
+ deployAndRestartAppWithNameForE2ETests
+ deployAndRestartAppWithNameForSmokeTests
+ deployApp
+ deployEureka
+ deployMySql
+ deployRabbitMq
  deployService
+ deployStubRunnerBoot
+ dnsEscapedAppNameWithVersionSuffix
+ escapeValueForDns
+ escapeValueForSed
+ eurekaName
+ findAppByName
+ isAppRunning
+ label
  logInToPaas
+ lowerCaseEnv
+ mySqlDatabase
+ mySqlName
+ objectDeployed
+ oldestDeployment
+ otherDeployedInstances
+ performProductionDeploymentOfTestedApplication
+ portFromKubernetes
+ prepareForE2eTests
+ prepareForSmokeTests
+ prodDeploy
+ rabbitMqName
+ readTestPropertiesFromFile
+ replaceApp
+ retrieveApplicationUrl
+ rollbackToPreviousVersion
+ stageDeploy
+ substituteVariables
+ system
  testDeploy
  testRollbackDeploy
+ toLowerCase
+ waitForAppToStart
 
 DETAILS
 -------
@@ -26,14 +69,308 @@ DETAILS
 Script Body
 ~~~~~~~~~~~
 
-Has 5 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
+Has 30 line(s). No functions are called (may set up e.g. a hook, a Zle widget bound to a key, etc.).
+
+Uses feature(s): _export_, _trap_
+
+_Exports (environment):_ BUILD_OPTIONS [big]*//* KUBE_CONFIG_PATH [big]*//* KUBECTL_BIN [big]*//* KUBERNETES_NAMESPACE [big]*//* PAAS_NAMESPACE_VAR [big]*//* SYSTEM [big]*//* TEST_MODE
+
+applicationHost
+~~~~~~~~~~~~~~~
+
+Has 7 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ test_smoke.sh -> ENVIRONMENT
+
+appSystemProps
+~~~~~~~~~~~~~~
+
+Has 20 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+completeSwitchOver
+~~~~~~~~~~~~~~~~~~
+
+Has 15 line(s). Calls functions:
+
+ completeSwitchOver
+ `-- logInToPaas
+
+Called by:
+
+ prod_complete.sh/Script-Body
+
+_Environment variables used:_ KUBE_CONFIG_PATH [big]*//* KUBECTL_BIN
+
+deleteAppByFile
+~~~~~~~~~~~~~~~
+
+Has 2 line(s). Doesn't call other functions.
+
+Called by:
+
+ deployAndRestartAppWithNameForE2ETests
+ deployAndRestartAppWithNameForSmokeTests
+ deployEureka
+ deployMySql
+ deployRabbitMq
+ deployStubRunnerBoot
+
+_Environment variables used:_ KUBE_CONFIG_PATH [big]*//* KUBECTL_BIN
+
+deleteAppByName
+~~~~~~~~~~~~~~~
+
+Has 6 line(s). Doesn't call other functions.
+
+Called by:
+
+ deleteAppInstance
+ deleteService
+
+_Environment variables used:_ KUBE_CONFIG_PATH [big]*//* KUBECTL_BIN
+
+deleteAppInstance
+~~~~~~~~~~~~~~~~~
+
+Has 5 line(s). Calls functions:
+
+ deleteAppInstance
+ `-- deleteAppByName
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+deleteService
+~~~~~~~~~~~~~
+
+Has 4 line(s). Calls functions:
+
+ deleteService
+ `-- deleteAppByName
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+deployAndRestartAppWithName
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Has 6 line(s). Calls functions:
+
+ deployAndRestartAppWithName
+ `-- pipeline-cf.sh/restartApp
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ pipeline.sh -> LOWERCASE_ENV
+
+deployAndRestartAppWithNameForE2ETests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Has 26 line(s). Calls functions:
+
+ deployAndRestartAppWithNameForE2ETests
+ |-- deleteAppByFile
+ |-- deployApp
+ |-- substituteVariables
+ `-- waitForAppToStart
+     `-- isAppRunning
+
+Called by:
+
+ stageDeploy
+
+deployAndRestartAppWithNameForSmokeTests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Has 28 line(s). Calls functions:
+
+ deployAndRestartAppWithNameForSmokeTests
+ |-- deleteAppByFile
+ |-- deployApp
+ |-- substituteVariables
+ `-- waitForAppToStart
+     `-- isAppRunning
+
+Called by:
+
+ testDeploy
+ testRollbackDeploy
+
+deployApp
+~~~~~~~~~
+
+Has 2 line(s). Doesn't call other functions.
+
+Called by:
+
+ deployAndRestartAppWithNameForE2ETests
+ deployAndRestartAppWithNameForSmokeTests
+ performProductionDeploymentOfTestedApplication
+
+_Environment variables used:_ KUBE_CONFIG_PATH [big]*//* KUBECTL_BIN
+
+deployEureka
+~~~~~~~~~~~~
+
+Has 29 line(s). Calls functions:
+
+ deployEureka
+ |-- deleteAppByFile
+ |-- replaceApp
+ |-- substituteVariables
+ `-- waitForAppToStart
+     `-- isAppRunning
+
+Called by:
+
+ deployService
+
+_Environment variables used:_ test_smoke.sh -> ENVIRONMENT
+
+deployMySql
+~~~~~~~~~~~
+
+Has 34 line(s). Calls functions:
+
+ deployMySql
+ |-- deleteAppByFile
+ |-- replaceApp
+ `-- substituteVariables
+
+Called by:
+
+ deployService
+
+_Environment variables used:_ KUBE_CONFIG_PATH [big]*//* KUBECTL_BIN [big]*//* test_smoke.sh -> ENVIRONMENT
+
+deployRabbitMq
+~~~~~~~~~~~~~~
+
+Has 25 line(s). Calls functions:
+
+ deployRabbitMq
+ |-- deleteAppByFile
+ |-- replaceApp
+ `-- substituteVariables
+
+Called by:
+
+ deployService
+
+_Environment variables used:_ test_smoke.sh -> ENVIRONMENT
 
 deployService
 ~~~~~~~~~~~~~
 
-Has 39 line(s). Doesn't call other functions.
+Has 49 line(s). Calls functions:
+
+ deployService
+ |-- deployEureka
+ |   |-- deleteAppByFile
+ |   |-- replaceApp
+ |   |-- substituteVariables
+ |   `-- waitForAppToStart
+ |       `-- isAppRunning
+ |-- deployMySql
+ |   |-- deleteAppByFile
+ |   |-- replaceApp
+ |   `-- substituteVariables
+ |-- deployRabbitMq
+ |   |-- deleteAppByFile
+ |   |-- replaceApp
+ |   `-- substituteVariables
+ `-- deployStubRunnerBoot
+     |-- deleteAppByFile
+     |-- replaceApp
+     |-- substituteVariables
+     `-- waitForAppToStart
+         `-- isAppRunning
 
 Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ pipeline.sh -> PARSED_YAML [big]*//* pipeline.sh -> LOWERCASE_ENV
+
+deployStubRunnerBoot
+~~~~~~~~~~~~~~~~~~~~
+
+Has 41 line(s). Calls functions:
+
+ deployStubRunnerBoot
+ |-- deleteAppByFile
+ |-- replaceApp
+ |-- substituteVariables
+ `-- waitForAppToStart
+     `-- isAppRunning
+
+Called by:
+
+ deployService
+
+_Environment variables used:_ test_smoke.sh -> ENVIRONMENT
+
+dnsEscapedAppNameWithVersionSuffix
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Has 2 line(s). Calls functions:
+
+ dnsEscapedAppNameWithVersionSuffix
+ `-- escapeValueForDns
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+escapeValueForDns
+~~~~~~~~~~~~~~~~~
+
+Has 5 line(s). Doesn't call other functions.
+
+Called by:
+
+ dnsEscapedAppNameWithVersionSuffix
+
+escapeValueForSed
+~~~~~~~~~~~~~~~~~
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+eurekaName
+~~~~~~~~~~
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ pipeline.sh -> PARSED_YAML [big]*//* pipeline.sh -> LOWERCASE_ENV
+
+findAppByName
+~~~~~~~~~~~~~
+
+Has 3 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ KUBE_CONFIG_PATH [big]*//* KUBECTL_BIN
+
+isAppRunning
+~~~~~~~~~~~~
+
+Has 18 line(s). Doesn't call other functions.
+
+Called by:
+
+ waitForAppToStart
+
+label
+~~~~~
+
+Has 5 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ KUBE_CONFIG_PATH [big]*//* KUBECTL_BIN
 
 logInToPaas
 ~~~~~~~~~~~
@@ -45,16 +382,263 @@ ____
 
 Has 57 line(s). Doesn't call other functions.
 
+Uses feature(s): _trap_
+
 Called by:
 
+ completeSwitchOver
+ prepareForE2eTests
+ prepareForSmokeTests
+ prodDeploy
+ rollbackToPreviousVersion
+ stageDeploy
  testDeploy
+ testRollbackDeploy
+
+_Environment variables used:_ KUBE_CONFIG_PATH [big]*//* KUBECTL_BIN [big]*//* SYSTEM [big]*//* TEST_MODE [big]*//* test_smoke.sh -> ENVIRONMENT
+
+lowerCaseEnv
+~~~~~~~~~~~~
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ test_smoke.sh -> ENVIRONMENT
+
+mySqlDatabase
+~~~~~~~~~~~~~
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ pipeline.sh -> PARSED_YAML [big]*//* pipeline.sh -> LOWERCASE_ENV
+
+mySqlName
+~~~~~~~~~
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ pipeline.sh -> PARSED_YAML [big]*//* pipeline.sh -> LOWERCASE_ENV
+
+objectDeployed
+~~~~~~~~~~~~~~
+
+Has 9 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ KUBE_CONFIG_PATH [big]*//* KUBECTL_BIN
+
+oldestDeployment
+~~~~~~~~~~~~~~~~
+
+Has 5 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+otherDeployedInstances
+~~~~~~~~~~~~~~~~~~~~~~
+
+Has 3 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ KUBE_CONFIG_PATH [big]*//* KUBECTL_BIN
+
+performProductionDeploymentOfTestedApplication
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Has 42 line(s). Calls functions:
+
+ performProductionDeploymentOfTestedApplication
+ |-- deployApp
+ |-- substituteVariables
+ `-- waitForAppToStart
+     `-- isAppRunning
+
+Called by:
+
+ prodDeploy
+
+portFromKubernetes
+~~~~~~~~~~~~~~~~~~
+
+Has 9 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ KUBE_CONFIG_PATH [big]*//* KUBECTL_BIN
+
+prepareForE2eTests
+~~~~~~~~~~~~~~~~~~
+
+Has 10 line(s). Calls functions:
+
+ prepareForE2eTests
+ `-- logInToPaas
+
+Uses feature(s): _export_
+
+Called by:
+
+ stage_e2e.sh/Script-Body
+
+_List of exports (to environment):_ APPLICATION_URL
+
+_Environment variables used:_ pipeline.sh -> OUTPUT_FOLDER
+
+prepareForSmokeTests
+~~~~~~~~~~~~~~~~~~~~
+
+Has 17 line(s). Calls functions:
+
+ prepareForSmokeTests
+ `-- logInToPaas
+
+Uses feature(s): _export_
+
+Called by:
+
+ test_rollback_smoke.sh/Script-Body
+ test_smoke.sh/Script-Body
+
+_List of exports (to environment):_ APPLICATION_URL [big]*//* STUBRUNNER_URL
+
+_Environment variables used:_ pipeline.sh -> OUTPUT_FOLDER
+
+prodDeploy
+~~~~~~~~~~
+
+Has 4 line(s). Calls functions:
+
+ prodDeploy
+ |-- logInToPaas
+ `-- performProductionDeploymentOfTestedApplication
+     |-- deployApp
+     |-- substituteVariables
+     `-- waitForAppToStart
+         `-- isAppRunning
+
+Called by:
+
+ prod_deploy.sh/Script-Body
+
+rabbitMqName
+~~~~~~~~~~~~
+
+Has 1 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ pipeline.sh -> PARSED_YAML [big]*//* pipeline.sh -> LOWERCASE_ENV
+
+readTestPropertiesFromFile
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Has 14 line(s). Doesn't call other functions.
+
+Uses feature(s): _eval_
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+_Environment variables used:_ pipeline.sh -> OUTPUT_FOLDER
+
+replaceApp
+~~~~~~~~~~
+
+Has 2 line(s). Doesn't call other functions.
+
+Called by:
+
+ deployEureka
+ deployMySql
+ deployRabbitMq
+ deployStubRunnerBoot
+
+_Environment variables used:_ KUBE_CONFIG_PATH [big]*//* KUBECTL_BIN
+
+retrieveApplicationUrl
+~~~~~~~~~~~~~~~~~~~~~~
+
+Has 7 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
+
+rollbackToPreviousVersion
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Has 14 line(s). Calls functions:
+
+ rollbackToPreviousVersion
+ `-- logInToPaas
+
+Called by:
+
+ prod_rollback.sh/Script-Body
+
+_Environment variables used:_ KUBE_CONFIG_PATH [big]*//* KUBECTL_BIN
+
+stageDeploy
+~~~~~~~~~~~
+
+Has 6 line(s). Calls functions:
+
+ stageDeploy
+ |-- deployAndRestartAppWithNameForE2ETests
+ |   |-- deleteAppByFile
+ |   |-- deployApp
+ |   |-- substituteVariables
+ |   `-- waitForAppToStart
+ |       `-- isAppRunning
+ |-- logInToPaas
+ `-- pipeline.sh/deployServices
+
+Called by:
+
+ stage_deploy.sh/Script-Body
+
+substituteVariables
+~~~~~~~~~~~~~~~~~~~
+
+Has 10 line(s). Doesn't call other functions.
+
+Called by:
+
+ deployAndRestartAppWithNameForE2ETests
+ deployAndRestartAppWithNameForSmokeTests
+ deployEureka
+ deployMySql
+ deployRabbitMq
+ deployStubRunnerBoot
+ performProductionDeploymentOfTestedApplication
+
+_Environment variables used:_ SYSTEM
+
+system
+~~~~~~
+
+Has 8 line(s). Doesn't call other functions.
+
+Not called by script or any function (may be e.g. a hook, a Zle widget, etc.).
 
 testDeploy
 ~~~~~~~~~~
 
 Has 6 line(s). Calls functions:
 
- 
+ testDeploy
+ |-- deployAndRestartAppWithNameForSmokeTests
+ |   |-- deleteAppByFile
+ |   |-- deployApp
+ |   |-- substituteVariables
+ |   `-- waitForAppToStart
+ |       `-- isAppRunning
+ |-- logInToPaas
+ `-- pipeline.sh/deployServices
 
 Called by:
 
@@ -63,9 +647,46 @@ Called by:
 testRollbackDeploy
 ~~~~~~~~~~~~~~~~~~
 
-Has 12 line(s). Doesn't call other functions.
+Has 12 line(s). Calls functions:
+
+ testRollbackDeploy
+ |-- deployAndRestartAppWithNameForSmokeTests
+ |   |-- deleteAppByFile
+ |   |-- deployApp
+ |   |-- substituteVariables
+ |   `-- waitForAppToStart
+ |       `-- isAppRunning
+ |-- logInToPaas
+ `-- pipeline.sh/parsePipelineDescriptor
 
 Called by:
 
  test_rollback_deploy.sh/Script-Body
+
+_Environment variables used:_ pipeline.sh -> OUTPUT_FOLDER [big]*//* pipeline.sh -> PROJECT_NAME
+
+toLowerCase
+~~~~~~~~~~~
+
+Has 2 line(s). Doesn't call other functions.
+
+Called by:
+
+ pipeline-cf.sh/getArtifactType
+
+waitForAppToStart
+~~~~~~~~~~~~~~~~~
+
+Has 6 line(s). Calls functions:
+
+ waitForAppToStart
+ `-- isAppRunning
+
+Called by:
+
+ deployAndRestartAppWithNameForE2ETests
+ deployAndRestartAppWithNameForSmokeTests
+ deployEureka
+ deployStubRunnerBoot
+ performProductionDeploymentOfTestedApplication
 
