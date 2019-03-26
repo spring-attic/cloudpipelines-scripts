@@ -14,7 +14,7 @@ setup() {
 	export ENVIRONMENT="TEST"
 	export LANGUAGE_TYPE="dummy"
 	export PAAS_TYPE="ANSIBLE"
-	export REPO_WITH_BINARIES="http://foo"
+	export REPO_WITH_BINARIES="https://foo"
 	export ANSIBLE_INVENTORY_DIR="${FIXTURES_DIR}/ansible/ansible-inventory"
 	export SCRIPTS_DIR="${TEMP_DIR}"/scripts
 
@@ -133,8 +133,8 @@ teardown() {
 
 @test "should deploy for rollback tests [ansible]" {
 	export PROJECT_NAME="foo"
-	export APPLICATION_URL="http://foo/bar"
-	export STUBRUNNER_URL="http://bar/baz"
+	export APPLICATION_URL="https://foo/bar"
+	export STUBRUNNER_URL="https://bar/baz"
 	export PIPELINE_VERSION="1.0.0"
 	cd "${TEMP_DIR}/gradle"
 	source "${SCRIPTS_DIR}/pipeline.sh"

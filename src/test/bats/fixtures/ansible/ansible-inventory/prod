@@ -23,5 +23,5 @@ github-analytics_spring_datasource_url = jdbc:mysql://10.164.0.4:3306/test?autoR
 github-analytics_spring_datasource_username = root
 github-analytics_spring_datasource_password = root
 github-analytics_spring_rabbitmq_addresses = 10.164.0.4:5672
-github-analytics_eureka_client_serviceurl_defaultzone = http://10.164.0.4:8761/eureka/
+github-analytics_eureka_client_serviceurl_defaultzone = https://10.164.0.4:8761/eureka/
 github-webhook_port = 8082
