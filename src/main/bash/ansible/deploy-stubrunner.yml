@@ -8,7 +8,7 @@
     maven_repository_url: "{{ lookup('env', 'REPO_WITH_BINARIES') }}"
     stubrunner_ids: ""
     stubrunner_port: "{{ hostvars[inventory_hostname][app_name + '_stubrunner_port'] }}"
-    stubrunner_healt_url: "http://localhost:{{ stubrunner_port }}/health"
+    stubrunner_healt_url: "https://localhost:{{ stubrunner_port }}/health"
   tasks:
     - name: read pipeline descriptor
       include_vars:

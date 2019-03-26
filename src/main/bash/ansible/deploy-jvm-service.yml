@@ -6,7 +6,7 @@
   vars:
     maven_repository_url: "{{ lookup('env', 'REPO_WITH_BINARIES') }}"
     app_port: "{{ hostvars[inventory_hostname][app_name + '_port'] }}"
-    app_healt_url: "http://localhost:{{ app_port }}/health"
+    app_healt_url: "https://localhost:{{ app_port }}/health"
   tasks:
     - name: ensure required arguments were passed
       assert:
