@@ -63,7 +63,7 @@ configurations {
 }
 
 dependencies {
-	gems 'rubygems:asciidoctor-diagram:1.5.8'
+	gems 'rubygems:asciidoctor-diagram:1.5.9'
 	docResources "io.spring.docresources:spring-doc-resources:${springDocResourcesVersion}"
 }
 
