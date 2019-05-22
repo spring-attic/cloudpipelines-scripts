@@ -19,7 +19,7 @@ version = project.findProperty("newVersion") ?: project.findProperty("defaultVer
 
 repositories {
 	jcenter()
-	maven { url "http://rubygems-proxy.torquebox.org/releases/" }
+	maven { url "https://rubygems-proxy.torquebox.org/releases/" }
 }
 
 apply plugin: "com.github.jruby-gradle.base"
