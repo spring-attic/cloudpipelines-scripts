@@ -104,11 +104,13 @@ asciidoctor {
 		'repo': repo,
 		'docs-base-url': docsBaseUrl,
 		'intro-root-docs': "${docsBaseUrl}/docs/images/intro"
+	// don't run on CI
+	enabled = !System.getenv("JENKINS_HOME")
 }
 
 task generateDocs() {
 	description = "Creates documentation for the project"
 	dependsOn = ["asciidoctor"]
-	// https issues
-	enabled = false
+	// don't run on CI
+	enabled = !System.getenv("JENKINS_HOME")
 }
