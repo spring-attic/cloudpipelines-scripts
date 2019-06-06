@@ -63,8 +63,7 @@ configurations {
 }
 
 dependencies {
-	// https issue
-	// gems 'rubygems:asciidoctor-diagram:1.5.9'
+	gems 'rubygems:asciidoctor-diagram:1.5.9'
 	docResources "io.spring.docresources:spring-doc-resources:${springDocResourcesVersion}"
 }
 
@@ -110,4 +109,6 @@ asciidoctor {
 task generateDocs() {
 	description = "Creates documentation for the project"
 	dependsOn = ["asciidoctor"]
+	// https issues
+	enabled = false
 }
