@@ -26,7 +26,8 @@ apply plugin: "com.github.jruby-gradle.base"
 import com.github.jrubygradle.JRubyExec
 
 dependencies {
-	jrubyExec "rubygems:asciidoctor:1.5.8"
+	// https issue
+	// jrubyExec "rubygems:asciidoctor:1.5.8"
 }
 
 jruby {
@@ -38,7 +39,7 @@ task generateScriptsReadme(type: JRubyExec) {
 	scriptArgs "-i ${projectDir}/src/main/bash/BASH_SCRIPTS.adoc", "-o ${projectDir}/src/main/bash/README.adoc"
 }
 
-generateDocs.dependsOn(generateScriptsReadme)
+// generateDocs.dependsOn(generateScriptsReadme)
 // Scripts docs generation
 
 apply from: "gradle/custom.gradle"
