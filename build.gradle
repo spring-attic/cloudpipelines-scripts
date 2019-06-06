@@ -29,9 +29,6 @@ dependencies {
 	jrubyExec "rubygems:asciidoctor:1.5.8"
 }
 
-// don't run on CI
-jRubyPrepare.enabled = !System.getenv("JENKINS_HOME")
-
 jruby {
 	defaultRepositories false
 }

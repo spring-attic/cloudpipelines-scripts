@@ -76,7 +76,12 @@ task unzip(type: Copy) {
     into unzippedDir
 }
 
+// don't run on CI
+jrubyPrepare.enabled = !System.getenv("JENKINS_HOME")
+
 asciidoctor {
+	// don't run on CI
+	enabled = !System.getenv("JENKINS_HOME")
 	dependsOn = ["createFolder", "jrubyPrepare", "unzip"]
 	sourceDir = file('docs-sources/src/main/asciidoc')
 	gemPath = jrubyPrepare.outputDir
@@ -104,8 +109,6 @@ asciidoctor {
 		'repo': repo,
 		'docs-base-url': docsBaseUrl,
 		'intro-root-docs': "${docsBaseUrl}/docs/images/intro"
-	// don't run on CI
-	enabled = !System.getenv("JENKINS_HOME")
 }
 
 task generateDocs() {
