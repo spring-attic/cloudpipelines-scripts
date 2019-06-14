@@ -48,6 +48,7 @@ ext {
 }
 
 task cleanDocs(type: Delete) {
+	enabled = !System.getenv("JENKINS_HOME")
 	delete project(":docs").projectDir.path
 }
 
