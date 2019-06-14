@@ -35,10 +35,10 @@ repositories {
 }
 
 ext {
-	git = Grgit.open()
+	git = { -> try { Grgit.open() } catch (Exception ex) { project.logger.error("Exception occurred while opening git repo", ex); return null } }.call()
 	ghOrg = "cloudpipelines"
 	repo = project.name
-	branch = git.branch.current().getName()
+	branch = git != null ? git.branch.current().getName() : "master"
 	docsBaseUrl = [
 		'https://raw.githubusercontent.com',
 		ghOrg,

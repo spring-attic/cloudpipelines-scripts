@@ -14,8 +14,8 @@ import org.ajoberstar.grgit.Grgit
 apply plugin: 'distribution'
 
 ext {
-	git = Grgit.open()
-	revision = git.head().id
+	git = { -> try { Grgit.open() } catch (Exception ex) { project.logger.error("Exception occurred while opening git repo", ex); return null } }.call()
+	revision = git != null ? git.head().id : ""
 }
 
 distributions {
