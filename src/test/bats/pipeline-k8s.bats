@@ -1144,27 +1144,6 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should delete green instance for non minikube K8S Gradle" {
-	export ENVIRONMENT="PROD"
-	export KUBECTL_BIN="kubectl"
-	export K8S_CONTEXT="context"
-	export PAAS_NAMESPACE="sc-pipelines-prod"
-	export KUBERNETES_MINIKUBE="false"
-	export BUILD_PROJECT_TYPE="gradle"
-	export OUTPUT_DIR="build/libs"
-	cp "${FIXTURES_DIR}/sc-pipelines-k8s.yml" "${TEMP_DIR}/${BUILD_PROJECT_TYPE}/empty_project/sc-pipelines.yml"
-	cd "${TEMP_DIR}/${BUILD_PROJECT_TYPE}/empty_project"
-	touch "${KUBECTL_BIN}"
-
-	run "${SOURCE_DIR}/prod_complete.sh"
-
-	# logged in
-	assert_output --partial "kubectl config use-context cluster_name --kubeconfig="
-	assert_output --partial "delete deployment"
-	refute_output --partial "YOU'VE FORGOTTEN TO PASS KUBECONFIG"
-	assert_success
-}
-
 @test "should rollback to blue K8S Maven" {
 	export ENVIRONMENT="PROD"
 	export KUBECTL_BIN="kubectl"

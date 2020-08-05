@@ -303,7 +303,7 @@ function testResultsAntPattern() {
 # the trimmed prod tag. Trimming occurs via the [trimRefsTag] function
 function findLatestProdTag() {
 	local prodTag="${PASSED_LATEST_PROD_TAG:-${LATEST_PROD_TAG:-}}"
-	if [[ ! -z "${prodTag}" ]]; then
+	if [[ -n "${prodTag}" ]]; then
 		echo "${prodTag}"
 	else
 		local latestProdTag
@@ -452,7 +452,7 @@ function toLowerCase() {
 # Gets the build coordinates from descriptor. Requires the [PARSED_YAML] to parse
 # otherwise returns empty main module
 function getMainModulePath() {
-	if [[ ! -z "${PARSED_YAML}" ]]; then
+	if [[ -n "${PARSED_YAML}" ]]; then
 		local mainModule
 		mainModule="$( echo "${PARSED_YAML}" | jq -r '.build.main_module' )"
 		if [[ "${mainModule}" == "null" ]]; then

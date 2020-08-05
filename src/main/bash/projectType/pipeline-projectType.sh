@@ -14,7 +14,7 @@ set -o pipefail
 # or if [language_type] node is not present in the descriptor.
 # Uses [PARSER_YAML] env var
 function getLanguageType() {
-	if [[ ! -z "${PARSED_YAML}" ]]; then
+	if [[ -n "${PARSED_YAML}" ]]; then
 		local languageType
 		languageType="$( echo "${PARSED_YAML}" | jq -r '.language_type' )"
 		if [[ "${languageType}" == "null" ]]; then

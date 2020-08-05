@@ -214,7 +214,7 @@ function deployAndRestartAppWithName() {
 	parseManifest
 	local manifestProfiles
 	manifestProfiles="$(getProfilesFromManifest "${appName}")"
-	if [[ ! -z "${manifestProfiles}" && "${manifestProfiles}" != "null" ]]; then
+	if [[ -n "${manifestProfiles}" && "${manifestProfiles}" != "null" ]]; then
 		profiles="${profiles},${manifestProfiles}"
 	fi
 	echo "Deploying and restarting app with name [${appName}] and binary name [${binaryName}] and env [${ENVIRONMENT}]"
@@ -340,7 +340,7 @@ function deployAppNoStart() {
 function getArtifactType() {
 	if [[ "${ARTIFACT_TYPE}" != "" ]]; then
 		echo "${ARTIFACT_TYPE}"
-	elif [[ ! -z "${PARSED_YAML}" ]]; then
+	elif [[ -n "${PARSED_YAML}" ]]; then
 		local artifactType
 		artifactType="$( echo "${PARSED_YAML}" | jq -r '.artifact_type' )"
 		if [[ "${artifactType}" == "null" ]]; then

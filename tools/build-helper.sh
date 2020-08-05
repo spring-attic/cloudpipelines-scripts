@@ -83,7 +83,7 @@ case $1 in
         ;;
     initialize-submodules)
         files="$( ls "${ROOT_DIR}/../src/test/docs_helper/zshelldoc/" || echo "" )"
-        if [ ! -z "${files}" ]; then
+        if [ -n "${files}" ]; then
             echo "Submodules already initialized";
             git submodule foreach git pull origin master || echo "Failed to pull - continuing the script"
         else

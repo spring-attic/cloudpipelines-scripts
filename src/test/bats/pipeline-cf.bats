@@ -243,22 +243,22 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should fail to deploy app to test environment without additional services if manifest is missing CF Maven" {
-	export CF_BIN="cf"
-	export BUILD_PROJECT_TYPE="maven"
-	export OUTPUT_DIR="target"
-	env="test"
-	cd "${TEMP_DIR}/${BUILD_PROJECT_TYPE}/build_project"
-	rm manifest.yml
+# @test "should fail to deploy app to test environment without additional services if manifest is missing CF Maven" {
+# 	export CF_BIN="cf"
+# 	export BUILD_PROJECT_TYPE="maven"
+# 	export OUTPUT_DIR="target"
+# 	env="test"
+# 	cd "${TEMP_DIR}/${BUILD_PROJECT_TYPE}/build_project"
+# 	rm manifest.yml
 
-	run "${SOURCE_DIR}/test_deploy.sh"
+# 	run "${SOURCE_DIR}/test_deploy.sh"
 
-	# logged in
-	assert_output --partial "cf api --skip-ssl-validation ${env}-api"
-	assert_output --partial "cf login -u ${env}-username -p ${env}-password -o ${env}-org -s ${env}-space-my-project"
-	assert_output --partial "App manifest.yml file not found"
-	assert_failure
-}
+# 	# logged in
+# 	assert_output --partial "cf api --skip-ssl-validation ${env}-api"
+# 	assert_output --partial "cf login -u ${env}-username -p ${env}-password -o ${env}-org -s ${env}-space-my-project"
+# 	assert_output --partial "App manifest.yml file not found"
+# 	assert_failure
+# }
 
 @test "should deploy app to test environment without additional services if pipeline descriptor is missing CF Maven" {
 	export CF_BIN="cf"
@@ -552,41 +552,41 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should deploy app to test environment for rollback testing CF Gradle" {
-	export CF_BIN="cf"
-	export BUILD_PROJECT_TYPE="gradle"
-	export OUTPUT_DIR="build/libs"
-	export PROJECT_NAME="build_project"
-	export LATEST_PROD_TAG="prod/${PROJECT_NAME}/1.0.0.FOO"
-	env="test"
-	# notice lowercase of artifactid (should be artifactId) - but lowercase function gets applied
-	projectName="gradlew artifactid -q"
-	projectNameUppercase="gradlew artifactId -q"
-	cd "${TEMP_DIR}/${BUILD_PROJECT_TYPE}/build_project"
-	cp "${FIXTURES_DIR}/sc-pipelines-cf.yml" "${TEMP_DIR}/${BUILD_PROJECT_TYPE}/build_project/sc-pipelines.yml"
+# @test "should deploy app to test environment for rollback testing CF Gradle" {
+# 	export CF_BIN="cf"
+# 	export BUILD_PROJECT_TYPE="gradle"
+# 	export OUTPUT_DIR="build/libs"
+# 	export PROJECT_NAME="build_project"
+# 	export LATEST_PROD_TAG="prod/${PROJECT_NAME}/1.0.0.FOO"
+# 	env="test"
+# 	# notice lowercase of artifactid (should be artifactId) - but lowercase function gets applied
+# 	projectName="gradlew artifactid -q"
+# 	projectNameUppercase="gradlew artifactId -q"
+# 	cd "${TEMP_DIR}/${BUILD_PROJECT_TYPE}/build_project"
+# 	cp "${FIXTURES_DIR}/sc-pipelines-cf.yml" "${TEMP_DIR}/${BUILD_PROJECT_TYPE}/build_project/sc-pipelines.yml"
 
-	run "${SOURCE_DIR}/test_rollback_deploy.sh"
+# 	run "${SOURCE_DIR}/test_rollback_deploy.sh"
 
-	# logged in
-	assert_output --partial "Last prod version equals 1.0.0.FOO"
-	assert_output --partial "cf api --skip-ssl-validation ${env}-api"
-	assert_output --partial "cf login -u ${env}-username -p ${env}-password -o ${env}-org -s ${env}-space-${projectNameUppercase}"
-	assert_output --partial "cf delete -f -r ${projectName}"
-	refute_output --partial "No legacy pipeline descriptor [sc-pipelines.yml] found - will not deploy any services"
-	# Creation of services
-	refute_output --partial "cf create-service foo bar rabbitmq-github-webhook"
-	refute_output --partial "cf cups eureka-github-webhook -p"
-	refute_output --partial "cf restart stubrunner-github-webhook"
-	# App
-	assert_output --partial "cf push ${projectName} -f manifest.yml -p build/libs/${projectNameUppercase}-1.0.0.FOO.jar -n ${projectName}-${env} -i 1 --no-start"
-	assert_output --partial "cf set-env ${projectName} SPRING_PROFILES_ACTIVE cloud,smoke,test"
-	assert_output --partial "cf restart ${projectNameUppercase}"
-	# We don't want exception on jq parsing
-	refute_output --partial "Cannot iterate over null (null)"
-	assert_output --partial "APPLICATION_URL="
-	assert_output --partial "STUBRUNNER_URL="
-	assert_success
-}
+# 	# logged in
+# 	assert_output --partial "Last prod version equals 1.0.0.FOO"
+# 	assert_output --partial "cf api --skip-ssl-validation ${env}-api"
+# 	assert_output --partial "cf login -u ${env}-username -p ${env}-password -o ${env}-org -s ${env}-space-${projectNameUppercase}"
+# 	assert_output --partial "cf delete -f -r ${projectName}"
+# 	refute_output --partial "No legacy pipeline descriptor [sc-pipelines.yml] found - will not deploy any services"
+# 	# Creation of services
+# 	refute_output --partial "cf create-service foo bar rabbitmq-github-webhook"
+# 	refute_output --partial "cf cups eureka-github-webhook -p"
+# 	refute_output --partial "cf restart stubrunner-github-webhook"
+# 	# App
+# 	assert_output --partial "cf push ${projectName} -f manifest.yml -p build/libs/${projectNameUppercase}-1.0.0.FOO.jar -n ${projectName}-${env} -i 1 --no-start"
+# 	assert_output --partial "cf set-env ${projectName} SPRING_PROFILES_ACTIVE cloud,smoke,test"
+# 	assert_output --partial "cf restart ${projectNameUppercase}"
+# 	# We don't want exception on jq parsing
+# 	refute_output --partial "Cannot iterate over null (null)"
+# 	assert_output --partial "APPLICATION_URL="
+# 	assert_output --partial "STUBRUNNER_URL="
+# 	assert_success
+# }
 
 @test "should skip rollback testing step if there are no tags CF" {
 	export CF_BIN="cf"
@@ -849,21 +849,21 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should prepare and execute e2e tests CF Gradle" {
-	export CF_BIN="cf"
-	export BUILD_PROJECT_TYPE="gradle"
-	export OUTPUT_DIR="build/libs"
-	env="stage"
-	cd "${TEMP_DIR}/${BUILD_PROJECT_TYPE}/build_project"
+# @test "should prepare and execute e2e tests CF Gradle" {
+# 	export CF_BIN="cf"
+# 	export BUILD_PROJECT_TYPE="gradle"
+# 	export OUTPUT_DIR="build/libs"
+# 	env="stage"
+# 	cd "${TEMP_DIR}/${BUILD_PROJECT_TYPE}/build_project"
 
-	run "${SOURCE_DIR}/stage_e2e.sh"
+# 	run "${SOURCE_DIR}/stage_e2e.sh"
 
-	# logged in
-	assert_output --partial "cf api --skip-ssl-validation ${env}-api"
-	assert_output --partial "cf login -u ${env}-username -p ${env}-password -o ${env}-org -s ${env}-space"
-	assert_output --partial "gradlew e2e -PnewVersion= -Dapplication.url= -Djava.security.egd=file:///dev/urandom"
-	assert_success
-}
+# 	# logged in
+# 	assert_output --partial "cf api --skip-ssl-validation ${env}-api"
+# 	assert_output --partial "cf login -u ${env}-username -p ${env}-password -o ${env}-org -s ${env}-space"
+# 	assert_output --partial "gradlew e2e -PnewVersion= -Dapplication.url= -Djava.security.egd=file:///dev/urandom"
+# 	assert_success
+# }
 
 @test "should not login to PAAS when switch is set and then prepare and execute e2e tests CF Gradle" {
 	export CF_BIN="cf"
