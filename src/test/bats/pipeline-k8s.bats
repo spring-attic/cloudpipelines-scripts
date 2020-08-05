@@ -137,7 +137,7 @@ export -f mockGradlew
 	assert_failure
 }
 
-@test "should pass docker related properties to the build [K8S][Maven]" {
+@test "should pass docker related properties to the build K8S Maven" {
 	export ENVIRONMENT=BUILD
 	cd "${TEMP_DIR}/maven/empty_project"
 	source "${SOURCE_DIR}/pipeline.sh"
@@ -157,7 +157,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should download kubectl and connect to cluster [K8S]" {
+@test "should download kubectl and connect to cluster K8S" {
 	export TEST_MODE="false"
 	cd "${TEMP_DIR}/maven/empty_project"
 	cp "${FIXTURES_DIR}/printing_kubectl" "${TEMP_DIR}/maven/empty_project/kubectl"
@@ -174,7 +174,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should create a temporary file with CA when CA data got passed [K8S]" {
+@test "should create a temporary file with CA when CA data got passed K8S" {
 	export KUBECTL_BIN="kubectl"
 	export PAAS_TEST_CA="foo"
 	cd "${TEMP_DIR}/maven/empty_project"
@@ -192,7 +192,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should use token from client token env var to connect to the cluster [K8S]" {
+@test "should use token from client token env var to connect to the cluster K8S" {
 	export KUBECTL_BIN="kubectl"
 	export PAAS_TEST_CLIENT_TOKEN="FOO"
 	cd "${TEMP_DIR}/maven/empty_project"
@@ -209,7 +209,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should use token from a file to connect to the cluster [K8S]" {
+@test "should use token from a file to connect to the cluster K8S" {
 	export KUBECTL_BIN="kubectl"
 	export PAAS_TEST_CLIENT_TOKEN_PATH="${TEMP_DIR}/maven/empty_project/token"
 	cd "${TEMP_DIR}/maven/empty_project"
@@ -227,7 +227,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy app to test environment without additional services if pipeline descriptor is missing for non-minikube [K8S][Maven]" {
+@test "should deploy app to test environment without additional services if pipeline descriptor is missing for non-minikube K8S Maven" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -253,7 +253,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy app to test environment without additional services if pipeline descriptor is missing for minikube [K8S][Maven]" {
+@test "should deploy app to test environment without additional services if pipeline descriptor is missing for minikube K8S Maven" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export KUBERNETES_MINIKUBE="true"
@@ -279,7 +279,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy app to test environment with additional services for non-minikube [K8S][Maven]" {
+@test "should deploy app to test environment with additional services for non-minikube K8S Maven" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -315,7 +315,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy app to test environment with additional services for minikube [K8S][Maven]" {
+@test "should deploy app to test environment with additional services for minikube K8S Maven" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -351,7 +351,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy app to test environment without additional services if pipeline descriptor is missing for minikube [K8S][Gradle]" {
+@test "should deploy app to test environment without additional services if pipeline descriptor is missing for minikube K8S Gradle" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export KUBERNETES_MINIKUBE="true"
@@ -377,7 +377,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy app to test environment with additional services for non-minikube [K8S][Gradle]" {
+@test "should deploy app to test environment with additional services for non-minikube K8S Gradle" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -413,7 +413,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy app to test environment with additional services for minikube [K8S][Gradle]" {
+@test "should deploy app to test environment with additional services for minikube K8S Gradle" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -449,7 +449,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should prepare and execute smoke tests for minikube [K8S][Maven]" {
+@test "should prepare and execute smoke tests for minikube K8S Maven" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -469,7 +469,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should prepare and execute smoke tests for minikube [K8S][Gradle]" {
+@test "should prepare and execute smoke tests for minikube K8S Gradle" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -489,7 +489,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should prepare and execute smoke tests for non minikube [K8S][Maven]" {
+@test "should prepare and execute smoke tests for non minikube K8S Maven" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -509,7 +509,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should prepare and execute smoke tests for non minikube [K8S][Gradle]" {
+@test "should prepare and execute smoke tests for non minikube K8S Gradle" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -529,7 +529,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy app for rollback tests without additional services if pipeline descriptor is missing for minikube [K8S][Gradle]" {
+@test "should deploy app for rollback tests without additional services if pipeline descriptor is missing for minikube K8S Gradle" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export KUBERNETES_MINIKUBE="true"
@@ -558,7 +558,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy app to rollback test environment with additional services for non-minikube [K8S][Gradle]" {
+@test "should deploy app to rollback test environment with additional services for non-minikube K8S Gradle" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -587,7 +587,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy app to rollback test environment with additional services for minikube [K8S][Gradle]" {
+@test "should deploy app to rollback test environment with additional services for minikube K8S Gradle" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -616,7 +616,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should skip the rollback step if no prod deployment took place [K8S][Maven]" {
+@test "should skip the rollback step if no prod deployment took place K8S Maven" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -637,7 +637,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should prepare and execute rollback tests for minikube [K8S][Maven]" {
+@test "should prepare and execute rollback tests for minikube K8S Maven" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -660,7 +660,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should prepare and execute rollback tests for minikube [K8S][Gradle]" {
+@test "should prepare and execute rollback tests for minikube K8S Gradle" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -683,7 +683,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should prepare and execute rollback tests for non minikube [K8S][Maven]" {
+@test "should prepare and execute rollback tests for non minikube K8S Maven" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -706,7 +706,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should prepare and execute rollback tests for non minikube [K8S][Gradle]" {
+@test "should prepare and execute rollback tests for non minikube K8S Gradle" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"
@@ -729,7 +729,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy app for e2e tests without additional services if pipeline descriptor is missing for minikube [K8S][Gradle]" {
+@test "should deploy app for e2e tests without additional services if pipeline descriptor is missing for minikube K8S Gradle" {
 	export ENVIRONMENT="STAGE"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -757,7 +757,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy app to stage environment with additional services for non-minikube [K8S][Gradle]" {
+@test "should deploy app to stage environment with additional services for non-minikube K8S Gradle" {
 	export ENVIRONMENT="STAGE"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -785,7 +785,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy app to stage environment with additional services for minikube [K8S][Gradle]" {
+@test "should deploy app to stage environment with additional services for minikube K8S Gradle" {
 	export ENVIRONMENT="STAGE"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -813,7 +813,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should prepare and execute e2e tests for minikube [K8S][Maven]" {
+@test "should prepare and execute e2e tests for minikube K8S Maven" {
 	export ENVIRONMENT="STAGE"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -834,7 +834,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should prepare and execute e2e tests for minikube [K8S][Gradle]" {
+@test "should prepare and execute e2e tests for minikube K8S Gradle" {
 	export ENVIRONMENT="STAGE"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -855,7 +855,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should prepare and execute e2e tests for non minikube [K8S][Maven]" {
+@test "should prepare and execute e2e tests for non minikube K8S Maven" {
 	export ENVIRONMENT="STAGE"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -876,7 +876,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should prepare and execute e2e tests for non minikube [K8S][Gradle]" {
+@test "should prepare and execute e2e tests for non minikube K8S Gradle" {
 	export ENVIRONMENT="STAGE"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -897,7 +897,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should escape non DNS valid name [K8S]" {
+@test "should escape non DNS valid name K8S" {
 	source "${SOURCE_DIR}/pipeline-k8s.sh"
 
 	run escapeValueForDns "a_b_1.2.3"
@@ -906,7 +906,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should not escape a valid DNS name [K8S]" {
+@test "should not escape a valid DNS name K8S" {
 	source "${SOURCE_DIR}/pipeline-k8s.sh"
 
 	run escapeValueForDns "a-b-1-2-3"
@@ -916,7 +916,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should return false if object hasn't been deployed [K8S]" {
+@test "should return false if object hasn't been deployed K8S" {
 	export KUBECTL_BIN="kubectl_that_returns_empty_string"
 	source "${SOURCE_DIR}/pipeline-k8s.sh"
 
@@ -927,7 +927,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should return true if object has been deployed [K8S]" {
+@test "should return true if object has been deployed K8S" {
 	export KUBECTL_BIN="kubectl"
 	source "${SOURCE_DIR}/pipeline-k8s.sh"
 
@@ -938,7 +938,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy blue instance for non minikube [K8S][Maven]" {
+@test "should deploy blue instance for non minikube K8S Maven" {
 	export ENVIRONMENT="PROD"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -959,7 +959,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy blue instance for non minikube [K8S][Gradle]" {
+@test "should deploy blue instance for non minikube K8S Gradle" {
 	export ENVIRONMENT="PROD"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -980,7 +980,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should fail to deploy blue instance for non minikube when green is already deployed [K8S][Maven]" {
+@test "should fail to deploy blue instance for non minikube when green is already deployed K8S Maven" {
 	export ENVIRONMENT="PROD"
 	export KUBECTL_BIN="kubectl_that_returns_parsed_too_many_deployments"
 	export K8S_CONTEXT="context"
@@ -1002,7 +1002,7 @@ export -f mockGradlew
 	assert_failure
 }
 
-@test "should fail to deploy blue instance for non minikube when green is already deployed [K8S][Gradle]" {
+@test "should fail to deploy blue instance for non minikube when green is already deployed K8S Gradle" {
 	export ENVIRONMENT="PROD"
 	export KUBECTL_BIN="kubectl_that_returns_parsed_too_many_deployments"
 	export K8S_CONTEXT="context"
@@ -1024,7 +1024,7 @@ export -f mockGradlew
 	assert_failure
 }
 
-@test "should return the dns escaped app name [K8S]" {
+@test "should return the dns escaped app name K8S" {
 	export KUBECTL_BIN="kubectl_that_returns_too_many_deployments"
 	export PIPELINE_VERSION="1.0.0.M1-170925_142938-VERSION"
 	source "${SOURCE_DIR}/pipeline-k8s.sh"
@@ -1034,7 +1034,7 @@ export -f mockGradlew
 	assert_equal "${result}" "github-webhook-1-0-0-m1-170925-142938-version"
 }
 
-@test "should return list of deployed apps [K8S]" {
+@test "should return list of deployed apps K8S" {
 	export KUBECTL_BIN="kubectl_that_returns_too_many_deployments"
 	source "${SOURCE_DIR}/pipeline-k8s.sh"
 	deployments="$( kubectl_that_returns_too_many_deployments )"
@@ -1046,7 +1046,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should not return invalid code when empty list of deployed apps is returned [K8S]" {
+@test "should not return invalid code when empty list of deployed apps is returned K8S" {
 	export KUBECTL_BIN="kubectl_that_returns_empty_string_and_returns_1"
 	source "${SOURCE_DIR}/pipeline-k8s.sh"
 	deployments="$( kubectl_that_returns_too_many_deployments )"
@@ -1057,7 +1057,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should return an empty string when no deployments are matched [K8S]" {
+@test "should return an empty string when no deployments are matched K8S" {
 	export PIPELINE_VERSION="1.0.0.M1-170925_142938-VERSION"
 	source "${SOURCE_DIR}/pipeline-k8s.sh"
 	deployments="$( kubectl_that_returns_empty_string )"
@@ -1069,7 +1069,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should return the oldest deployment by sorting the deployment names [K8S]" {
+@test "should return the oldest deployment by sorting the deployment names K8S" {
 	export PIPELINE_VERSION="1.0.0.M1-170925_142938-VERSION"
 	source "${SOURCE_DIR}/pipeline-k8s.sh"
 	deployments="$( kubectl_that_returns_parsed_too_many_deployments )"
@@ -1081,7 +1081,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should delete green instance for non minikube [K8S][Maven]" {
+@test "should delete green instance for non minikube K8S Maven" {
 	export ENVIRONMENT="PROD"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -1102,7 +1102,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should delete green instance for non minikube [K8S][Gradle]" {
+@test "should delete green instance for non minikube K8S Gradle" {
 	export ENVIRONMENT="PROD"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -1123,7 +1123,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should delete green instance for non minikube [K8S][Maven]" {
+@test "should delete green instance for non minikube K8S Maven" {
 	export ENVIRONMENT="PROD"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -1144,7 +1144,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should delete green instance for non minikube [K8S][Gradle]" {
+@test "should delete green instance for non minikube K8S Gradle" {
 	export ENVIRONMENT="PROD"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -1165,7 +1165,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should rollback to blue [K8S][Maven]" {
+@test "should rollback to blue K8S Maven" {
 	export ENVIRONMENT="PROD"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -1186,7 +1186,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should rollback to blue [K8S][Gradle]" {
+@test "should rollback to blue K8S Gradle" {
 	export ENVIRONMENT="PROD"
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
@@ -1207,7 +1207,7 @@ export -f mockGradlew
 	assert_success
 }
 
-@test "should deploy service with a service that has coordinates [K8S]" {
+@test "should deploy service with a service that has coordinates K8S" {
 	export KUBECTL_BIN="kubectl"
 	export K8S_CONTEXT="context"
 	export PAAS_NAMESPACE="sc-pipelines-test"

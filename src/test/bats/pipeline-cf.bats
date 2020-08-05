@@ -185,7 +185,7 @@ export -f mockMvnw
 export -f mockGradlew
 export -f fakeRetrieveStubRunnerIds
 
-@test "should download cf and connect to cluster [CF]" {
+@test "should download cf and connect to cluster CF" {
 	export CF_BIN="cf"
 	export LANGUAGE_TYPE="dummy"
 	env="test"
@@ -200,7 +200,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should download cf and connect to cluster and CF_BIN should point to downloaded CF CLI [CF]" {
+@test "should download cf and connect to cluster and CF_BIN should point to downloaded CF CLI CF" {
 	export CF_BIN="cf"
 	export CF_TEST_MODE=""
 	export LANGUAGE_TYPE="dummy"
@@ -219,7 +219,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should retrieve the host from the URL from CF [CF]" {
+@test "should retrieve the host from the URL from CF CF" {
 	export CF_BIN="cf_that_returns_apps"
 	cd "${TEMP_DIR}/maven/empty_project"
 	source "${SOURCE_DIR}/pipeline.sh"
@@ -232,7 +232,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should bind a service only if it's already running [CF]" {
+@test "should bind a service only if it's already running CF" {
 	export CF_BIN="cf_that_returns_nothing"
 	cd "${TEMP_DIR}/maven/empty_project"
 	source "${SOURCE_DIR}/pipeline.sh"
@@ -243,7 +243,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should fail to deploy app to test environment without additional services if manifest is missing [CF][Maven]" {
+@test "should fail to deploy app to test environment without additional services if manifest is missing CF Maven" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="maven"
 	export OUTPUT_DIR="target"
@@ -260,7 +260,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_failure
 }
 
-@test "should deploy app to test environment without additional services if pipeline descriptor is missing [CF][Maven]" {
+@test "should deploy app to test environment without additional services if pipeline descriptor is missing CF Maven" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="maven"
 	export OUTPUT_DIR="target"
@@ -285,7 +285,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should deploy app to test environment with additional services [CF][Maven]" {
+@test "should deploy app to test environment with additional services CF Maven" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="maven"
 	export OUTPUT_DIR="target"
@@ -332,7 +332,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should deploy app to test environment with no services [CF][PHP]" {
+@test "should deploy app to test environment with no services CF PHP" {
 	export PIPELINE_VERSION="1.0.0.M8"
 	export CF_BIN="cf"
 	export M2_SETTINGS_REPO_USERNAME="foo"
@@ -358,7 +358,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should deploy app to test environment without additional services if pipeline descriptor is missing [CF][Gradle]" {
+@test "should deploy app to test environment without additional services if pipeline descriptor is missing CF Gradle" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="gradle"
 	export OUTPUT_DIR="build/libs"
@@ -380,7 +380,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should deploy app to test environment with additional services [CF][Gradle]" {
+@test "should deploy app to test environment with additional services CF Gradle" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="gradle"
 	export OUTPUT_DIR="build/libs"
@@ -428,7 +428,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should not login to PAAS for smoke tests if skip flag is set [CF][Maven]" {
+@test "should not login to PAAS for smoke tests if skip flag is set CF Maven" {
 	export CF_BIN="cf"
 	export CF_SKIP_PREPARE_FOR_TESTS="true"
 	export APPLICATION_URL=my-project-sc-pipelines.demo.io
@@ -447,7 +447,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should prepare and execute smoke tests [CF][Maven]" {
+@test "should prepare and execute smoke tests CF Maven" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="maven"
 	export OUTPUT_DIR="target"
@@ -463,7 +463,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should prepare and execute smoke tests [CF][Gradle]" {
+@test "should prepare and execute smoke tests CF Gradle" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="gradle"
 	export OUTPUT_DIR="build/libs"
@@ -481,7 +481,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should not login to PAAS for smoke tests if skip flag is set [CF][Gradle]" {
+@test "should not login to PAAS for smoke tests if skip flag is set CF Gradle" {
 	export CF_BIN="cf"
 	export CF_SKIP_PREPARE_FOR_TESTS="true"
 	export APPLICATION_URL=my-project-sc-pipelines.demo.io
@@ -501,7 +501,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should skip rollback deploy step if there are no tags [CF]" {
+@test "should skip rollback deploy step if there are no tags CF" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="maven"
 	export OUTPUT_DIR="target"
@@ -519,7 +519,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should deploy app to test environment for rollback testing [CF][Maven]" {
+@test "should deploy app to test environment for rollback testing CF Maven" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="maven"
 	export OUTPUT_DIR="target"
@@ -552,7 +552,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should deploy app to test environment for rollback testing [CF][Gradle]" {
+@test "should deploy app to test environment for rollback testing CF Gradle" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="gradle"
 	export OUTPUT_DIR="build/libs"
@@ -588,7 +588,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should skip rollback testing step if there are no tags [CF]" {
+@test "should skip rollback testing step if there are no tags CF" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="maven"
 	export OUTPUT_DIR="target"
@@ -606,7 +606,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should prepare and execute rollback tests [CF][Maven]" {
+@test "should prepare and execute rollback tests CF Maven" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="maven"
 	export OUTPUT_DIR="target"
@@ -625,7 +625,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should not login to PAAS for rollback tests if skip flag is set [CF][Maven]" {
+@test "should not login to PAAS for rollback tests if skip flag is set CF Maven" {
 	export CF_BIN="cf"
 	export CF_SKIP_PREPARE_FOR_TESTS="true"
 	export APPLICATION_URL=my-project-sc-pipelines.demo.io
@@ -646,7 +646,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should prepare and execute rollback tests [CF][Gradle]" {
+@test "should prepare and execute rollback tests CF Gradle" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="gradle"
 	export OUTPUT_DIR="build/libs"
@@ -667,7 +667,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should not login to PAAS for rollback tests if skip flag is set [CF][Gradle]" {
+@test "should not login to PAAS for rollback tests if skip flag is set CF Gradle" {
 	export CF_BIN="cf"
 	export CF_SKIP_PREPARE_FOR_TESTS="true"
 	export APPLICATION_URL=my-project-sc-pipelines.demo.io
@@ -689,7 +689,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should deploy app to stage environment without additional services if pipeline descriptor is missing [CF][Maven]" {
+@test "should deploy app to stage environment without additional services if pipeline descriptor is missing CF Maven" {
 	export ENVIRONMENT="stage"
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="maven"
@@ -716,7 +716,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should deploy app to stage environment with additional services [CF][Maven]" {
+@test "should deploy app to stage environment with additional services CF Maven" {
 	export ENVIRONMENT="stage"
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="maven"
@@ -752,7 +752,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should deploy app to stage environment without additional services if pipeline descriptor is missing [CF][Gradle]" {
+@test "should deploy app to stage environment without additional services if pipeline descriptor is missing CF Gradle" {
 	export ENVIRONMENT="STAGE"
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="gradle"
@@ -778,7 +778,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should deploy app to stage environment with additional services [CF][Gradle]" {
+@test "should deploy app to stage environment with additional services CF Gradle" {
 	export ENVIRONMENT="STAGE"
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="gradle"
@@ -815,7 +815,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should prepare and execute e2e tests [CF][Maven]" {
+@test "should prepare and execute e2e tests CF Maven" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="maven"
 	export OUTPUT_DIR="target"
@@ -831,7 +831,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should not login to PAAS when switch is set and then prepare and execute e2e tests [CF][Maven]" {
+@test "should not login to PAAS when switch is set and then prepare and execute e2e tests CF Maven" {
 	export CF_BIN="cf"
 	export CF_SKIP_PREPARE_FOR_TESTS="true"
 	export APPLICATION_URL=my-project-sc-pipelines.demo.io
@@ -849,7 +849,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should prepare and execute e2e tests [CF][Gradle]" {
+@test "should prepare and execute e2e tests CF Gradle" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="gradle"
 	export OUTPUT_DIR="build/libs"
@@ -865,7 +865,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should not login to PAAS when switch is set and then prepare and execute e2e tests [CF][Gradle]" {
+@test "should not login to PAAS when switch is set and then prepare and execute e2e tests CF Gradle" {
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="gradle"
 	export CF_SKIP_PREPARE_FOR_TESTS="true"
@@ -883,7 +883,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should deploy app to prod environment [CF][Maven]" {
+@test "should deploy app to prod environment CF Maven" {
 	export ENVIRONMENT="PROD"
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="maven"
@@ -903,7 +903,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should deploy app to prod environment [CF][Gradle]" {
+@test "should deploy app to prod environment CF Gradle" {
 	export ENVIRONMENT="PROD"
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="gradle"
@@ -926,7 +926,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should complete switch over on prod [CF][Maven]" {
+@test "should complete switch over on prod CF Maven" {
 	export ENVIRONMENT="PROD"
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="maven"
@@ -944,7 +944,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should complete switch over on prod [CF][Gradle]" {
+@test "should complete switch over on prod CF Gradle" {
 	export ENVIRONMENT="PROD"
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="gradle"
@@ -963,7 +963,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should complete switch over on prod without doing anything if app is missing [CF][Maven]" {
+@test "should complete switch over on prod without doing anything if app is missing CF Maven" {
 	export ENVIRONMENT="PROD"
 	export CF_BIN="cf_that_returns_nothing"
 	export BUILD_PROJECT_TYPE="maven"
@@ -983,7 +983,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should complete switch over on prod without doing anything if app is missing [CF][Gradle]" {
+@test "should complete switch over on prod without doing anything if app is missing CF Gradle" {
 	export ENVIRONMENT="PROD"
 	export CF_BIN="cf_that_returns_nothing"
 	export BUILD_PROJECT_TYPE="gradle"
@@ -1004,7 +1004,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should rollback to blue instance on prod [CF][Maven]" {
+@test "should rollback to blue instance on prod CF Maven" {
 	export ENVIRONMENT="PROD"
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="maven"
@@ -1022,7 +1022,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should rollback to blue instance on prod [CF][Gradle]" {
+@test "should rollback to blue instance on prod CF Gradle" {
 	export ENVIRONMENT="PROD"
 	export CF_BIN="cf"
 	export BUILD_PROJECT_TYPE="gradle"
@@ -1041,7 +1041,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_success
 }
 
-@test "should not rollback to blue if blue is missing [CF][Maven]" {
+@test "should not rollback to blue if blue is missing CF Maven" {
 	export ENVIRONMENT="PROD"
 	export CF_BIN="cf_that_returns_nothing"
 	export BUILD_PROJECT_TYPE="maven"
@@ -1061,7 +1061,7 @@ export -f fakeRetrieveStubRunnerIds
 	assert_failure
 }
 
-@test "should not rollback to blue if blue is missing [CF][Gradle]" {
+@test "should not rollback to blue if blue is missing CF Gradle" {
 	export ENVIRONMENT="PROD"
 	export CF_BIN="cf_that_returns_nothing"
 	export BUILD_PROJECT_TYPE="gradle"
