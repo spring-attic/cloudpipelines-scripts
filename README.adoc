@@ -9,4 +9,4 @@ This project tries to solve the following problems:
 A common way of running, configuring and deploying applications lowers support costs
 and time needed by new developers to blend in when they change projects.
 
-You can check out the `docs` folder for the documentation. The deployed docs are available https://cloudpipelines.github.io/scripts/[here]
+You can check out the `docs` folder for the documentation. The deployed docs are available https://springcloud.github.io/cloudpipelines-scripts/[here]
