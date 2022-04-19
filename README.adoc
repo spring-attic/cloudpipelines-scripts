@@ -1,3 +1,5 @@
+# cloudpipelines-scripts is no longer actively maintained by VMware, Inc.
+
 = Cloud Pipelines Scripts
 
 This project tries to solve the following problems:
